@@ -15,18 +15,17 @@
  */
 package se.ekamartin.commandflow;
 
-
-
 /**
  * Software version.
+ * 
  * @author elansma
  */
 public class Version {
 	public static final String MAJOR = "0";
-	
+
 	public static final String MINOR = "1";
-	
+
 	public static final String PATCH = "0";
-	
+
 	public static final String VERSION = MAJOR + "." + MINOR + "." + PATCH;
 }
