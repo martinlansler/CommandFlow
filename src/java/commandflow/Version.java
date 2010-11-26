@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma)
+ * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekamartin.commandflow;
+package commandflow;
 
 /**
- * Main interface for a command.
- * <p>
- * A command may be created by either implementing this interface or using the {@link se.ekamartin.commandflow.annotation.Command} annotation.
+ * Software version.
+ * 
  * @author elansma
  */
-public interface Command<C> {
-	/**
-	 * Executes the command
-	 * @param context the command context
-	 * @return the command execution status
-	 */
-	boolean execute(C context);
+public class Version {
+	public static final String MAJOR = "0";
+
+	public static final String MINOR = "1";
+
+	public static final String PATCH = "0";
+
+	public static final String VERSION = MAJOR + "." + MINOR + "." + PATCH;
 }
