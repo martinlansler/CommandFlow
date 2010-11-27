@@ -1,9 +1,14 @@
-Basic flow:
+Flow types
 ----------
 
 Sequential execution:
 <command name="doStuff1"/>
-<command name="doStuff2"/>	
+<command name="doStuff2"/>
+
+Command status negation:
+<not>
+	<command name="1"/>
+</not>	
 
 Short-circuit or (executes until first true command status):
 <or>
@@ -19,13 +24,13 @@ Short-circuit and (executes until first false command status):
 
 1-branch conditional execution:
 <if name="testCondition">
-	<command name="doStuff"/>
+	<command name="doStuffIfTrue"/>
 </if>
 
 2-branch conditional execution:
 <ifelse name="testCondition">
-	<command name="doStuff1"/>
-	<command name="doStuff2"/>	
+	<command name="doStuffIfTrue"/>
+	<command name="doStuffIfFalse"/>	
 </ifelse>
 
 n-branch conditional execution:
@@ -50,3 +55,16 @@ Parallel execution:
 <parallel name="testCondition">
 	<command name="doStuff"/>
 </parallel>
+
+Parallel or execution (i.e not sequential and not short-circuit):
+<or parallel="true">
+	<command name="1"/>
+	<command name="2"/>
+</or>
+
+Parallel and execution (i.e not sequential and not short-circuit):
+<and parallel="true">
+	<command name="1"/>
+	<command name="2"/>
+</and>
+
