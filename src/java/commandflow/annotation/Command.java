@@ -24,13 +24,15 @@ import java.lang.annotation.Target;
 /**
  * Command annotation.
  * <p>
- * Using the annotation any method may be marked as being a command, the method must either be a no-arg or take a single argument of the context type. The return type of the method may either be void or boolean, if using a void return type the command is assumed to always return <code>false</code>.
- * Optionally a command name may be provided.
+ * Using the annotation any method may be marked as being a command, the method must either be a no-arg or take a single argument of the context type.
+ * The return type of the method may be void or boolean, a void method is assumed to always have command status <code>false</code>. Optionally a
+ * command name may be provided as an annotation argument.
+ * 
  * @author elansma
  */
 @Documented
-@Target(ElementType.METHOD) 
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Command {
-	String name() default "";
+    String name() default "";
 }
