@@ -1,0 +1,52 @@
+Basic flow:
+----------
+
+Sequential execution:
+<command name="doStuff1"/>
+<command name="doStuff2"/>	
+
+Short-circuit or (executes until first true command status):
+<or>
+	<command name="1"/>
+	<command name="2"/>
+</or>	
+
+Short-circuit and (executes until first false command status):
+<and>
+	<command name="1"/>
+	<command name="2"/>
+</and>
+
+1-branch conditional execution:
+<if name="testCondition">
+	<command name="doStuff"/>
+</if>
+
+2-branch conditional execution:
+<ifelse name="testCondition">
+	<command name="doStuff1"/>
+	<command name="doStuff2"/>	
+</ifelse>
+
+n-branch conditional execution:
+<or>
+	<if name="testCondition1">
+		<command name="doStuff1"/>
+	</if>
+	<if name="testCondition2">
+		<command name="doStuff2"/>
+	</if>
+	<if name="testCondition2">
+		<command name="doStuff2"/>
+	</if>
+</or>	
+
+Conditional loop execution:
+<while name="testCondition">
+	<command name="doStuff"/>
+</while>
+
+Parallel execution:
+<parallel name="testCondition">
+	<command name="doStuff"/>
+</parallel>
