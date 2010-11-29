@@ -20,7 +20,8 @@ import commandflow.Command;
 /**
  * A short-circuit or command.
  * <p>
- * The command executes its contained commands in a sequence until the first command to return <code>true</code>. If no commands return <code>true</code> the command status is <code>false</code>. 
+ * The command executes its contained commands in a sequence until the first command to return <code>true</code>. If no commands return <code>true</code> the command status is <code>false</code>.
+ * @param <C> the context class of the commands 
  * @author elansma
  */
 public class OrCommand<C> extends CompositeCommand<C> {

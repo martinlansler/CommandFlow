@@ -25,7 +25,7 @@ package commandflow;
  * processing flow to handle concurrency without any synchronization. All state is kept in the <em>context class</em>, the type of the context class is generic
  * since its implementation is domain specific. A command has a boolean return type, this is referred to as the <em>command status</em>. By convention <code>true</code> usually means that the processing
  * went well or that some desired condition was fulfilled. Commands that implement flow branching can use the return value to decide the processing flow.
- * 
+ * @param <C> the context class of the commands
  * @author elansma
  */
 public interface Command<C> {

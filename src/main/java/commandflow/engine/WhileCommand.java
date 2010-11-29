@@ -18,22 +18,30 @@ package commandflow.engine;
 import commandflow.Command;
 
 /**
- * A command that executes a list of commands in sequence.
+ * A while command.
  * <p>
- * The command status is the status of the last command in the sequence, the empty sequence of commands always return <code>false</code>.
- * @param <C> the context class of the commands
+ * The command executes its wrapped command while command status of the condition command is <code>true</code>. The command status of this command is
+ * the last returned command status of the wrapped command, <code>false</code> if the loop never executes.
  * @author elansma
  */
-public class SequenceCommand<C> extends CompositeCommand<C>  {
+public class WhileCommand<C> extends WrappingCommand<C> {
+    /** The while condition command */
+    private Command<C> condition;
 
-    /** {@inheritDoc} */
+    /**
+     * @param command
+     */
+    public WhileCommand(Command<C> condition, Command<C> command) {
+        super(command);
+        this.condition = condition;
+    }
+
     @Override
     public boolean execute(C context) {
         boolean status = false;
-        for (Command<C> command : getCommands()) {
-            status = command.execute(context);
+        while (condition.execute(context)) {
+            status = executeWrappedCommand(context);
         }
         return status;
     }
-
 }

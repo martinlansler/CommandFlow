@@ -21,19 +21,21 @@ import commandflow.Command;
  * Negation command.
  * <p>
  * The command negates the command status of the command it wraps.
+ * @param <C> the context class of the commands
  * @author elansma
  */
-public class NotCommand<C> implements Command<C> {
-    /** The wrapped command */
-    private Command<C> command;
-
+public class NotCommand<C> extends WrappingCommand<C> {
+    /**
+     * Creates a new not command
+     * @param command the command to negate
+     */
     public NotCommand(Command<C> command) {
-        this.command = command;
+        super(command);
     }
 
     @Override
     public boolean execute(C context) {
-        return !command.execute(context);
+        return !executeWrappedCommand(context);
     }
 
 }

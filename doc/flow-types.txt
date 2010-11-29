@@ -28,10 +28,12 @@ Short-circuit and (executes until first false command status):
 </if>
 
 2-branch conditional execution:
-<ifelse name="testCondition">
-	<command name="doStuffIfTrue"/>
-	<command name="doStuffIfFalse"/>	
-</ifelse>
+<if name="testCondition">
+  <command name="doStuffIfTrue"/>
+</if>
+<else>
+  <command name="doStuffIfFalse"/>  
+</else>
 
 n-branch conditional execution:
 <or>
@@ -46,10 +48,15 @@ n-branch conditional execution:
 	</if>
 </or>	
 
-Conditional loop execution:
+Conditional while loop execution:
 <while name="testCondition">
 	<command name="doStuff"/>
 </while>
+
+Conditional do-while loop execution:
+<do-while name="testCondition">
+  <command name="doStuff"/>
+</do-while>
 
 Parallel execution:
 <parallel name="testCondition">

@@ -21,6 +21,7 @@ import commandflow.Command;
  * A short-circuit and command.
  * <p>
  * The command executes its contained commands until one command returns <code>false</code>. If all commands return <code>true</code> the command status is also <code>true</code>.
+ * @param <C> the context class of the commands
  * @author elansma
  */
 public class AndCommand<C> extends CompositeCommand<C> {

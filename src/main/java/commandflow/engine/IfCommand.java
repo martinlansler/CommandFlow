@@ -18,22 +18,35 @@ package commandflow.engine;
 import commandflow.Command;
 
 /**
- * A command that executes a list of commands in sequence.
+ * Conditional if command.
  * <p>
- * The command status is the status of the last command in the sequence, the empty sequence of commands always return <code>false</code>.
+ * If the supplied condition command returns command status <code>true</code> the conditional command is executed. If the condition command returns
+ * <code>true</code> the command status is also <code>true</code>, otherwise <code>false</code>.
  * @param <C> the context class of the commands
  * @author elansma
  */
-public class SequenceCommand<C> extends CompositeCommand<C>  {
+public class IfCommand<C> extends WrappingCommand<C> {
+    /** The condition command */
+    private Command<C> condition;
+
+    /**
+     * Creates a new if command
+     * @param condition the condition command
+     * @param command the conditional command
+     */
+    public IfCommand(Command<C> condition, Command<C> command) {
+        super(command);
+        this.condition = condition;
+    }
 
     /** {@inheritDoc} */
     @Override
     public boolean execute(C context) {
-        boolean status = false;
-        for (Command<C> command : getCommands()) {
-            status = command.execute(context);
+        if (condition.execute(context)) {
+            executeWrappedCommand(context);
+            return true;
         }
-        return status;
+        return false;
     }
 
 }

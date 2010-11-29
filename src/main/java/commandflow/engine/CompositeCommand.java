@@ -29,7 +29,7 @@ import commandflow.Command;
 public abstract class CompositeCommand<C> implements Command<C> {
 
     /** The collection of commands */
-    protected List<Command<C>> commands;
+    private List<Command<C>> commands;
     
     /**
      * Creates a new empty composite command.
