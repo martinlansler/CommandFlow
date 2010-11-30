@@ -1,1 +1,18 @@
 apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.6
+version = '1.0'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'CommandFlow', 'Implementation-Version': version
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'org.testng', name: 'testng', version: '5.+'
+}
