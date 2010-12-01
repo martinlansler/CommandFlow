@@ -18,37 +18,27 @@ package commandflow.engine;
 import commandflow.Command;
 
 /**
- * Suitable base class for commands that wrap a single command.
+ * A do-while command.
+ * <p>
+ * The command executes its wrapped command in a loop while command status of the condition command is <code>true</code>, the condition is checked
+ * after each loop execution. The command status of this command is the last returned command status of the wrapped command.
  * @param <C> the context class of the commands
  * @author elansma
  */
-public abstract class WrappingCommand<C> implements Command<C> {
-    /** The wrapped command */
-    private Command<C> command;
-
+public class DoWhileCommand<C> extends ConditionalWrappingCommand<C> {
     /**
-     * Creates a new wrapping command
-     * @param command the wrapped command
+     * @param command
      */
-    public WrappingCommand(Command<C> command) {
-        this.command = command;
-    }
-    
-    /**
-     * Gets the wrapped command
-     * @return the wrapped command
-     */
-    public Command<C> getWrappedCommand() {
-        return command;
-    }
-    
-    /**
-     * Executes the wrapped command
-     * @param context the command context
-     * @return the wrapped command status
-     */
-    protected boolean executeWrappedCommand(C context) {
-        return command.execute(context);
+    public DoWhileCommand(Command<C> condition, Command<C> command) {
+        super(condition, command);
     }
 
+    @Override
+    public boolean execute(C context) {
+        boolean status = false;
+        do {
+            status = executeWrappedCommand(context);
+        } while (executeConditionCommand(context));
+        return status;
+    }
 }

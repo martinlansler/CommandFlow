@@ -18,37 +18,29 @@ package commandflow.engine;
 import commandflow.Command;
 
 /**
- * Suitable base class for commands that wrap a single command.
+ * A wrapping command with a condition.
  * @param <C> the context class of the commands
  * @author elansma
  */
-public abstract class WrappingCommand<C> implements Command<C> {
-    /** The wrapped command */
-    private Command<C> command;
+public abstract class ConditionalWrappingCommand<C> extends WrappingCommand<C> {
+
+    /** The condition command */
+    private Command<C> condition;
 
     /**
-     * Creates a new wrapping command
-     * @param command the wrapped command
+     * @param command
      */
-    public WrappingCommand(Command<C> command) {
-        this.command = command;
+    public ConditionalWrappingCommand(Command<C> condition, Command<C> command) {
+        super(command);
+        this.condition = condition;
     }
-    
+
     /**
-     * Gets the wrapped command
-     * @return the wrapped command
-     */
-    public Command<C> getWrappedCommand() {
-        return command;
-    }
-    
-    /**
-     * Executes the wrapped command
+     * Executes the condition command
      * @param context the command context
-     * @return the wrapped command status
+     * @return the condition command status
      */
-    protected boolean executeWrappedCommand(C context) {
-        return command.execute(context);
+    protected boolean executeConditionCommand(C context) {
+        return condition.execute(context);
     }
-
 }

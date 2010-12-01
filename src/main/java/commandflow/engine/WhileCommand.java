@@ -20,26 +20,24 @@ import commandflow.Command;
 /**
  * A while command.
  * <p>
- * The command executes its wrapped command while command status of the condition command is <code>true</code>. The command status of this command is
- * the last returned command status of the wrapped command, <code>false</code> if the loop never executes.
+ * The command executes its wrapped command in a loop while command status of the condition command is <code>true</code>, the condition is checked
+ * prior to loop execution. The command status of this command is the last returned command status of the wrapped command, <code>false</code> if the
+ * loop never executes.
+ * @param <C> the context class of the commands
  * @author elansma
  */
-public class WhileCommand<C> extends WrappingCommand<C> {
-    /** The while condition command */
-    private Command<C> condition;
-
+public class WhileCommand<C> extends ConditionalWrappingCommand<C> {
     /**
      * @param command
      */
     public WhileCommand(Command<C> condition, Command<C> command) {
-        super(command);
-        this.condition = condition;
+        super(condition, command);
     }
 
     @Override
     public boolean execute(C context) {
         boolean status = false;
-        while (condition.execute(context)) {
+        while (executeConditionCommand(context)) {
             status = executeWrappedCommand(context);
         }
         return status;

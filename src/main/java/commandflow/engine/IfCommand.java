@@ -25,24 +25,20 @@ import commandflow.Command;
  * @param <C> the context class of the commands
  * @author elansma
  */
-public class IfCommand<C> extends WrappingCommand<C> {
-    /** The condition command */
-    private Command<C> condition;
-
+public class IfCommand<C> extends ConditionalWrappingCommand<C> {
     /**
      * Creates a new if command
      * @param condition the condition command
      * @param command the conditional command
      */
     public IfCommand(Command<C> condition, Command<C> command) {
-        super(command);
-        this.condition = condition;
+        super(condition, command);
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean execute(C context) {
-        if (condition.execute(context)) {
+        if (executeConditionCommand(context)) {
             executeWrappedCommand(context);
             return true;
         }
