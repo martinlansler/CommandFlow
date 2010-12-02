@@ -43,7 +43,17 @@ public abstract class CompositeCommand<C> implements Command<C> {
      * @param commands the connection of commands, the order of the commands is determined by the iterator returned by the collection.
      */
     public CompositeCommand(Collection<Command<C>> commands) {
-        commands = new ArrayList<Command<C>>(commands);
+        this.commands = new ArrayList<Command<C>>(commands);
+    }
+    
+    /**
+     * Adds a command
+     * @param command the command to add
+     * @return this command to allow command chaining
+     */
+    public CompositeCommand<C> add(Command<C> command) {
+        commands.add(command);
+        return this;
     }
 
     /**

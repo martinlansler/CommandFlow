@@ -15,16 +15,33 @@
  */
 package commandflow.engine;
 
+import java.util.Collection;
+
 import commandflow.Command;
 
 /**
  * A short-circuit and command.
  * <p>
- * The command executes its contained commands until one command returns <code>false</code>. If all commands return <code>true</code> the command status is also <code>true</code>.
+ * The command executes its contained commands until one command returns <code>false</code>. If all commands return <code>true</code> the command
+ * status is also <code>true</code>. An empty and command always returns <code>false</code>.
  * @param <C> the context class of the commands
  * @author elansma
  */
 public class AndCommand<C> extends CompositeCommand<C> {
+    /**
+     * Creates a new empty and command
+     */
+    public AndCommand() {
+        super();
+    }
+
+    /**
+     * Creates a new and command
+     * @param commands the command collection to execute
+     */
+    public AndCommand(Collection<Command<C>> commands) {
+        super(commands);
+    }
 
     @Override
     public boolean execute(C context) {
@@ -33,7 +50,7 @@ public class AndCommand<C> extends CompositeCommand<C> {
                 return false;
             }
         }
-        return true;
+        return getCommands().isEmpty() ? false : true;
     }
-    
+
 }

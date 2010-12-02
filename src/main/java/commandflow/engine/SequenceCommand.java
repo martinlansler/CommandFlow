@@ -15,6 +15,8 @@
  */
 package commandflow.engine;
 
+import java.util.Collection;
+
 import commandflow.Command;
 
 /**
@@ -24,7 +26,21 @@ import commandflow.Command;
  * @param <C> the context class of the commands
  * @author elansma
  */
-public class SequenceCommand<C> extends CompositeCommand<C>  {
+public class SequenceCommand<C> extends CompositeCommand<C> {
+    /**
+     * Creates a new empty sequence command
+     */
+    public SequenceCommand() {
+        super();
+    }
+
+    /**
+     * Creates a new sequence command
+     * @param commands the command collection to execute
+     */
+    public SequenceCommand(Collection<Command<C>> commands) {
+        super(commands);
+    }
 
     /** {@inheritDoc} */
     @Override

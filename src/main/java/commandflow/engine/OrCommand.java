@@ -15,16 +15,33 @@
  */
 package commandflow.engine;
 
+import java.util.Collection;
+
 import commandflow.Command;
 
 /**
  * A short-circuit or command.
  * <p>
- * The command executes its contained commands in a sequence until the first command to return <code>true</code>. If no commands return <code>true</code> the command status is <code>false</code>.
- * @param <C> the context class of the commands 
+ * The command executes its contained commands in a sequence until the first command to return <code>true</code>. If no commands return
+ * <code>true</code> the command status is <code>false</code>. An empty or command always returns <code>false</code>.
+ * @param <C> the context class of the commands
  * @author elansma
  */
 public class OrCommand<C> extends CompositeCommand<C> {
+    /**
+     * Creates a new empty or command
+     */
+    public OrCommand() {
+        super();
+    }
+
+    /**
+     * Creates a new or command
+     * @param commands the command collection to execute
+     */
+    public OrCommand(Collection<Command<C>> commands) {
+        super(commands);
+    }
 
     @Override
     public boolean execute(C context) {
@@ -35,5 +52,5 @@ public class OrCommand<C> extends CompositeCommand<C> {
         }
         return false;
     }
-    
+
 }
