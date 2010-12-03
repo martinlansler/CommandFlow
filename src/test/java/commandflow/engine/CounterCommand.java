@@ -15,31 +15,26 @@
  */
 package commandflow.engine;
 
-import commandflow.Command;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Test util to test loop condition commands
+ * Test command to count command invocation, thread-safe.
  * @author elansma
  */
-public class LoopConditionCommand<C> implements Command<C> {
-    private boolean result;
-    private int times;
+public class CounterCommand<T> extends ConditionCommand<T> {
+    private AtomicLong counter = new AtomicLong();
 
     @Override
-    public boolean execute(C context) {
-        return times-- == 0 ? result : !result;
+    public boolean execute(T context) {
+        counter.incrementAndGet();
+        return super.execute(context);
     }
 
-    LoopConditionCommand<C> answerTrueAfter(int times) {
-        result = true;
-        this.times = times;
-        return this;
-    }
-
-    LoopConditionCommand<C> answerFalseAfter(int times) {
-        result = false;
-        this.times = times;
-        return this;
+    /**
+     * @return
+     */
+    public long getCount() {
+        return counter.get();
     }
 
 }
