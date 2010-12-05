@@ -19,6 +19,7 @@ import commandflow.Command;
 
 /**
  * False command, i.e. always returns command status <code>false</code>.
+ * @param <C> the context class of the command
  * @author elansma
  */
 public class FalseCommand<C> implements Command<C> {

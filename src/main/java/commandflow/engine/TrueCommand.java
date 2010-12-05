@@ -19,6 +19,7 @@ import commandflow.Command;
 
 /**
  * True command, i.e. always returns command status <code>true</code>.
+ * @param <C> the context class of the command
  * @author elansma
  */
 public class TrueCommand<C> implements Command<C> {

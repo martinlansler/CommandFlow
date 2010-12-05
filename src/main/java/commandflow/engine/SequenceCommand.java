@@ -15,32 +15,16 @@
  */
 package commandflow.engine;
 
-import java.util.Collection;
-
 import commandflow.Command;
 
 /**
  * A command that executes a list of commands in sequence.
  * <p>
  * The command status is the status of the last command in the sequence, the empty sequence of commands always return <code>false</code>.
- * @param <C> the context class of the commands
+ * @param <C> the context class of the command
  * @author elansma
  */
-public class SequenceCommand<C> extends CompositeCommand<C> {
-    /**
-     * Creates a new empty sequence command
-     */
-    public SequenceCommand() {
-        super();
-    }
-
-    /**
-     * Creates a new sequence command
-     * @param commands the command collection to execute
-     */
-    public SequenceCommand(Collection<Command<C>> commands) {
-        super(commands);
-    }
+public class SequenceCommand<C> extends AbstractCompositeCommand<C> {
 
     /** {@inheritDoc} */
     @Override

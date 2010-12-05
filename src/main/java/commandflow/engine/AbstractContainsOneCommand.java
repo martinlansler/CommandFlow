@@ -16,24 +16,30 @@
 package commandflow.engine;
 
 import commandflow.Command;
+import commandflow.builder.CommandInitialization;
+import commandflow.builder.InitializationException;
+import commandflow.builder.WrongNumberCommandsException;
 
 /**
- * Suitable base class for commands that wrap a single command.
- * @param <C> the context class of the commands
+ * Suitable base class for composite commands that only contain one command, i.e. wrap another command.
+ * <p>
+ * The implementation uses {@link CommandInitialization} to ensure only a single command is contained.
+ * @param <C> the context class of the command
  * @author elansma
  */
-public abstract class WrappingCommand<C> implements Command<C> {
+public abstract class AbstractContainsOneCommand<C> extends AbstractCompositeCommand<C> implements CommandInitialization {
     /** The wrapped command */
     private Command<C> command;
 
-    /**
-     * Creates a new wrapping command
-     * @param command the wrapped command
-     */
-    public WrappingCommand(Command<C> command) {
-        this.command = command;
+    /** {@inheritDoc} */
+    @Override
+    public void init() throws InitializationException {
+        if (getCommands().size() != 1) {
+            throw new WrongNumberCommandsException(1, 1, getCommands().size());
+        }
+        this.command = getCommands().get(0);
     }
-    
+
     /**
      * Gets the wrapped command
      * @return the wrapped command
@@ -41,7 +47,7 @@ public abstract class WrappingCommand<C> implements Command<C> {
     public Command<C> getWrappedCommand() {
         return command;
     }
-    
+
     /**
      * Executes the wrapped command
      * @param context the command context

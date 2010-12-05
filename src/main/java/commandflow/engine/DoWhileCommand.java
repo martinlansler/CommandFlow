@@ -15,30 +15,22 @@
  */
 package commandflow.engine;
 
-import commandflow.Command;
-
 /**
  * A do-while command.
  * <p>
  * The command executes its wrapped command in a loop while command status of the condition command is <code>true</code>, the condition is checked
  * after each loop execution. The command status of this command is the last returned command status of the wrapped command.
- * @param <C> the context class of the commands
+ * @param <C> the context class of the command
  * @author elansma
  */
-public class DoWhileCommand<C> extends ConditionalWrappingCommand<C> {
-    /**
-     * @param command
-     */
-    public DoWhileCommand(Command<C> condition, Command<C> command) {
-        super(condition, command);
-    }
-
+public class DoWhileCommand<C> extends AbstractConditionalCommand<C> {
+    /** {@inheritDoc} */
     @Override
     public boolean execute(C context) {
         boolean status = false;
         do {
-            status = executeWrappedCommand(context);
-        } while (executeConditionCommand(context));
+            status = executeAction(context);
+        } while (executeCondition(context));
         return status;
     }
 }

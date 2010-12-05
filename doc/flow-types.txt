@@ -27,13 +27,13 @@ Short-circuit and (executes until first false command status):
 	<command name="doStuffIfTrue"/>
 </if>
 
-2-branch conditional execution:
-<if name="testCondition">
-  <command name="doStuffIfTrue"/>
-</if>
-<else>
+2-branch conditional execution (if-else):
+<or>
+  <if name="testCondition">
+    <command name="doStuffIfTrue"/>
+  </if>
   <command name="doStuffIfFalse"/>  
-</else>
+</or>
 
 n-branch conditional execution:
 <or>

@@ -15,7 +15,6 @@
  */
 package commandflow.engine;
 
-import commandflow.Command;
 
 /**
  * A while command.
@@ -23,22 +22,16 @@ import commandflow.Command;
  * The command executes its wrapped command in a loop while command status of the condition command is <code>true</code>, the condition is checked
  * prior to loop execution. The command status of this command is the last returned command status of the wrapped command, <code>false</code> if the
  * loop never executes.
- * @param <C> the context class of the commands
+ * @param <C> the context class of the command
  * @author elansma
  */
-public class WhileCommand<C> extends ConditionalWrappingCommand<C> {
-    /**
-     * @param command
-     */
-    public WhileCommand(Command<C> condition, Command<C> command) {
-        super(condition, command);
-    }
+public class WhileCommand<C> extends AbstractConditionalCommand<C> {
 
     @Override
     public boolean execute(C context) {
         boolean status = false;
-        while (executeConditionCommand(context)) {
-            status = executeWrappedCommand(context);
+        while (executeCondition(context)) {
+            status = executeAction(context);
         }
         return status;
     }

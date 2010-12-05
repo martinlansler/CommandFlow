@@ -13,20 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine;
-
+package commandflow.builder;
 
 /**
- * Negation command.
- * <p>
- * The command negates the command status of the command it wraps.
- * @param <C> the context class of the command
+ * A checked exception used to indicate that a command is invalid.
  * @author elansma
  */
-public class NotCommand<C> extends AbstractContainsOneCommand<C> {
-    @Override
-    public boolean execute(C context) {
-        return !executeWrappedCommand(context);
+public class InvalidCommandException extends InitializationException {
+    /** Serial id */
+    private static final long serialVersionUID = -6445344906888825249L;
+
+    public InvalidCommandException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public InvalidCommandException(String message) {
+        super(message);
+    }
+
+    public InvalidCommandException(Throwable cause) {
+        super(cause);
     }
 
 }

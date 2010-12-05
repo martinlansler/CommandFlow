@@ -13,48 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine;
+package commandflow.builder;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import commandflow.Command;
 
 /**
- * A super class for all commands that contain an ordered collection of other commands.
- * @param <C> the context class of the commands
+ * Interface for a command that can contain other commands.
+ * <p>
+ * This interface is only of relevance form a builder perspective when wiring commands together, each composite command in turn is a normal
+ * {@link Command} from an execution point-of-view (it's to emphasize this distinction that this interface does not inherit from {@link Command}).
+ * Commands that need to validate the added command can implement the {@link CommandInitialization} interface.
+ * @param <C> the context class of the command
  * @author elansma
  */
-public abstract class CompositeCommand<C> implements Command<C> {
-
-    /** The collection of commands */
-    private List<Command<C>> commands;
-    
+public interface CompositeCommand<C> {
     /**
-     * Creates a new empty composite command.
-     */
-    public CompositeCommand() {
-        commands = new ArrayList<Command<C>>();
-    }
-
-    /**
-     * Creates a new composite command from a collection of commands.
-     * @param commands the connection of commands, the order of the commands is determined by the iterator returned by the collection.
-     */
-    public CompositeCommand(Collection<Command<C>> commands) {
-        this.commands = new ArrayList<Command<C>>(commands);
-    }
-    
-    /**
-     * Adds a command
+     * Adds a new contained command
      * @param command the command to add
-     * @return this command to allow command chaining
+     * @return this command (for method chaining)
      */
-    public CompositeCommand<C> add(Command<C> command) {
-        commands.add(command);
-        return this;
-    }
+    CompositeCommand<C> add(Command<C> command);
+
+    /**
+     * Adds all the commands in the given collection
+     * @param commands the connection of commands, the order of the commands is determined by the iterator returned by the collection.
+     * @return this command (for method chaining)
+     */
+    CompositeCommand<C> addAll(Collection<Command<C>> commands);
 
     /**
      * Gets the commands contained in this command.
@@ -62,7 +50,5 @@ public abstract class CompositeCommand<C> implements Command<C> {
      * This method may be used to directly manipulate the contained commands.
      * @return the list of contained commands
      */
-    public List<Command<C>> getCommands() {
-        return commands;
-    }
+    List<Command<C>> getCommands();
 }

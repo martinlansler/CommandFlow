@@ -15,8 +15,6 @@
  */
 package commandflow.engine;
 
-import java.util.Collection;
-
 import commandflow.Command;
 
 /**
@@ -24,25 +22,11 @@ import commandflow.Command;
  * <p>
  * The command executes its contained commands until one command returns <code>false</code>. If all commands return <code>true</code> the command
  * status is also <code>true</code>. An empty and command always returns <code>false</code>.
- * @param <C> the context class of the commands
+ * @param <C> the context class of the command
  * @author elansma
  */
-public class AndCommand<C> extends CompositeCommand<C> {
-    /**
-     * Creates a new empty and command
-     */
-    public AndCommand() {
-        super();
-    }
-
-    /**
-     * Creates a new and command
-     * @param commands the command collection to execute
-     */
-    public AndCommand(Collection<Command<C>> commands) {
-        super(commands);
-    }
-
+public class AndCommand<C> extends AbstractCompositeCommand<C> {
+    /** {@inheritDoc} */
     @Override
     public boolean execute(C context) {
         for (Command<C> command : getCommands()) {

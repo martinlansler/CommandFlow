@@ -15,27 +15,37 @@
  */
 package commandflow.engine;
 
+import java.util.Collection;
+import java.util.List;
+
 import commandflow.Command;
+import commandflow.builder.CompositeCommand;
 
 /**
- * A short-circuit or command.
- * <p>
- * The command executes its contained commands in a sequence until the first command to return <code>true</code>. If no commands return
- * <code>true</code> the command status is <code>false</code>. An empty or command always returns <code>false</code>.
+ * Suitable base class for composite commands.
  * @param <C> the context class of the command
  * @author elansma
  */
-public class OrCommand<C> extends AbstractCompositeCommand<C> {
+public abstract class AbstractCompositeCommand<C> implements Command<C>, CompositeCommand<C> {
+    /** The collection of commands */
+    private List<Command<C>> commands;
 
     /** {@inheritDoc} */
     @Override
-    public boolean execute(C context) {
-        for (Command<C> command : getCommands()) {
-            if (command.execute(context)) {
-                return true;
-            }
-        }
-        return false;
+    public AbstractCompositeCommand<C> add(Command<C> command) {
+        commands.add(command);
+        return this;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public CompositeCommand<C> addAll(Collection<Command<C>> commands) {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Command<C>> getCommands() {
+        return commands;
+    }
 }

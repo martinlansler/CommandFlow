@@ -18,9 +18,9 @@ package commandflow.engine;
 /**
  * A command that executes a list of commands in parallel.
  * @author elansma
- * @param <C> the context class of the commands
+ * @param <C> the context class of the command
  */
-public class ParallelCommand<C> extends CompositeCommand<C> {
+public class ParallelCommand<C> extends AbstractCompositeCommand<C> {
 
     @Override
     public boolean execute(C context) {

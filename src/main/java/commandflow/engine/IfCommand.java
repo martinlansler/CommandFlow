@@ -15,31 +15,20 @@
  */
 package commandflow.engine;
 
-import commandflow.Command;
-
 /**
  * Conditional if command.
  * <p>
  * If the supplied condition command returns command status <code>true</code> the conditional command is executed. If the condition command returns
  * <code>true</code> the command status is also <code>true</code>, otherwise <code>false</code>.
- * @param <C> the context class of the commands
+ * @param <C> the context class of the command
  * @author elansma
  */
-public class IfCommand<C> extends ConditionalWrappingCommand<C> {
-    /**
-     * Creates a new if command
-     * @param condition the condition command
-     * @param command the conditional command
-     */
-    public IfCommand(Command<C> condition, Command<C> command) {
-        super(condition, command);
-    }
-
+public class IfCommand<C> extends AbstractConditionalCommand<C> {
     /** {@inheritDoc} */
     @Override
     public boolean execute(C context) {
-        if (executeConditionCommand(context)) {
-            executeWrappedCommand(context);
+        if (executeCondition(context)) {
+            executeAction(context);
             return true;
         }
         return false;
