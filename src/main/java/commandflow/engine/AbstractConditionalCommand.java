@@ -44,7 +44,7 @@ public abstract class AbstractConditionalCommand<C> extends AbstractCompositeCom
             throw new WrongNumberCommandsException(2, 2, getCommands().size());
         }
         this.condition = getCommands().get(0);
-        this.condition = getCommands().get(1);
+        this.action = getCommands().get(1);
     }
 
     /**

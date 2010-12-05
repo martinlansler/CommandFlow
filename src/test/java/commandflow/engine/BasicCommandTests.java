@@ -22,6 +22,8 @@ import static junit.framework.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 import commandflow.Command;
+import commandflow.builder.CommandInitialization;
+import commandflow.builder.InitializationException;
 
 /**
  * Tests of the basic commands.
@@ -30,6 +32,17 @@ import commandflow.Command;
 public class BasicCommandTests {
     private boolean ex(Command<?> command) {
         return command.execute(null);
+    }
+
+    private Command<?> init(Command<?> command) {
+        if (command instanceof CommandInitialization) {
+            try {
+                ((CommandInitialization) command).init();
+            } catch (InitializationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return command;
     }
 
     private <T> CounterCommand<T> newCounter() {
@@ -57,7 +70,8 @@ public class BasicCommandTests {
         int[] ranges = { 0, 1, 10, 1000 };
         for (int i : ranges) {
             times = i;
-            assertFalse(ex(new DoWhileCommand<Object>(new ConditionCommand<Object>().answerFalseAfter(times), (counter = newCounter()).alwaysFalse())));
+            assertFalse(ex(init((new DoWhileCommand<Object>().add(new ConditionCommand<Object>().answerFalseAfter(times))
+                    .add((counter = newCounter()).alwaysFalse())))));
             assertEquals(times + 1, counter.getCount());
         }
     }
@@ -75,29 +89,17 @@ public class BasicCommandTests {
     @Test
     public void ifCommand() {
         CounterCommand<Object> counter;
-        ex(new IfCommand<Object>(FalseCommand.getInstance(), counter = newCounter()));
+        ex(init(new IfCommand<Object>().add(FalseCommand.getInstance()).add(counter = newCounter())));
         assertEquals(0, counter.getCount());
         //
-        ex(new IfCommand<Object>(TrueCommand.getInstance(), counter = newCounter()));
+        ex(init(new IfCommand<Object>().add(TrueCommand.getInstance()).add(counter = newCounter())));
         assertEquals(1, counter.getCount());
     }
 
     @Test
-    public void ifElseCommand() {
-        CounterCommand<Object> ifCounter, elseCounter;
-        ex(new IfElseCommand<Object>(FalseCommand.getInstance(), ifCounter = newCounter(), elseCounter = newCounter()));
-        assertEquals(0, ifCounter.getCount());
-        assertEquals(1, elseCounter.getCount());
-        //
-        ex(new IfElseCommand<Object>(TrueCommand.getInstance(), ifCounter = newCounter(), elseCounter = newCounter()));
-        assertEquals(1, ifCounter.getCount());
-        assertEquals(0, elseCounter.getCount());
-    }
-
-    @Test
     public void notCommand() {
-        assertFalse(ex(new NotCommand<Object>(TrueCommand.getInstance())));
-        assertTrue(ex(new NotCommand<Object>(FalseCommand.getInstance())));
+        assertFalse(ex(init(new NotCommand<Object>().add(TrueCommand.getInstance()))));
+        assertTrue(ex(init(new NotCommand<Object>().add(FalseCommand.getInstance()))));
     }
 
     @Test
@@ -117,7 +119,7 @@ public class BasicCommandTests {
             //
             or = new OrCommand<Object>().add((counter1 = newCounter()).always(c[n++])).add((counter2 = newCounter()).always(c[n++]));
             n = 0;
-            assertEquals(a[n++], (Boolean) ex(or));
+            assertEquals(a[n++], (Boolean) ex(init(or)));
             assertEquals(a[n++], (Long) counter1.getCount());
             assertEquals(a[n++], (Long) counter2.getCount());
         }
@@ -140,7 +142,7 @@ public class BasicCommandTests {
             //
             seq = new SequenceCommand<Object>().add((counter1 = newCounter()).always(c[n++])).add((counter2 = newCounter()).always(c[n++]));
             n = 0;
-            assertEquals(a[n++], (Boolean) ex(seq));
+            assertEquals(a[n++], (Boolean) ex(init(seq)));
             assertEquals(a[n++], (Long) counter1.getCount());
             assertEquals(a[n++], (Long) counter2.getCount());
         }
@@ -154,8 +156,10 @@ public class BasicCommandTests {
         for (int j = 0; j < asserts.length; j++) {
             boolean lastCmd = (Boolean) cases[j][0];
             int times = (Integer) cases[j][1];
-            assertEquals(asserts[j],
-                    ex(new WhileCommand<Object>(new ConditionCommand<Object>().answerFalseAfter(times), (counter = newCounter()).always(lastCmd))));
+            assertEquals(
+                    asserts[j],
+                    ex(init(new WhileCommand<Object>().add(new ConditionCommand<Object>().answerFalseAfter(times)).add(
+                            (counter = newCounter()).always(lastCmd)))));
             assertEquals(times, counter.getCount());
         }
     }

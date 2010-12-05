@@ -15,6 +15,7 @@
  */
 package commandflow.engine;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,7 +29,7 @@ import commandflow.builder.CompositeCommand;
  */
 public abstract class AbstractCompositeCommand<C> implements Command<C>, CompositeCommand<C> {
     /** The collection of commands */
-    private List<Command<C>> commands;
+    private List<Command<C>> commands = new ArrayList<Command<C>>();
 
     /** {@inheritDoc} */
     @Override
