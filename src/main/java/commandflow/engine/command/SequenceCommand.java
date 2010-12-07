@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine;
+package commandflow.engine.command;
 
+import commandflow.Command;
 
 /**
- * A while command.
+ * A command that executes a list of commands in sequence.
  * <p>
- * The command executes its wrapped command in a loop while command status of the condition command is <code>true</code>, the condition is checked
- * prior to loop execution. The command status of this command is the last returned command status of the wrapped command, <code>false</code> if the
- * loop never executes.
+ * The command status is the status of the last command in the sequence, the empty sequence of commands always return <code>false</code>.
  * @param <C> the context class of the command
  * @author elansma
  */
-public class WhileCommand<C> extends AbstractConditionalCommand<C> {
+public class SequenceCommand<C> extends AbstractCompositeCommand<C> {
 
+    /** {@inheritDoc} */
     @Override
     public boolean execute(C context) {
         boolean status = false;
-        while (executeCondition(context)) {
-            status = executeAction(context);
+        for (Command<C> command : getCommands()) {
+            status = command.execute(context);
         }
         return status;
     }
+
 }

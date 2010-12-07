@@ -13,26 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.builder;
+package commandflow.engine;
 
 /**
- * A checked builder level exception used to indicate that a command is invalid.
+ * Unchecked exception used as subclass of all exception raised from the engine and command manager.
+ * <p>
+ * No assumptions are made of the types of exception that user created commands that raise during execution, this exception is simply used by the
+ * engine implementation itself.
  * @author elansma
  */
-public class InvalidCommandException extends InitializationException {
+public class CommandException extends RuntimeException {
     /** Serial id */
-    private static final long serialVersionUID = -6445344906888825249L;
+    private static final long serialVersionUID = -6632328115517415046L;
 
-    public InvalidCommandException(String message, Throwable cause) {
+    public CommandException() {
+        super();
+    }
+
+    public CommandException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public InvalidCommandException(String message) {
+    public CommandException(String message) {
         super(message);
     }
 
-    public InvalidCommandException(Throwable cause) {
+    public CommandException(Throwable cause) {
         super(cause);
     }
-
 }

@@ -15,10 +15,18 @@
  */
 package commandflow.builder.xml;
 
+import commandflow.builder.CommandBuilder;
+import commandflow.engine.CommandManager;
+
 /**
  * A builder that creates commands from one or more XML files.
  * @author elansma
  */
-public class XmlCommandBuilder {
-    // TODO
+public class XmlCommandBuilder<C> implements CommandBuilder<C> {
+
+    /** {@inheritDoc} */
+    @Override
+    public void build(CommandManager<C> manager) {
+    }
+
 }

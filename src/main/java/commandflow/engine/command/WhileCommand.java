@@ -13,31 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine;
+package commandflow.engine.command;
 
-import commandflow.Command;
 
 /**
- * True command, i.e. always returns command status <code>true</code>.
+ * A while command.
+ * <p>
+ * The command executes its wrapped command in a loop while command status of the condition command is <code>true</code>, the condition is checked
+ * prior to loop execution. The command status of this command is the last returned command status of the wrapped command, <code>false</code> if the
+ * loop never executes.
  * @param <C> the context class of the command
  * @author elansma
  */
-public class TrueCommand<C> implements Command<C> {
-    /** A cached instance of the true command */
-    private static Command<Object> TRUE = new TrueCommand<Object>();
-
-    /**
-     * Gets a cached instance of the true command
-     * @param <C> the context class of the commands
-     * @return a cached true command
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> Command<T> getInstance() {
-        return (Command<T>) TRUE;
-    }
+public class WhileCommand<C> extends AbstractConditionalCommand<C> {
 
     @Override
     public boolean execute(C context) {
-        return true;
+        boolean status = false;
+        while (executeCondition(context)) {
+            status = executeAction(context);
+        }
+        return status;
     }
 }

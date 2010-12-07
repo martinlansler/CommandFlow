@@ -13,27 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine;
-
-import commandflow.Command;
+package commandflow.engine.command;
 
 /**
- * A command that executes a list of commands in sequence.
+ * Conditional if command.
  * <p>
- * The command status is the status of the last command in the sequence, the empty sequence of commands always return <code>false</code>.
+ * If the supplied condition command returns command status <code>true</code> the conditional command is executed. If the condition command returns
+ * <code>true</code> the command status is also <code>true</code>, otherwise <code>false</code>.
  * @param <C> the context class of the command
  * @author elansma
  */
-public class SequenceCommand<C> extends AbstractCompositeCommand<C> {
-
+public class IfCommand<C> extends AbstractConditionalCommand<C> {
     /** {@inheritDoc} */
     @Override
     public boolean execute(C context) {
-        boolean status = false;
-        for (Command<C> command : getCommands()) {
-            status = command.execute(context);
+        if (executeCondition(context)) {
+            executeAction(context);
+            return true;
         }
-        return status;
+        return false;
     }
 
 }

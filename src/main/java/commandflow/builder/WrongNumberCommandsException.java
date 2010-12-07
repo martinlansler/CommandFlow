@@ -16,7 +16,8 @@
 package commandflow.builder;
 
 /**
- * Used to indicate that the number of contained commands in a {@link CompositeCommand} is not as expected or required by the command.
+ * Builder level exception used to indicate that the number of contained commands in a {@link CompositeCommand} is not as expected or required by the
+ * command.
  * @author elansma
  */
 public class WrongNumberCommandsException extends InvalidCommandException {

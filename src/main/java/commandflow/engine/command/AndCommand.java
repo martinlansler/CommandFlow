@@ -13,19 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine;
+package commandflow.engine.command;
+
+import commandflow.Command;
 
 /**
- * A command that executes a list of commands in parallel.
- * @author elansma
+ * A short-circuit and command.
+ * <p>
+ * The command executes its contained commands until one command returns <code>false</code>. If all commands return <code>true</code> the command
+ * status is also <code>true</code>. An empty and command always returns <code>false</code>.
  * @param <C> the context class of the command
+ * @author elansma
  */
-public class ParallelCommand<C> extends AbstractCompositeCommand<C> {
-
+public class AndCommand<C> extends AbstractCompositeCommand<C> {
+    /** {@inheritDoc} */
     @Override
     public boolean execute(C context) {
-        // TODO Auto-generated method stub
-        return false;
+        for (Command<C> command : getCommands()) {
+            if (!command.execute(context)) {
+                return false;
+            }
+        }
+        return getCommands().isEmpty() ? false : true;
     }
 
 }

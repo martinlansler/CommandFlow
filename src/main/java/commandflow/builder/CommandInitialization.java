@@ -24,7 +24,7 @@ package commandflow.builder;
  */
 public interface CommandInitialization {
     /**
-     * Guaranteed to be called exactly once to request this command to perform any needed validation or initialization actions prior to usage.
+     * Called exactly once to request this command instance to perform any needed validation or initialization actions prior to usage.
      * <p>
      * A command that needs to validate some internal state or other pre-conditions are suggested to raise a {@link InitializationException} exception
      * if the validation fails, however any other runtime exception can be used as well.

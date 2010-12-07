@@ -13,28 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine;
+package commandflow.engine.command;
 
 import commandflow.Command;
 
 /**
- * A short-circuit and command.
- * <p>
- * The command executes its contained commands until one command returns <code>false</code>. If all commands return <code>true</code> the command
- * status is also <code>true</code>. An empty and command always returns <code>false</code>.
+ * False command, i.e. always returns command status <code>false</code>.
  * @param <C> the context class of the command
  * @author elansma
  */
-public class AndCommand<C> extends AbstractCompositeCommand<C> {
-    /** {@inheritDoc} */
-    @Override
-    public boolean execute(C context) {
-        for (Command<C> command : getCommands()) {
-            if (!command.execute(context)) {
-                return false;
-            }
-        }
-        return getCommands().isEmpty() ? false : true;
+public class FalseCommand<C> implements Command<C> {
+    /** A cached instance of the false command */
+    private static Command<Object> FALSE = new FalseCommand<Object>();
+
+    /**
+     * Gets a cached instance of the false command
+     * @param <C> the context class of the commands
+     * @return a cached false command
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Command<T> getInstance() {
+        return (Command<T>) FALSE;
     }
 
+    @Override
+    public boolean execute(C context) {
+        return false;
+    }
 }

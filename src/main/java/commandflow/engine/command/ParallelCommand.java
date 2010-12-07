@@ -13,31 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine;
-
-import commandflow.Command;
+package commandflow.engine.command;
 
 /**
- * False command, i.e. always returns command status <code>false</code>.
- * @param <C> the context class of the command
+ * A command that executes a list of commands in parallel.
  * @author elansma
+ * @param <C> the context class of the command
  */
-public class FalseCommand<C> implements Command<C> {
-    /** A cached instance of the false command */
-    private static Command<Object> FALSE = new FalseCommand<Object>();
-
-    /**
-     * Gets a cached instance of the false command
-     * @param <C> the context class of the commands
-     * @return a cached false command
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> Command<T> getInstance() {
-        return (Command<T>) FALSE;
-    }
+public class ParallelCommand<C> extends AbstractCompositeCommand<C> {
 
     @Override
     public boolean execute(C context) {
+        // TODO Auto-generated method stub
         return false;
     }
+
 }

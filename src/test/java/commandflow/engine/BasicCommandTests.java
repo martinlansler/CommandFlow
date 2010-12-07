@@ -24,6 +24,14 @@ import org.testng.annotations.Test;
 import commandflow.Command;
 import commandflow.builder.CommandInitialization;
 import commandflow.builder.InitializationException;
+import commandflow.engine.command.DoWhileCommand;
+import commandflow.engine.command.FalseCommand;
+import commandflow.engine.command.IfCommand;
+import commandflow.engine.command.NotCommand;
+import commandflow.engine.command.OrCommand;
+import commandflow.engine.command.SequenceCommand;
+import commandflow.engine.command.TrueCommand;
+import commandflow.engine.command.WhileCommand;
 
 /**
  * Tests of the basic commands.

@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine;
-
+package commandflow.engine.command;
 
 /**
- * Negation command.
+ * A do-while command.
  * <p>
- * The command negates the command status of the command it wraps.
+ * The command executes its wrapped command in a loop while command status of the condition command is <code>true</code>, the condition is checked
+ * after each loop execution. The command status of this command is the last returned command status of the wrapped command.
  * @param <C> the context class of the command
  * @author elansma
  */
-public class NotCommand<C> extends AbstractContainsOneCommand<C> {
+public class DoWhileCommand<C> extends AbstractConditionalCommand<C> {
+    /** {@inheritDoc} */
     @Override
     public boolean execute(C context) {
-        return !executeWrappedCommand(context);
+        boolean status = false;
+        do {
+            status = executeAction(context);
+        } while (executeCondition(context));
+        return status;
     }
-
 }
