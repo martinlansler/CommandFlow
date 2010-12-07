@@ -40,7 +40,7 @@ public abstract class AbstractCompositeCommand<C> implements Command<C>, Composi
 
     /** {@inheritDoc} */
     @Override
-    public CompositeCommand<C> addAll(Collection<Command<C>> commands) {
+    public AbstractCompositeCommand<C> addAll(Collection<Command<C>> commands) {
         return null;
     }
 

@@ -23,7 +23,8 @@ import commandflow.builder.WrongNumberCommandsException;
 /**
  * Suitable base class for composite commands that only contain one command, i.e. wrap another command.
  * <p>
- * The implementation uses {@link CommandInitialization} to ensure only a single command is contained.
+ * The implementation uses {@link CommandInitialization} to ensure only a single command is contained. If more than one commands are added they will
+ * be automatically coerced into a single {@link SequenceCommand}.
  * @param <C> the context class of the command
  * @author elansma
  */
@@ -34,8 +35,14 @@ public abstract class AbstractContainsOneCommand<C> extends AbstractCompositeCom
     /** {@inheritDoc} */
     @Override
     public void init() throws InitializationException {
-        if (getCommands().size() != 1) {
-            throw new WrongNumberCommandsException(1, 1, getCommands().size());
+        if (getCommands().size() == 0) {
+            throw new WrongNumberCommandsException(getClass().getSimpleName(), 1, Integer.MAX_VALUE, getCommands().size());
+        }
+        if (getCommands().size() > 1) {
+            // coerce multiple actions into a sequence
+            Command<C> sequence = new SequenceCommand<C>().addAll(getCommands());
+            getCommands().clear();
+            add(sequence);
         }
         this.command = getCommands().get(0);
     }

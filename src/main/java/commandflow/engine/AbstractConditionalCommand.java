@@ -15,6 +15,9 @@
  */
 package commandflow.engine;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import commandflow.Command;
 import commandflow.builder.CommandInitialization;
 import commandflow.builder.InitializationException;
@@ -25,7 +28,8 @@ import commandflow.builder.WrongNumberCommandsException;
  * <p>
  * The condition command is the first command to be added, the action command the second.
  * <p>
- * The implementation uses {@link CommandInitialization} to ensure that both a condition and action command have been set.
+ * The implementation uses {@link CommandInitialization} to ensure that both a condition and action command have been set. If more than one action
+ * commands are added they will be automatically coerced into a single {@link SequenceCommand}.
  * @param <C> the context class of the command
  * @author elansma
  */
@@ -40,8 +44,16 @@ public abstract class AbstractConditionalCommand<C> extends AbstractCompositeCom
     /** {@inheritDoc} */
     @Override
     public void init() throws InitializationException {
-        if (getCommands().size() != 2) {
-            throw new WrongNumberCommandsException(2, 2, getCommands().size());
+        if (getCommands().size() < 2) {
+            throw new WrongNumberCommandsException(getClass().getSimpleName(), 2, Integer.MAX_VALUE, getCommands().size());
+        }
+        if (getCommands().size() > 2) {
+            // coerce multiple actions into a sequence
+            List<Command<C>> tmp = new ArrayList<Command<C>>();
+            tmp.add(getCommands().get(0));
+            tmp.add(new SequenceCommand<C>().addAll(getCommands().subList(1, getCommands().size())));
+            getCommands().clear();
+            getCommands().addAll(tmp);
         }
         this.condition = getCommands().get(0);
         this.action = getCommands().get(1);

@@ -75,3 +75,9 @@ Parallel and execution (i.e not sequential and not short-circuit):
 	<command name="2"/>
 </and>
 
+Decorators
+<command name="bla" log="debug" transaction="true" finally="cleanupCommand">
+  <command/>
+  <command/>  
+</command>
+

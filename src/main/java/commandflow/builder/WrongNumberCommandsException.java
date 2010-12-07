@@ -29,7 +29,7 @@ public class WrongNumberCommandsException extends InvalidCommandException {
      * @param maxNumber the maximum number of excepted contained commands
      * @param actualNumber the actual number of excepted contained commands
      */
-    public WrongNumberCommandsException(int minNumber, int maxNumber, int actualNumber) {
-        super(String.format("Excepted between %s to %s contained commands, is %s", minNumber, maxNumber, actualNumber));
+    public WrongNumberCommandsException(String commandName, int minNumber, int maxNumber, int actualNumber) {
+        super(String.format("Command %s expects between %s to %s contained commands, is %s", commandName, minNumber, maxNumber, actualNumber));
     }
 }
