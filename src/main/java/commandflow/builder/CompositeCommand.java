@@ -17,6 +17,7 @@ package commandflow.builder;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.RandomAccess;
 
 import commandflow.Command;
 
@@ -48,6 +49,8 @@ public interface CompositeCommand<C> {
      * Gets the commands contained in this command.
      * <p>
      * This method may be used to directly manipulate the contained commands.
+     * <p>
+     * The returned list should be suitable for index based operations, i.e. implement {@link RandomAccess}.
      * @return the list of contained commands
      */
     List<Command<C>> getCommands();

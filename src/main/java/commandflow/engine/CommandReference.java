@@ -30,28 +30,29 @@ import commandflow.Command;
  */
 public class CommandReference<C> implements Command<C> {
     /** Name of command this reference refers to */
-    private String name;
+    private String referenceName;
     /** If <code>true</code> this is a dynamic reference */
     private boolean isDynamic;
+
     /** The command catalog */
     private CommandCatalog<C> catalog;
 
     /**
      * Creates a new static command reference
-     * @param name the name of the command to refer to
+     * @param referenceName the referenceName of the command to refer to
      */
-    public CommandReference(String name) {
-        this.name = name;
+    public CommandReference(String referenceName) {
+        this.referenceName = referenceName;
         this.isDynamic = false;
     }
 
     /**
      * Creates a new static command reference
-     * @param name the name of the command to refer to
+     * @param referenceName the referenceName of the command to refer to
      * @param isDynamic <code>true</code> if the reference is dynamic
      */
     public CommandReference(String name, boolean isDynamic) {
-        this.name = name;
+        this.referenceName = name;
         this.isDynamic = isDynamic;
     }
 
@@ -61,24 +62,38 @@ public class CommandReference<C> implements Command<C> {
      * The catalog is needed to resolve references.
      * @param catalog the command catalog
      */
-    public void setCommandcatalog(CommandCatalog<C> catalog) {
+    public void setCommandCatalog(CommandCatalog<C> catalog) {
         this.catalog = catalog;
+    }
+
+    /**
+     * @return <code>true</code> if the reference is dynamic
+     */
+    public boolean isDynamic() {
+        return isDynamic;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean execute(C context) {
         if (!isDynamic) {
-            throw new CommandException(String.format("Cannot execute static command reference '%s'", name));
+            throw new CommandException(String.format("Cannot execute static command reference '%s'", referenceName));
         }
         if (catalog == null) {
-            throw new CommandException(String.format("No command catalog is set for dynamic command reference '%s'", name));
+            throw new CommandException(String.format("No command catalog is set for dynamic command reference '%s'", referenceName));
         }
-        Command<C> command = catalog.getCommand(name);
+        Command<C> command = catalog.getCommand(referenceName);
         if (command == null) {
             throw new CommandException(String.format("Cannot resolve dynamic command reference '%s'"));
         }
         return command.execute(context);
+    }
+
+    /**
+     * @return the name of the command this reference refers to
+     */
+    public String getReferenceName() {
+        return referenceName;
     }
 
 }

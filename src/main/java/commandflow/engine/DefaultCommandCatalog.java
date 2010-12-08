@@ -15,12 +15,18 @@
  */
 package commandflow.engine;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.RandomAccess;
 import java.util.Set;
 
 import commandflow.Command;
 import commandflow.builder.CommandBuilder;
 import commandflow.builder.CommandInitialization;
+import commandflow.builder.CompositeCommand;
+import commandflow.builder.InitializationException;
 import commandflow.builder.xml.XmlCommandBuilder;
 
 /**
@@ -37,8 +43,14 @@ import commandflow.builder.xml.XmlCommandBuilder;
  * @author elansma
  */
 public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
-    private Set<CommandBuilder<C>> builders;
-    private Map<String, Command<C>> commands;
+    /** The added command builders */
+    private Set<CommandBuilder<C>> builders = new HashSet<CommandBuilder<C>>();
+
+    /** The current set of named commands */
+    private Map<String, Command<C>> commands = new HashMap<String, Command<C>>();
+
+    /** The set of initialized commands, used to ensure commands are only initialized once */
+    private Set<Command<C>> initializedCommands = new HashSet<Command<C>>();
 
     /** {@inheritDoc} */
     @Override
@@ -60,19 +72,110 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
     @Override
     public CommandCatalog<C> clean() {
         commands.clear();
+        initializedCommands.clear();
         return this;
     }
 
     /** {@inheritDoc} */
     @Override
     public synchronized CommandCatalog<C> link() {
-        return null;
+        for (Map.Entry<String, Command<C>> entry : commands.entrySet()) {
+            Command<C> command = entry.getValue();
+            entry.setValue(link(command));
+        }
+        return this;
+    }
+
+    /**
+     * Links a command if it is a static reference
+     * @param command the command to link
+     * @return the linked command or the unchanged command
+     */
+    private Command<C> link(Command<C> command) {
+        if (isStaticCommandRef(command)) {
+            CommandReference<C> reference = (CommandReference<C>) command;
+            return getExistingCommand(reference.getReferenceName());
+        } else if (command instanceof CompositeCommand) {
+            @SuppressWarnings("unchecked")
+            CompositeCommand<C> compositeCommand = (CompositeCommand<C>) command;
+            link(compositeCommand.getCommands());
+        }
+        return command;
+    }
+
+    /**
+     * Links a list of commands
+     * @param commands the commands to link
+     */
+    private void link(List<Command<C>> commands) {
+        if (!(commands instanceof RandomAccess)) {
+            throw new CommandException("Lists used for composite commands should implement RandomAccess");
+        }
+        for (int i = 0; i < commands.size(); i++) {
+            commands.set(i, link(commands.get(i)));
+        }
+    }
+
+    /**
+     * Gets an existing command.
+     * <p>
+     * If the command does not exist an exception is raised.
+     * @param name the command name
+     * @return
+     */
+    private Command<C> getExistingCommand(String name) {
+        Command<C> command = getCommand(name);
+        if (command == null) {
+            throw new CommandException(String.format("Required command '%s' does not exist", name));
+        }
+        return command;
+    }
+
+    /**
+     * Checks if the given command is a static {@link CommandReference}
+     * @param command the command to check
+     * @return <code>true</code> if the command is a static reference
+     */
+    private boolean isStaticCommandRef(Command<C> command) {
+        if (command instanceof CommandReference<?>) {
+            CommandReference<C> ref = (CommandReference<C>) command;
+            return !ref.isDynamic();
+        }
+        return false;
     }
 
     /** {@inheritDoc} */
     @Override
     public synchronized CommandCatalog<C> init() {
-        return null;
+        // TODO prevent re-init of already init:ed command...
+        for (Command<C> command : commands.values()) {
+            init(command);
+        }
+        return this;
+    }
+
+    /**
+     * Initializes the needed command if it implements {@link CommandInitialization}.
+     * <p>
+     * If the command is a {@link CompositeCommand} the contained commands are recursively initialized as well.
+     * @param command the command to initialize
+     */
+    private void init(Command<C> command) {
+        if (command instanceof CommandInitialization && !initializedCommands.contains(command)) {
+            try {
+                ((CommandInitialization) command).init();
+            } catch (InitializationException e) {
+                throw new CommandException(String.format("Error initializing command '%s'", command), e);
+            }
+            initializedCommands.add(command);
+        }
+        if (command instanceof CompositeCommand) {
+            @SuppressWarnings("unchecked")
+            List<Command<C>> containedCommands = ((CompositeCommand<C>) command).getCommands();
+            for (Command<C> containedCommand : containedCommands) {
+                init(containedCommand);
+            }
+        }
     }
 
     /** {@inheritDoc} */
@@ -81,7 +184,7 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
         build();
         link();
         init();
-        return null;
+        return this;
     }
 
     /** {@inheritDoc} */

@@ -61,14 +61,16 @@ public interface CommandCatalog<C> {
 
     /**
      * Links all static command references, i.e. replaces all references to these with the actual command.
+     * <p>
+     * This method should be invoked after {@link #build()}, it can be invoked before or after {@link #init()} .
      * @return the command catalog (for method chaining)
      */
     CommandCatalog<C> link();
 
     /**
-     * Initializes all command that need initialization.
+     * Initializes all command that need initialization, command instances that are already initialized will not be re-initialized.
      * <p>
-     * Command instances that are already initialized will not be re-initialized.
+     * This method should be invoked after {@link #build()}, it can be invoked before or after {@link #init()} .
      * @see CommandInitialization
      * @return the command catalog (for method chaining)
      */
@@ -93,7 +95,7 @@ public interface CommandCatalog<C> {
      * This method is typically invoked from the {@link CommandBuilder} but it can also be directly invoked to add a command programatically. If a
      * previous command already exists with this name it will be replaced with the new command.
      * <p>
-     * If a new command is added after {@link #link()} and {@link #init()} has been invoked these methods need to be reinvoked to ensure that the
+     * If a new command is added after {@link #link()} and {@link #init()} have been invoked these methods need to be reinvoked to ensure that the
      * command is linked and initialized.
      * @param name the command name
      * @param command the command
