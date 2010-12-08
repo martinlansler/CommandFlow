@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.builder.xml;
+package commandflow.engine;
 
-import commandflow.builder.CommandBuilder;
-import commandflow.engine.CommandCatalog;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
-/**
- * A builder that creates commands from one or more XML files.
- * @author elansma
- */
-public class XmlCommandBuilder<C> implements CommandBuilder<C> {
-
-    /** {@inheritDoc} */
-    @Override
-    public void build(CommandCatalog<C> catalog) {
+public class EvalScript {
+    public static void main(String[] args) throws Exception {
+        // create a script engine manager
+        ScriptEngineManager factory = new ScriptEngineManager();
+        // create a JavaScript engine
+        ScriptEngine engine = factory.getEngineByName("JavaScript");
+        String name = "Martin";
+        engine.put("name", name);
+        // evaluate JavaScript code from String
+        System.out.println(engine.eval("name.length > 2 || name.length < 10"));
     }
-
 }

@@ -24,7 +24,7 @@ import commandflow.Command;
  * execution. Using a static reference is better performance-wise, however a dynamic reference adds a level of indirection and hence a flexibility in
  * allowing references to be changed during runtime.
  * <p>
- * Before the command reference can be executed the associated {@link DefaultCommandManager} must be set. Note: A static reference can never be
+ * Before the command reference can be executed the associated {@link DefaultCommandcatalog} must be set. Note: A static reference can never be
  * executed, attempting this raises are runtime exception.
  * @author elansma
  */
@@ -33,8 +33,8 @@ public class CommandReference<C> implements Command<C> {
     private String name;
     /** If <code>true</code> this is a dynamic reference */
     private boolean isDynamic;
-    /** The command manager */
-    private CommandManager<C> manager;
+    /** The command catalog */
+    private CommandCatalog<C> catalog;
 
     /**
      * Creates a new static command reference
@@ -56,13 +56,13 @@ public class CommandReference<C> implements Command<C> {
     }
 
     /**
-     * Sets the command manager.
+     * Sets the command catalog.
      * <p>
-     * The manager is needed to resolve references.
-     * @param manager the command manager
+     * The catalog is needed to resolve references.
+     * @param catalog the command catalog
      */
-    public void setCommandManager(CommandManager<C> manager) {
-        this.manager = manager;
+    public void setCommandcatalog(CommandCatalog<C> catalog) {
+        this.catalog = catalog;
     }
 
     /** {@inheritDoc} */
@@ -71,10 +71,10 @@ public class CommandReference<C> implements Command<C> {
         if (!isDynamic) {
             throw new CommandException(String.format("Cannot execute static command reference '%s'", name));
         }
-        if (manager == null) {
-            throw new CommandException(String.format("No command manager is set for dynamic command reference '%s'", name));
+        if (catalog == null) {
+            throw new CommandException(String.format("No command catalog is set for dynamic command reference '%s'", name));
         }
-        Command<C> command = manager.getCommand(name);
+        Command<C> command = catalog.getCommand(name);
         if (command == null) {
             throw new CommandException(String.format("Cannot resolve dynamic command reference '%s'"));
         }

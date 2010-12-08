@@ -24,32 +24,32 @@ import commandflow.builder.CommandInitialization;
 import commandflow.builder.xml.XmlCommandBuilder;
 
 /**
- * The default command manager.
+ * The default command catalog.
  * <p>
- * The manager is responsible for holding a named set of commands. The manager works in distinct phases:
+ * The catalog is responsible for holding a named set of commands. The catalog works in distinct phases:
  * <ol>
- * <li>Building phase - using a builder such as {@link XmlCommandBuilder} commands are created and added to the manager</li>
+ * <li>Building phase - using a builder such as {@link XmlCommandBuilder} commands are created and added to the catalog</li>
  * <li>Initialization phase - commands needing initialization (see {@link CommandInitialization}) are initialized</li>
- * <li>Linking phase - all {@link CommandReference} instances are resolved by the manager, if any cannot be resolved an error is raised</li>
- * <li>Execution phase - the manager is used to fetch named commands for execution</li>
+ * <li>Linking phase - all {@link CommandReference} instances are resolved by the catalog, if any cannot be resolved an error is raised</li>
+ * <li>Execution phase - the catalog is used to fetch named commands for execution</li>
  * </ol>
  * @param <C> the context class of the command
  * @author elansma
  */
-public class DefaultCommandManager<C> implements CommandManager<C> {
+public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
     private Set<CommandBuilder<C>> builders;
     private Map<String, Command<C>> commands;
 
     /** {@inheritDoc} */
     @Override
-    public synchronized CommandManager<C> addCommandBuilder(CommandBuilder<C> builder) {
+    public synchronized CommandCatalog<C> addCommandBuilder(CommandBuilder<C> builder) {
         builders.add(builder);
         return this;
     }
 
     /** {@inheritDoc} */
     @Override
-    public synchronized CommandManager<C> build() {
+    public synchronized CommandCatalog<C> build() {
         for (CommandBuilder<C> builder : builders) {
             builder.build(this);
         }
@@ -58,26 +58,26 @@ public class DefaultCommandManager<C> implements CommandManager<C> {
 
     /** {@inheritDoc} */
     @Override
-    public CommandManager<C> clean() {
+    public CommandCatalog<C> clean() {
         commands.clear();
         return this;
     }
 
     /** {@inheritDoc} */
     @Override
-    public synchronized CommandManager<C> link() {
+    public synchronized CommandCatalog<C> link() {
         return null;
     }
 
     /** {@inheritDoc} */
     @Override
-    public synchronized CommandManager<C> init() {
+    public synchronized CommandCatalog<C> init() {
         return null;
     }
 
     /** {@inheritDoc} */
     @Override
-    public synchronized CommandManager<C> make() {
+    public synchronized CommandCatalog<C> make() {
         build();
         link();
         init();
@@ -86,7 +86,7 @@ public class DefaultCommandManager<C> implements CommandManager<C> {
 
     /** {@inheritDoc} */
     @Override
-    public synchronized CommandManager<C> addCommand(String name, Command<C> command) {
+    public synchronized CommandCatalog<C> addCommand(String name, Command<C> command) {
         commands.put(name, command);
         return this;
     }

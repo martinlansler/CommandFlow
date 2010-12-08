@@ -21,61 +21,61 @@ import commandflow.builder.CommandInitialization;
 import commandflow.builder.xml.XmlCommandBuilder;
 
 /**
- * The command manager interface.
+ * The command catalog interface.
  * <p>
- * The manager is responsible for holding a named set of commands. The manager works in distinct phases:
+ * The catalog is responsible for holding a named set of commands. The catalog works in distinct phases:
  * <ol>
- * <li>Building phase - using a builder such as {@link XmlCommandBuilder} commands are created and added to the manager</li>
- * <li>Linking phase - all static {@link CommandReference} instances are resolved by the manager, if any cannot be resolved an error is raised</li>
+ * <li>Building phase - using a builder such as {@link XmlCommandBuilder} commands are created and added to the catalog</li>
+ * <li>Linking phase - all static {@link CommandReference} instances are resolved by the catalog, if any cannot be resolved an error is raised</li>
  * <li>Initialization phase - commands needing initialization (see {@link CommandInitialization}) are initialized</li>
- * <li>Execution phase - the manager is used to fetch named commands for execution</li>
+ * <li>Execution phase - the catalog is used to fetch named commands for execution</li>
  * </ol>
  * <p>
  * Implementation of this interface are required to be thread-safe.
  * @param <C> the context class of the command
  * @author elansma
  */
-public interface CommandManager<C> {
+public interface CommandCatalog<C> {
     /**
      * Adds a command builder.
      * <p>
      * If a new command builder is added after {@link #build()} method has been invoked the {@link #build()} method needs to be reinvoked.
      * @param builder the command builder
-     * @return the command manager (for method chaining)
+     * @return the command catalog (for method chaining)
      */
-    CommandManager<C> addCommandBuilder(CommandBuilder<C> builder);
+    CommandCatalog<C> addCommandBuilder(CommandBuilder<C> builder);
 
     /**
      * Builds all commands by invoking the added command builders.
      * <p>
      * If build was previously invoked all existing commands will first be removed by invoking {@link #clean()}.
-     * @return the command manager (for method chaining)
+     * @return the command catalog (for method chaining)
      */
-    CommandManager<C> build();
+    CommandCatalog<C> build();
 
     /**
-     * Removes all existing commands held by this manager.
-     * @return the command manager (for method chaining)
+     * Removes all existing commands held by this catalog.
+     * @return the command catalog (for method chaining)
      */
-    CommandManager<C> clean();
+    CommandCatalog<C> clean();
 
     /**
      * Links all static command references, i.e. replaces all references to these with the actual command.
-     * @return the command manager (for method chaining)
+     * @return the command catalog (for method chaining)
      */
-    CommandManager<C> link();
+    CommandCatalog<C> link();
 
     /**
      * Initializes all command that need initialization.
      * <p>
      * Command instances that are already initialized will not be re-initialized.
      * @see CommandInitialization
-     * @return the command manager (for method chaining)
+     * @return the command catalog (for method chaining)
      */
-    CommandManager<C> init();
+    CommandCatalog<C> init();
 
     /**
-     * Convenience method that builds, links and initializes the manager.
+     * Convenience method that builds, links and initializes the catalog.
      * <p>
      * This method is equivalent to invoking (expect that the whole operation is synchronized):
      * <ol>
@@ -83,9 +83,9 @@ public interface CommandManager<C> {
      * <li>{@link #link()}</li>
      * <li>{@link #init()}</li>
      * </ol>
-     * @return the command manager (for method chaining)
+     * @return the command catalog (for method chaining)
      */
-    CommandManager<C> make();
+    CommandCatalog<C> make();
 
     /**
      * Adds a named command.
@@ -97,9 +97,9 @@ public interface CommandManager<C> {
      * command is linked and initialized.
      * @param name the command name
      * @param command the command
-     * @return the command manager (for method chaining)
+     * @return the command catalog (for method chaining)
      */
-    CommandManager<C> addCommand(String name, Command<C> command);
+    CommandCatalog<C> addCommand(String name, Command<C> command);
 
     /**
      * Gets a named command

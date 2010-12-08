@@ -16,7 +16,7 @@
 package commandflow.engine;
 
 /**
- * Unchecked exception used as subclass of all exception raised from the engine and command manager.
+ * Unchecked exception used as subclass of all exception raised from the engine and command catalog.
  * <p>
  * No assumptions are made of the types of exception that user created commands that raise during execution, this exception is simply used by the
  * engine implementation itself.
