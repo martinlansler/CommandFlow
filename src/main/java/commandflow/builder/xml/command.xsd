@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://commandflow/command" xmlns:tns="http://commandflow/command" elementFormDefault="qualified">
+
+    <complexType name="commandsType">
+      <choice minOccurs="0" maxOccurs="unbounded">
+        <element name="command" type="tns:commandType">
+          <annotation>
+            <documentation>Simple non-composite command. Either attribute 'class', 'value' or 'ref' must be specified.  'name' attribute is optional, it must however be specified if the command is on top-level.</documentation>
+          </annotation></element>
+        <element name="not" type="tns:compositeCommandType">
+          <annotation>
+            <documentation>Negation command, it negates the command status of the wrapped command(s). If it wraps more than one command, the wrapped commands are assumed to be a sequence command.</documentation>
+          </annotation></element>
+        <element name="or" type="tns:compositeCommandType">
+          <annotation>
+            <documentation>Short-circuit or, executes until first true command status.</documentation>
+          </annotation></element>
+        <element name="and" type="tns:compositeCommandType">
+          <annotation>
+            <documentation>Short-circuit and, executes until first false command status.</documentation>
+          </annotation></element>
+      </choice>
+    </complexType>
+    
+    <element name="commands" type="tns:commandsType"></element>
+
+    <complexType name="commandType">
+      <attribute name="name" type="string" use="optional"></attribute>
+      <attribute name="class" type="string" use="optional"></attribute>
+      <attribute name="value" type="string" use="optional"></attribute>
+      <attribute name="ref" type="string" use="optional"></attribute>
+      <anyAttribute/>
+    </complexType>
+
+    <complexType name="compositeCommandType">
+      <complexContent>
+        <extension base="tns:commandsType">
+          <attribute name="name" type="string" use="optional"></attribute>
+        </extension>
+      </complexContent>
+    </complexType>
+
+</schema>

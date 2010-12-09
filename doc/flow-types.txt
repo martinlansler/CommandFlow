@@ -2,28 +2,28 @@ Flow types
 ----------
 
 Sequential execution:
-<command name="doStuff1"/>
-<command name="doStuff2"/>
+<command ref="doStuff2"/>
+<command ref="doStuff2"/>
 
 Command status negation:
 <not>
-	<command name="1"/>
+	<command ref="1"/>
 </not>	
 
 Short-circuit or (executes until first true command status):
 <or>
-	<command name="1"/>
-	<command name="2"/>
+	<command ref="1"/>
+	<command ref="2"/>
 </or>	
 
 Short-circuit and (executes until first false command status):
 <and>
-	<command name="1"/>
-	<command name="2"/>
+	<command ref="1"/>
+	<command ref="2"/>
 </and>
 
 1-branch conditional execution:
-<if name="testCondition">
+<if name="test" ref="testCondition" >
 	<command name="doStuffIfTrue"/>
 </if>
 
@@ -32,7 +32,7 @@ Short-circuit and (executes until first false command status):
   <if name="testCondition">
     <command name="doStuffIfTrue"/>
   </if>
-  <command name="doStuffIfFalse"/>  
+  <command ref="doStuffIfFalse"/>  
 </or>
 
 n-branch conditional execution:

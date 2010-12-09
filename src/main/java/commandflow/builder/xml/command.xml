@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commands xmlns="http://commandflow/command" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://commandflow/command command.xsd ">
+
+  <!-- Named command with class definition -->
+  <command name="trueCommand" class="commandflow.engine.command.TrueCommand" />
+
+  <!-- Unnamed command reference to 'trueCommand' -->
+  <command ref="trueCommand" />
+
+  <!-- Named command with EL (default javascript) calculated value (context available as 'context' variable) -->
+  <command name="elCommand" value="${1 > 2}" />
+
+  <!-- Decorated reference to 'command2' -->
+  <command name="refELCommand" ref="elCommand" />
+
+  <!-- Negation of 'trueCommand' -->
+  <not name="falseCommand">
+    <command ref="trueCommand" />
+  </not>
+
+  <!-- Short-circuit or command -->
+  <or>
+    <command value="${false}" />
+    <not>
+      <command value="${false}" />
+    </not>
+  </or>
+  
+  <!-- Short-circuit and command -->
+  <and>
+    <command value="${true}" />
+    <not>
+      <command value="${false}" />
+    </not>
+  </and>
+
+</commands>
