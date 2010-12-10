@@ -1,43 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://commandflow/command" xmlns:tns="http://commandflow/command" elementFormDefault="qualified">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://commandflow/command" xmlns:tns="http://commandflow/command"
+  elementFormDefault="qualified">
 
     <complexType name="commandsType">
       <choice minOccurs="0" maxOccurs="unbounded">
         <element name="command" type="tns:commandType">
           <annotation>
-            <documentation>Simple non-composite command. Either attribute 'class', 'value' or 'ref' must be specified.  'name' attribute is optional, it must however be specified if the command is on top-level.</documentation>
-          </annotation></element>
+            <documentation>
+              Simple non-composite command. Either attribute 'class', 'value' or 'ref' must be specified. 'name' attribute is optional, it must
+              however be specified if the command is on top-level.
+            </documentation>
+          </annotation>
+        </element>
+        <element name="sequence" type="tns:compositeCommandType"></element>
         <element name="not" type="tns:compositeCommandType">
           <annotation>
-            <documentation>Negation command, it negates the command status of the wrapped command(s). If it wraps more than one command, the wrapped commands are assumed to be a sequence command.</documentation>
-          </annotation></element>
+            <documentation>
+              Negation command, it negates the command status of the wrapped command(s). If it wraps more than one command, the wrapped commands are
+              assumed to be a sequence command.
+            </documentation>
+          </annotation>
+        </element>
         <element name="or" type="tns:compositeCommandType">
           <annotation>
             <documentation>Short-circuit or, executes until first true command status.</documentation>
-          </annotation></element>
+          </annotation>
+        </element>
         <element name="and" type="tns:compositeCommandType">
           <annotation>
             <documentation>Short-circuit and, executes until first false command status.</documentation>
-          </annotation></element>
+          </annotation>
+        </element>
+        <element name="if" type="tns:conditionalType">
+          <annotation>
+            <documentation>
+              Conditional (1-branch) if command. Command body is evaluated if condition ('class', 'ref' or 'value') is true.
+            </documentation>
+          </annotation>
+        </element>
+        <element name="while" type="tns:conditionalType">
+          <annotation>
+            <documentation>
+              Conditional loop command. Command body is evaluated in a loop while condition ('class', 'ref' or 'value') is true.
+            </documentation>
+          </annotation>
+        </element>
+        <element name="doWhile" type="tns:conditionalType">
+          <annotation>
+            <documentation>
+              Conditional loop command with condition evaluated after loop. Command body is evaluated in a loop, after each iteration the condition
+              ('class', 'ref' or 'value') is evaluated and if false execution is stopped.
+            </documentation>
+          </annotation>
+        </element>
+        <element name="parallel" type="tns:compositeCommandType"></element>
       </choice>
     </complexType>
     
-    <element name="commands" type="tns:commandsType"></element>
+    <element name="commands" type="tns:commandsType"/>
 
     <complexType name="commandType">
-      <attribute name="name" type="string" use="optional"></attribute>
-      <attribute name="class" type="string" use="optional"></attribute>
-      <attribute name="value" type="string" use="optional"></attribute>
-      <attribute name="ref" type="string" use="optional"></attribute>
-      <anyAttribute/>
+        <attributeGroup ref="tns:commonCommandAttributes"/>
+        <anyAttribute/>
     </complexType>
 
     <complexType name="compositeCommandType">
       <complexContent>
         <extension base="tns:commandsType">
-          <attribute name="name" type="string" use="optional"></attribute>
+          <attribute name="name" type="string" use="optional"/>
         </extension>
       </complexContent>
     </complexType>
 
+    <complexType name="conditionalType">
+      <complexContent>
+        <extension base="tns:commandsType">
+          <attributeGroup ref="tns:commonCommandAttributes"/>
+          <anyAttribute/>
+        </extension>
+      </complexContent>
+    </complexType>
+
+    <attributeGroup name="commonCommandAttributes">
+      <attribute name="name" type="string" use="optional"/>
+      <attribute name="class" type="string" use="optional"/>
+      <attribute name="value" type="string" use="optional"/>
+      <attribute name="ref" type="string" use="optional"/>
+    </attributeGroup>
 </schema>

@@ -7,11 +7,16 @@
   <!-- Unnamed command reference to 'trueCommand' -->
   <command ref="trueCommand" />
 
-  <!-- Named command with EL (default javascript) calculated value (context available as 'context' variable) -->
+  <!-- Named command with EL, context available as 'context' variable in EL -->
   <command name="elCommand" value="${1 > 2}" />
 
-  <!-- Decorated reference to 'command2' -->
-  <command name="refELCommand" ref="elCommand" />
+  <!-- A sequential sequence of commands -->
+  <sequence name="sequenceCommand">
+    <command ref="elCommand" />
+    <command ref="trueCmmand" />
+  </sequence>
+
+  <!-- NOTE: The 'sequence' command can usually be omitted as it is the default for a command sequence, expect on top-level -->
 
   <!-- Negation of 'trueCommand' -->
   <not name="falseCommand">
@@ -19,19 +24,60 @@
   </not>
 
   <!-- Short-circuit or command -->
-  <or>
+  <or name="orCommand">
     <command value="${false}" />
     <not>
       <command value="${false}" />
     </not>
   </or>
-  
+
   <!-- Short-circuit and command -->
-  <and>
+  <and name="andCommand">
     <command value="${true}" />
     <not>
       <command value="${false}" />
     </not>
   </and>
+
+  <!-- Conditional command, condition defined by command class -->
+  <if name="ifCommand" class="commandflow.engine.command.TrueCommand">
+    <command ref="andCommand" />
+  </if>
+
+  <!-- Conditional command, condition defined by command reference -->
+  <if name="ifCommand2" ref="trueCommand">
+    <command ref="andCommand" />
+  </if>
+
+  <!-- Conditional command, condition defined by EL -->
+  <if name="ifCommand2" value="${new java.util.Date().getHours() > 18}">
+    <command ref="andCommand" />
+  </if>
+
+  <!-- Conditional while loop execution, condition defined by command class -->
+  <while name="whileCommand" class="commandflow.engine.command.TrueCommand">
+    <command name="andCommand" />
+  </while>
+
+  <!-- Conditional while loop execution, condition defined by command reference -->
+  <while name="whileCommand" ref="trueCommand">
+    <command name="andCommand" />
+  </while>
+
+  <!-- Conditional while loop execution, condition defined by EL -->
+  <while name="whileCommand" value="${!context.isInitailized}">
+    <or>
+      <command ref="doInitialization" />
+      <command ref="sleep" />
+    </or>
+  </while>
+
+  <!-- NOTE: A 'doWhile' command also exist where the condition is evaluated after the loop -->
+
+  <!-- Parallel execution of a collection of commands (execution via an associated Executor service) -->
+  <parallel>
+    <command ref="emailConfimation" />
+    <command ref="sendOrder" />
+  </parallel>
 
 </commands>

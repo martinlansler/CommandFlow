@@ -27,6 +27,8 @@ public class EvalScript {
         String name = "Martin";
         engine.put("name", name);
         // evaluate JavaScript code from String
-        System.out.println(engine.eval("name.length > 2 || name.length < 10"));
+        // System.out.println(engine.eval("name.length > 2 || name.length < 10"));
+        System.out.println(engine.eval("var i = 0; "));
+        // Date d = new Date().
     }
 }

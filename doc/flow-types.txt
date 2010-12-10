@@ -54,9 +54,9 @@ Conditional while loop execution:
 </while>
 
 Conditional do-while loop execution:
-<do-while name="testCondition">
+<doWhile name="testCondition">
   <command name="doStuff"/>
-</do-while>
+</doWhile>
 
 Parallel execution:
 <parallel name="testCondition">
