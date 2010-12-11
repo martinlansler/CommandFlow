@@ -16,7 +16,7 @@
 package commandflow.builder.xml;
 
 import commandflow.builder.CommandBuilder;
-import commandflow.engine.CommandCatalog;
+import commandflow.catalog.CommandCatalog;
 
 /**
  * A builder that creates commands from one or more XML files.

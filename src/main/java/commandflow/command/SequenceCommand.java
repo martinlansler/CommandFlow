@@ -13,31 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine.command;
+package commandflow.command;
 
 import commandflow.Command;
 
 /**
- * True command, i.e. always returns command status <code>true</code>.
+ * A command that executes a list of commands in sequence.
+ * <p>
+ * The command status is the status of the last command in the sequence, the empty sequence of commands always return <code>false</code>.
  * @param <C> the context class of the command
  * @author elansma
  */
-public class TrueCommand<C> implements Command<C> {
-    /** A cached instance of the true command */
-    private static Command<Object> TRUE = new TrueCommand<Object>();
+public class SequenceCommand<C> extends AbstractCompositeCommand<C> {
 
-    /**
-     * Gets a cached instance of the true command
-     * @param <C> the context class of the commands
-     * @return a cached true command
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> Command<T> getInstance() {
-        return (Command<T>) TRUE;
-    }
-
+    /** {@inheritDoc} */
     @Override
     public boolean execute(C context) {
-        return true;
+        boolean status = false;
+        for (Command<C> command : getCommands()) {
+            status = command.execute(context);
+        }
+        return status;
     }
+
 }

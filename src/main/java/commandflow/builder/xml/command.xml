@@ -2,7 +2,7 @@
 <commands xmlns="http://commandflow/command" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://commandflow/command command.xsd ">
 
   <!-- Named command with class definition -->
-  <command name="trueCommand" class="commandflow.engine.command.TrueCommand" />
+  <command name="trueCommand" class="commandflow.command.TrueCommand" />
 
   <!-- Unnamed command reference to 'trueCommand' -->
   <command ref="trueCommand" />
@@ -40,7 +40,7 @@
   </and>
 
   <!-- Conditional command, condition defined by command class -->
-  <if name="ifCommand" class="commandflow.engine.command.TrueCommand">
+  <if name="ifCommand" class="commandflow.command.TrueCommand">
     <command ref="andCommand" />
   </if>
 
@@ -55,7 +55,7 @@
   </if>
 
   <!-- Conditional while loop execution, condition defined by command class -->
-  <while name="whileCommand" class="commandflow.engine.command.TrueCommand">
+  <while name="whileCommand" class="commandflow.command.TrueCommand">
     <command name="andCommand" />
   </while>
 
@@ -79,5 +79,22 @@
     <command ref="emailConfimation" />
     <command ref="sendOrder" />
   </parallel>
+  
+    <!-- Parallel or command -->
+  <orParallel name="parallelOrCommand">
+    <command value="${false}" />
+    <not>
+      <command value="${false}" />
+    </not>
+  </orParallel>
+
+  <!-- Parallel and command -->
+  <andParallel name="parallelAndCommand">
+    <command value="${true}" />
+    <not>
+      <command value="${false}" />
+    </not>
+  </andParallel>
+  
 
 </commands>

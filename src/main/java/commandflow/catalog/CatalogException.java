@@ -13,32 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine;
+package commandflow.catalog;
 
 /**
- * Unchecked exception used as subclass of all exception raised from the engine and command catalog.
+ * Unchecked exception for all exception raised by the catalog.
  * <p>
- * No assumptions are made of the types of exception that user created commands that raise during execution, this exception is simply used by the
- * engine implementation itself.
+ * Note: This exception is only related to the catalog implementation itself and not to the runtime execution of commands handled by the catalog.
  * @author elansma
  */
-public class CommandException extends RuntimeException {
+public class CatalogException extends RuntimeException {
     /** Serial id */
     private static final long serialVersionUID = -6632328115517415046L;
 
-    public CommandException() {
+    public CatalogException() {
         super();
     }
 
-    public CommandException(String message, Throwable cause) {
+    public CatalogException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public CommandException(String message) {
+    public CatalogException(String message) {
         super(message);
     }
 
-    public CommandException(Throwable cause) {
+    public CatalogException(Throwable cause) {
         super(cause);
     }
 }

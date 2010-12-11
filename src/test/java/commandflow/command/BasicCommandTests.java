@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine;
+package commandflow.command;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -24,14 +24,14 @@ import org.testng.annotations.Test;
 import commandflow.Command;
 import commandflow.builder.CommandInitialization;
 import commandflow.builder.InitializationException;
-import commandflow.engine.command.DoWhileCommand;
-import commandflow.engine.command.FalseCommand;
-import commandflow.engine.command.IfCommand;
-import commandflow.engine.command.NotCommand;
-import commandflow.engine.command.OrCommand;
-import commandflow.engine.command.SequenceCommand;
-import commandflow.engine.command.TrueCommand;
-import commandflow.engine.command.WhileCommand;
+import commandflow.command.DoWhileCommand;
+import commandflow.command.FalseCommand;
+import commandflow.command.IfCommand;
+import commandflow.command.NotCommand;
+import commandflow.command.OrCommand;
+import commandflow.command.SequenceCommand;
+import commandflow.command.TrueCommand;
+import commandflow.command.WhileCommand;
 
 /**
  * Tests of the basic commands.

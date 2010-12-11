@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine;
+package commandflow.catalog;
 
 import commandflow.Command;
 
@@ -22,10 +22,10 @@ import commandflow.Command;
  * <p>
  * The reference can either be static or dynamic. A static reference is always resolved before command execution, a dynamic at the moment of
  * execution. Using a static reference is better performance-wise, however a dynamic reference adds a level of indirection and hence a flexibility in
- * allowing references to be changed during runtime.
+ * allowing reference target command to be changed during execution.
  * <p>
- * Before the command reference can be executed the associated {@link DefaultCommandcatalog} must be set. Note: A static reference can never be
- * executed, attempting this raises are runtime exception.
+ * Before the command reference can be executed the associated {@link CommandCatalog} must be set. Note: A static reference can never be executed,
+ * attempting this raises a runtime exception.
  * @author elansma
  */
 public class CommandReference<C> implements Command<C> {
@@ -77,14 +77,14 @@ public class CommandReference<C> implements Command<C> {
     @Override
     public boolean execute(C context) {
         if (!isDynamic) {
-            throw new CommandException(String.format("Cannot execute static command reference '%s'", referenceName));
+            throw new CatalogException(String.format("Cannot execute static command reference '%s'", referenceName));
         }
         if (catalog == null) {
-            throw new CommandException(String.format("No command catalog is set for dynamic command reference '%s'", referenceName));
+            throw new CatalogException(String.format("No command catalog is set for dynamic command reference '%s'", referenceName));
         }
         Command<C> command = catalog.getCommand(referenceName);
         if (command == null) {
-            throw new CommandException(String.format("Cannot resolve dynamic command reference '%s'"));
+            throw new CatalogException(String.format("Cannot resolve dynamic command reference '%s'"));
         }
         return command.execute(context);
     }

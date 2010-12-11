@@ -6,13 +6,18 @@
       <choice minOccurs="0" maxOccurs="unbounded">
         <element name="command" type="tns:commandType">
           <annotation>
-            <documentation>
-              Simple non-composite command. Either attribute 'class', 'value' or 'ref' must be specified. 'name' attribute is optional, it must
-              however be specified if the command is on top-level.
+            <documentation>Defines either a simple (non-composite) command or a reference to any other named  command . Either attribute 'class', 'value' or 'ref' must be specified. 'name' attribute is optional, it must
+however be specified if the command is on top-level.
+@see commandflow.
             </documentation>
           </annotation>
         </element>
-        <element name="sequence" type="tns:compositeCommandType"></element>
+        <element name="sequence" type="tns:compositeCommandType">
+          <annotation>
+            <documentation>Defines a sequence of commands executed in the order they are defined. This is the default command assumed for contained 
+commands within other commands, hence it can omitted except if defined on top-level. 
+@see commandflow.command.SequenceCommand</documentation>
+          </annotation></element>
         <element name="not" type="tns:compositeCommandType">
           <annotation>
             <documentation>
@@ -34,14 +39,18 @@
         <element name="if" type="tns:conditionalType">
           <annotation>
             <documentation>
-              Conditional (1-branch) if command. Command body is evaluated if condition ('class', 'ref' or 'value') is true.
+              Conditional (1-branch) if command. Command body is evaluated if the condition ('class', 'ref' or 'value') is true. If it wraps more than one command, the wrapped commands are
+              assumed to be a sequence command.
+
             </documentation>
           </annotation>
         </element>
         <element name="while" type="tns:conditionalType">
           <annotation>
             <documentation>
-              Conditional loop command. Command body is evaluated in a loop while condition ('class', 'ref' or 'value') is true.
+              Conditional loop command. Command body is evaluated in a loop while condition ('class', 'ref' or 'value') is true. If it wraps more than one command, the wrapped commands are
+              assumed to be a sequence command.
+
             </documentation>
           </annotation>
         </element>
@@ -49,11 +58,18 @@
           <annotation>
             <documentation>
               Conditional loop command with condition evaluated after loop. Command body is evaluated in a loop, after each iteration the condition
-              ('class', 'ref' or 'value') is evaluated and if false execution is stopped.
+              ('class', 'ref' or 'value') is evaluated and if false execution is stopped. If it wraps more than one command, the wrapped commands are
+              assumed to be a sequence command. 
+
             </documentation>
           </annotation>
         </element>
-        <element name="parallel" type="tns:compositeCommandType"></element>
+        <element name="parallel" type="tns:compositeCommandType">
+          <annotation>
+            <documentation>Parallel execution of a set of commands.</documentation>
+          </annotation></element>
+        <element name="orParallel" type="tns:compositeCommandType"></element>
+        <element name="andParallel" type="tns:compositeCommandType"></element>
       </choice>
     </complexType>
     
@@ -87,4 +103,5 @@
       <attribute name="value" type="string" use="optional"/>
       <attribute name="ref" type="string" use="optional"/>
     </attributeGroup>
+
 </schema>

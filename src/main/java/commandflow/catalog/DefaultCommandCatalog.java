@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine;
+package commandflow.catalog;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -109,7 +109,7 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
      */
     private void link(List<Command<C>> commands) {
         if (!(commands instanceof RandomAccess)) {
-            throw new CommandException("Lists used for composite commands should implement RandomAccess");
+            throw new CatalogException("Lists used for composite commands should implement RandomAccess");
         }
         for (int i = 0; i < commands.size(); i++) {
             commands.set(i, link(commands.get(i)));
@@ -126,7 +126,7 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
     private Command<C> getExistingCommand(String name) {
         Command<C> command = getCommand(name);
         if (command == null) {
-            throw new CommandException(String.format("Required command '%s' does not exist", name));
+            throw new CatalogException(String.format("Required command '%s' does not exist", name));
         }
         return command;
     }
@@ -147,7 +147,6 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
     /** {@inheritDoc} */
     @Override
     public synchronized CommandCatalog<C> init() {
-        // TODO prevent re-init of already init:ed command...
         for (Command<C> command : commands.values()) {
             init(command);
         }
@@ -165,7 +164,7 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
             try {
                 ((CommandInitialization) command).init();
             } catch (InitializationException e) {
-                throw new CommandException(String.format("Error initializing command '%s'", command), e);
+                throw new CatalogException(String.format("Error initializing command '%s'", command), e);
             }
             initializedCommands.add(command);
         }

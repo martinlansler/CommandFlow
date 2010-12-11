@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine;
+package commandflow.command;
 
 import java.util.concurrent.atomic.AtomicLong;
 

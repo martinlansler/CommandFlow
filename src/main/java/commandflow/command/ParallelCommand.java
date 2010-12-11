@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine.command;
+package commandflow.command;
 
 /**
- * A do-while command.
- * <p>
- * The command executes its wrapped command in a loop while command status of the condition command is <code>true</code>, the condition is checked
- * after each loop execution. The command status of this command is the last returned command status of the wrapped command.
- * @param <C> the context class of the command
+ * A command that executes a list of commands in parallel.
  * @author elansma
+ * @param <C> the context class of the command
  */
-public class DoWhileCommand<C> extends AbstractConditionalCommand<C> {
-    /** {@inheritDoc} */
+public class ParallelCommand<C> extends AbstractCompositeCommand<C> {
+
     @Override
     public boolean execute(C context) {
-        boolean status = false;
-        do {
-            status = executeAction(context);
-        } while (executeCondition(context));
-        return status;
+        // TODO Auto-generated method stub
+        return false;
     }
+
 }

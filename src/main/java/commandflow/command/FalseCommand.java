@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine.command;
+package commandflow.command;
 
 import commandflow.Command;
 

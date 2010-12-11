@@ -15,7 +15,7 @@
  */
 package commandflow.builder;
 
-import commandflow.engine.CommandCatalog;
+import commandflow.catalog.CommandCatalog;
 
 /**
  * Interface for a command builder.
@@ -23,15 +23,15 @@ import commandflow.engine.CommandCatalog;
  * The builder is responsible for creating instances of commands from some external representation and registering the commands with the supplied
  * {@link CommandCatalog}. The builder should generally not initialize or resolve command references, this is handled by the command catalog.
  * <p>
- * A builder can be reused to rebuild commands, for instance from a command catalog that is reloadable.
+ * A builder can/may be reused to rebuild commands, for instance from a command catalog that is reloadable.
  * @author elansma
  */
 public interface CommandBuilder<C> {
     /**
      * Called to request the builder to build its commands.
      * <p>
-     * This command may be called several times so the builder is expected to be able to clear/reset/reload internal state.
-     * @param catalog the command catalog that manages the created command
+     * This command may be called several times so the builder is expected to be able to clear internal state between invocations.
+     * @param catalog the command catalog that manages the created commands
      */
     void build(CommandCatalog<C> catalog);
 }

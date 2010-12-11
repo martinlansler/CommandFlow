@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.engine.command;
+package commandflow.command;
 
+import commandflow.Command;
 
 /**
- * A while command.
+ * A short-circuit and command.
  * <p>
- * The command executes its wrapped command in a loop while command status of the condition command is <code>true</code>, the condition is checked
- * prior to loop execution. The command status of this command is the last returned command status of the wrapped command, <code>false</code> if the
- * loop never executes.
+ * The command executes its contained commands until one command returns <code>false</code>. If all commands return <code>true</code> the command
+ * status is also <code>true</code>. An empty and command always returns <code>false</code>.
  * @param <C> the context class of the command
  * @author elansma
  */
-public class WhileCommand<C> extends AbstractConditionalCommand<C> {
-
+public class AndCommand<C> extends AbstractCompositeCommand<C> {
+    /** {@inheritDoc} */
     @Override
     public boolean execute(C context) {
-        boolean status = false;
-        while (executeCondition(context)) {
-            status = executeAction(context);
+        for (Command<C> command : getCommands()) {
+            if (!command.execute(context)) {
+                return false;
+            }
         }
-        return status;
+        return getCommands().isEmpty() ? false : true;
     }
+
 }
