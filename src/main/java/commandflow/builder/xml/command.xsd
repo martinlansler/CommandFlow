@@ -6,9 +6,10 @@
       <choice minOccurs="0" maxOccurs="unbounded">
         <element name="command" type="tns:commandType">
           <annotation>
-            <documentation>Defines either a simple (non-composite) command or a reference to any other named  command . Either attribute 'class', 'value' or 'ref' must be specified. 'name' attribute is optional, it must
-however be specified if the command is on top-level.
-@see commandflow.
+            <documentation>Defines either a simple (non-composite) command (via 'class' or 'value') or a reference ('ref') to any other named command . Only one of attributes 
+'class', 'value' or 'ref' must be specified. Attribute 'name' is optional, it must however be specified if the command is on top-level.
+@see commandflow.Command
+@see commandflow.catalog.CommandReference
             </documentation>
           </annotation>
         </element>
@@ -20,36 +21,40 @@ commands within other commands, hence it can omitted except if defined on top-le
           </annotation></element>
         <element name="not" type="tns:compositeCommandType">
           <annotation>
-            <documentation>
-              Negation command, it negates the command status of the wrapped command(s). If it wraps more than one command, the wrapped commands are
-              assumed to be a sequence command.
+            <documentation>Negation command, it negates the command status of the wrapped command(s). If it wraps more than one command, the wrapped commands are
+coerced into a sequence command.
+@see commandflow.command.NotCommand
             </documentation>
           </annotation>
         </element>
         <element name="or" type="tns:compositeCommandType">
           <annotation>
-            <documentation>Short-circuit or, executes until first true command status.</documentation>
+            <documentation>Short-circuit or command, it executes until the first command with command status true at which point it halts the execution. 
+Semantically it behaves as the java '||' operator.
+@see commandflow.command.OrCommand</documentation>
           </annotation>
         </element>
         <element name="and" type="tns:compositeCommandType">
           <annotation>
-            <documentation>Short-circuit and, executes until first false command status.</documentation>
+            <documentation>Short-circuit and command, it executes until the first command with command status false at which point it halts the execution.
+Semantically it behaves as the java '&&' operator.
+@see commandflow.command.OrCommand</documentation>
           </annotation>
         </element>
         <element name="if" type="tns:conditionalType">
           <annotation>
-            <documentation>
-              Conditional (1-branch) if command. Command body is evaluated if the condition ('class', 'ref' or 'value') is true. If it wraps more than one command, the wrapped commands are
-              assumed to be a sequence command.
+            <documentation>Conditional (1-branch) if command. Wrapped command(s) is evaluated if the condition ('class', 'ref' or 'value') is true. 
+If it wraps more than one command, the wrapped commands are coerced into a sequence command.
+@see commandflow.command.IfCommand
 
             </documentation>
           </annotation>
         </element>
         <element name="while" type="tns:conditionalType">
           <annotation>
-            <documentation>
-              Conditional loop command. Command body is evaluated in a loop while condition ('class', 'ref' or 'value') is true. If it wraps more than one command, the wrapped commands are
-              assumed to be a sequence command.
+            <documentation>Conditional while command. Wrapped command(s) are evaluated in a loop while condition ('class', 'ref' or 'value') is true. 
+If it wraps more than one command, the wrapped commands are coerced into a sequence command.
+@see commandflow.command.WhileCommand
 
             </documentation>
           </annotation>
