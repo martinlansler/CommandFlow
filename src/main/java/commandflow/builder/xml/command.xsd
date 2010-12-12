@@ -37,7 +37,7 @@ Semantically it behaves as the java '||' operator.
         <element name="and" type="tns:compositeCommandType">
           <annotation>
             <documentation>Short-circuit and command, it executes until the first command with command status false at which point it halts the execution.
-Semantically it behaves as the java '&&' operator.
+Semantically it behaves as the java '&amp;&amp;' operator.
 @see commandflow.command.OrCommand</documentation>
           </annotation>
         </element>
@@ -61,20 +61,29 @@ If it wraps more than one command, the wrapped commands are coerced into a seque
         </element>
         <element name="doWhile" type="tns:conditionalType">
           <annotation>
-            <documentation>
-              Conditional loop command with condition evaluated after loop. Command body is evaluated in a loop, after each iteration the condition
-              ('class', 'ref' or 'value') is evaluated and if false execution is stopped. If it wraps more than one command, the wrapped commands are
-              assumed to be a sequence command. 
-
+            <documentation>Conditional do-while command.  Wrapped command(s) are evaluated in a loop while condition ('class', 'ref' or 'value') which is evaluated after each loop is true. 
+If it wraps more than one command, the wrapped commands are coerced into a sequence command.
+@see commandflow.command.DoWhileCommand
             </documentation>
           </annotation>
         </element>
         <element name="parallel" type="tns:compositeCommandType">
           <annotation>
-            <documentation>Parallel execution of a set of commands.</documentation>
+            <documentation>Parallel execution of a set of commands.
+@see commandflow.command.ParallelCommand</documentation>
           </annotation></element>
-        <element name="orParallel" type="tns:compositeCommandType"></element>
-        <element name="andParallel" type="tns:compositeCommandType"></element>
+        <element name="parallelOr" type="tns:compositeCommandType">
+          <annotation>
+            <documentation>Parallel or execution of a set of commands. The first command to return command status true halts the termination and the execution of the 
+remaining commands is cancelled (on a best try basis).
+@see commandflow.command.ParallelOrCommand</documentation>
+          </annotation></element>
+        <element name="parallelAnd" type="tns:compositeCommandType">
+          <annotation>
+            <documentation>Parallel and execution of a set of commands. The first command to return command status false halts the termination and the execution of the 
+remaining commands is cancelled (on a best try basis).
+@see commandflow.command.ParallelAndCommand</documentation>
+          </annotation></element>
       </choice>
     </complexType>
     
@@ -103,9 +112,25 @@ If it wraps more than one command, the wrapped commands are coerced into a seque
     </complexType>
 
     <attributeGroup name="commonCommandAttributes">
-      <attribute name="name" type="string" use="optional"/>
-      <attribute name="class" type="string" use="optional"/>
-      <attribute name="value" type="string" use="optional"/>
+      <attribute name="name" type="string" use="optional">
+        <annotation>
+          <documentation>The optional name of the command. If the command is defined on top-level the name must be specified.</documentation>
+        </annotation></attribute>
+      <attribute name="class" type="string" use="optional">
+        <annotation>
+          <documentation>The fully qualified java class name of the command implementation, the class must implement the Command interface or be annotated 
+with the @Command annotation.
+If the attribute is specified neither 'value' nor 'ref' may be used.
+@see commandflow.Command
+@see commandflow.annotation.Command</documentation>
+        </annotation></attribute>
+      <attribute name="value" type="string" use="optional">
+        <annotation>
+          <documentation>An inline EL expression which must evaluate to a boolean value. By default Javascript is used, it is however possible to use other scripting langauges.
+If an EL expression is used it must be contained in ${expression}. It possible to use the static values 'true' or 'false' which will be parsed as a 
+boolean.
+If the attribute is specified neither 'class' nor 'ref' may be used.</documentation>
+        </annotation></attribute>
       <attribute name="ref" type="string" use="optional"/>
     </attributeGroup>
 

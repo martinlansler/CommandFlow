@@ -81,20 +81,15 @@
   </parallel>
   
     <!-- Parallel or command -->
-  <orParallel name="parallelOrCommand">
-    <command value="${false}" />
-    <not>
-      <command value="${false}" />
-    </not>
-  </orParallel>
+  <parallelOr name="parallelOrCommand">
+    <command ref="emailConfimation" />
+    <command ref="smsConfimation" />
+  </parallelOr>
 
   <!-- Parallel and command -->
-  <andParallel name="parallelAndCommand">
-    <command value="${true}" />
-    <not>
-      <command value="${false}" />
-    </not>
-  </andParallel>
+  <parallelAnd name="parallelAndCommand">
+    <command ref="emailConfimation" />
+    <command ref="sendOrder" />
+  </parallelAnd>
   
-
 </commands>
