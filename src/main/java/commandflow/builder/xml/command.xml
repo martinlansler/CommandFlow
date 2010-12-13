@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <commands xmlns="http://commandflow/command" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://commandflow/command command.xsd ">
 
+  <!-- Import a command XML file as a classpath resource (prefix 'file and http' can also be used). -->
+  <!-- Named commands in this file will override any of the imported commands with the same name. -->
+  <import resource="classpath:com/example/command.xml" />
+
   <!-- Named command with class definition -->
   <command name="trueCommand" class="commandflow.command.TrueCommand" />
 
-  <!-- Unnamed command reference to 'trueCommand' -->
+  <!-- Unnamed static command reference to 'trueCommand' -->
   <command ref="trueCommand" />
+
+  <!-- Unnamed dynamic command reference to 'trueCommand' -->
+  <command ref="trueCommand" dynamicRef="true" />
 
   <!-- Named command with EL, context available as 'context' variable in EL -->
   <command name="elCommand" value="${1 > 2}" />
 
   <!-- A sequential sequence of commands -->
+  <!-- NOTE: The 'sequence' tag can usually be omitted as it is the default for contained commands, except if defined as a top-level command -->
   <sequence name="sequenceCommand">
     <command ref="elCommand" />
     <command ref="trueCmmand" />
   </sequence>
-
-  <!-- NOTE: The 'sequence' command can usually be omitted as it is the default for a command sequence, expect on top-level -->
 
   <!-- Negation of 'trueCommand' -->
   <not name="falseCommand">
@@ -72,24 +78,30 @@
     </or>
   </while>
 
-  <!-- NOTE: A 'doWhile' command also exist where the condition is evaluated after the loop -->
+  <!-- Conditional do-while loop execution, condition defined by command reference -->
+  <doWhile name="whileCommand" ref="initializationDone">
+    <or>
+      <command ref="doInitialization" />
+      <command ref="sleep" />
+    </or>
+  </doWhile>
 
   <!-- Parallel execution of a collection of commands (execution via an associated Executor service) -->
   <parallel>
     <command ref="emailConfimation" />
     <command ref="sendOrder" />
   </parallel>
-  
-    <!-- Parallel or command -->
+
+  <!-- Parallel or command (not short-circuited, first true ends execution) -->
   <parallelOr name="parallelOrCommand">
     <command ref="emailConfimation" />
     <command ref="smsConfimation" />
   </parallelOr>
 
-  <!-- Parallel and command -->
+  <!-- Parallel and command (not short-circuited, first false ends execution) -->
   <parallelAnd name="parallelAndCommand">
     <command ref="emailConfimation" />
     <command ref="sendOrder" />
   </parallelAnd>
-  
+
 </commands>
