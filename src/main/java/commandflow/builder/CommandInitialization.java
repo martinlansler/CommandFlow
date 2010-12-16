@@ -26,9 +26,9 @@ public interface CommandInitialization {
     /**
      * Called exactly once to request this command instance to perform any needed validation or initialization actions prior to usage.
      * <p>
-     * A command that needs to validate some internal state or other pre-conditions are suggested to raise a {@link InitializationException} exception
-     * if the validation fails, however any other runtime exception can be used as well.
-     * @throws InitializationException if some error occurs during the initialization
+     * A command that needs to validate some internal state or other preconditions are suggested to raise a {@link InvalidCommandException} exception
+     * if the validation fails, however any other {@link BuilderException} subclass can be used as well.
+     * @throws BuilderException if some error occurs during the initialization
      */
-    void init() throws InitializationException;
+    void init() throws BuilderException;
 }

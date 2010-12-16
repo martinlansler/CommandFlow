@@ -23,10 +23,10 @@ import java.util.RandomAccess;
 import java.util.Set;
 
 import commandflow.Command;
+import commandflow.builder.BuilderException;
 import commandflow.builder.CommandBuilder;
 import commandflow.builder.CommandInitialization;
 import commandflow.builder.CompositeCommand;
-import commandflow.builder.InitializationException;
 import commandflow.builder.xml.XmlCommandBuilder;
 
 /**
@@ -61,7 +61,7 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
 
     /** {@inheritDoc} */
     @Override
-    public synchronized CommandCatalog<C> build() {
+    public synchronized CommandCatalog<C> build() throws BuilderException {
         for (CommandBuilder<C> builder : builders) {
             builder.build(this);
         }
@@ -146,7 +146,7 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
 
     /** {@inheritDoc} */
     @Override
-    public synchronized CommandCatalog<C> init() {
+    public synchronized CommandCatalog<C> init() throws BuilderException {
         for (Command<C> command : commands.values()) {
             init(command);
         }
@@ -158,14 +158,11 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
      * <p>
      * If the command is a {@link CompositeCommand} the contained commands are recursively initialized as well.
      * @param command the command to initialize
+     * @throws BuilderException if an initialization error occurs
      */
-    private void init(Command<C> command) {
+    private void init(Command<C> command) throws BuilderException {
         if (command instanceof CommandInitialization && !initializedCommands.contains(command)) {
-            try {
-                ((CommandInitialization) command).init();
-            } catch (InitializationException e) {
-                throw new CatalogException(String.format("Error initializing command '%s'", command), e);
-            }
+            ((CommandInitialization) command).init();
             initializedCommands.add(command);
         }
         if (command instanceof CompositeCommand) {
@@ -179,7 +176,7 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
 
     /** {@inheritDoc} */
     @Override
-    public synchronized CommandCatalog<C> make() {
+    public synchronized CommandCatalog<C> make() throws BuilderException {
         build();
         link();
         init();

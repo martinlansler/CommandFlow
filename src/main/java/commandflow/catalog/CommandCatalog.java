@@ -16,6 +16,7 @@
 package commandflow.catalog;
 
 import commandflow.Command;
+import commandflow.builder.BuilderException;
 import commandflow.builder.CommandBuilder;
 import commandflow.builder.CommandInitialization;
 import commandflow.builder.xml.XmlCommandBuilder;
@@ -50,8 +51,9 @@ public interface CommandCatalog<C> {
      * <p>
      * If build was previously invoked all existing commands will first be removed by invoking {@link #clean()}.
      * @return the command catalog (for method chaining)
+     * @throws BuilderException if a builder related error occurred
      */
-    CommandCatalog<C> build();
+    CommandCatalog<C> build() throws BuilderException;
 
     /**
      * Removes all existing commands held by this catalog.
@@ -73,8 +75,9 @@ public interface CommandCatalog<C> {
      * This method should be invoked after {@link #build()}, it can be invoked before or after {@link #init()} .
      * @see CommandInitialization
      * @return the command catalog (for method chaining)
+     * @throws BuilderException if an initialization related error occurred
      */
-    CommandCatalog<C> init();
+    CommandCatalog<C> init() throws BuilderException;
 
     /**
      * Convenience method that builds, links and initializes the catalog.
@@ -86,8 +89,9 @@ public interface CommandCatalog<C> {
      * <li>{@link #init()}</li>
      * </ol>
      * @return the command catalog (for method chaining)
+     * @throws BuilderException if a builder or initialization related error occurred
      */
-    CommandCatalog<C> make();
+    CommandCatalog<C> make() throws BuilderException;
 
     /**
      * Adds a named command.

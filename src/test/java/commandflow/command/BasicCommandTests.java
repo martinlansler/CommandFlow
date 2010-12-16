@@ -22,16 +22,8 @@ import static junit.framework.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 import commandflow.Command;
+import commandflow.builder.BuilderException;
 import commandflow.builder.CommandInitialization;
-import commandflow.builder.InitializationException;
-import commandflow.command.DoWhileCommand;
-import commandflow.command.FalseCommand;
-import commandflow.command.IfCommand;
-import commandflow.command.NotCommand;
-import commandflow.command.OrCommand;
-import commandflow.command.SequenceCommand;
-import commandflow.command.TrueCommand;
-import commandflow.command.WhileCommand;
 
 /**
  * Tests of the basic commands.
@@ -46,7 +38,7 @@ public class BasicCommandTests {
         if (command instanceof CommandInitialization) {
             try {
                 ((CommandInitialization) command).init();
-            } catch (InitializationException e) {
+            } catch (BuilderException e) {
                 throw new RuntimeException(e);
             }
         }

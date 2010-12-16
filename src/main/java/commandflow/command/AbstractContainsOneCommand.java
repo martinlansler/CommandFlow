@@ -15,10 +15,11 @@
  */
 package commandflow.command;
 
+import static commandflow.builder.BuilderException.raiseWrongNumberContainedCommands;
+
 import commandflow.Command;
+import commandflow.builder.BuilderException;
 import commandflow.builder.CommandInitialization;
-import commandflow.builder.InitializationException;
-import commandflow.builder.WrongNumberCommandsException;
 
 /**
  * Suitable base class for composite commands that only contain one command, i.e. wrap another command.
@@ -34,9 +35,9 @@ public abstract class AbstractContainsOneCommand<C> extends AbstractCompositeCom
 
     /** {@inheritDoc} */
     @Override
-    public void init() throws InitializationException {
+    public void init() throws BuilderException {
         if (getCommands().size() == 0) {
-            throw new WrongNumberCommandsException(getClass().getSimpleName(), 1, Integer.MAX_VALUE, getCommands().size());
+            raiseWrongNumberContainedCommands(getClass().getSimpleName(), 1, Integer.MAX_VALUE, getCommands().size());
         }
         if (getCommands().size() > 1) {
             // coerce multiple actions into a sequence

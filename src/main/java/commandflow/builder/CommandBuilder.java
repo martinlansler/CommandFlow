@@ -32,6 +32,7 @@ public interface CommandBuilder<C> {
      * <p>
      * This command may be called several times so the builder is expected to be able to clear internal state between invocations.
      * @param catalog the command catalog that manages the created commands
+     * @throws BuilderException if a builder related error occurred
      */
-    void build(CommandCatalog<C> catalog);
+    void build(CommandCatalog<C> catalog) throws BuilderException;
 }

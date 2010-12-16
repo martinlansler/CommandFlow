@@ -15,13 +15,14 @@
  */
 package commandflow.command;
 
+import static commandflow.builder.BuilderException.raiseWrongNumberContainedCommands;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import commandflow.Command;
+import commandflow.builder.BuilderException;
 import commandflow.builder.CommandInitialization;
-import commandflow.builder.InitializationException;
-import commandflow.builder.WrongNumberCommandsException;
 
 /**
  * A command with a condition command and a command expressing the action to execute.
@@ -43,9 +44,9 @@ public abstract class AbstractConditionalCommand<C> extends AbstractCompositeCom
 
     /** {@inheritDoc} */
     @Override
-    public void init() throws InitializationException {
+    public void init() throws BuilderException {
         if (getCommands().size() < 2) {
-            throw new WrongNumberCommandsException(getClass().getSimpleName(), 2, Integer.MAX_VALUE, getCommands().size());
+            raiseWrongNumberContainedCommands(getClass().getSimpleName(), 2, Integer.MAX_VALUE, getCommands().size());
         }
         if (getCommands().size() > 2) {
             // coerce multiple actions into a sequence
