@@ -163,4 +163,15 @@ public class BasicCommandTests {
             assertEquals(times, counter.getCount());
         }
     }
+
+    @Test
+    public void testScriptCommand() {
+        ScriptCommand<Object> script = new ScriptCommand<Object>("true");
+        assertTrue(script.execute(null));
+        //
+        final String context = "test";
+        ScriptCommand<String> script2 = new ScriptCommand<String>(String.format("c.length == %s", context.length()));
+        assertTrue(script2.execute(context));
+        assertFalse(script2.execute("not" + context));
+    }
 }

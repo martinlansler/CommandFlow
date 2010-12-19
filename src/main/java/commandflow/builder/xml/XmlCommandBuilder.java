@@ -27,6 +27,7 @@ import javax.xml.validation.Schema;
 
 import commandflow.Command;
 import commandflow.builder.CommandBuilder;
+import commandflow.builder.xml.v1.DefaultBuilderSettings;
 import commandflow.catalog.CommandCatalog;
 
 /**
@@ -46,13 +47,13 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     private Schema schema;
 
     /** The bound XML element builders */
-    private Map<String, XmlElementCommandBuilder<C>> elementBuilders;
+    private Map<String, ElementCommandBuilder<C>> elementBuilders;
 
     /**
-     * Creates a new XML command builder with the default settings and builder bindings.
+     * Creates a new XML command builder with the default settings.
      */
     public XmlCommandBuilder() {
-
+        DefaultBuilderSettings.configure(this);
     }
 
     /** {@inheritDoc} */
@@ -97,7 +98,7 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     /**
      * Sets the schema to use for command validation.
      * <p>
-     * If custom bindings are added via the {@link #addXmlElementCommandBuilder(String, XmlElementCommandBuilder)} method there are two approaches:
+     * If custom bindings are added via the {@link #addElementCommandBuilder(String, ElementCommandBuilder)} method there are two approaches:
      * <ul>
      * <li>Disable the schema validation by setting the schema to <code>null</code></li>
      * <li>Provide an updated schema with rules for the custom XML element bindings</li>
@@ -116,8 +117,19 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
      * @param elementCommandBuilder the command element builder
      * @return this builder (for method chaining)
      */
-    public XmlCommandBuilder<C> addXmlElementCommandBuilder(String elementName, XmlElementCommandBuilder<C> elementCommandBuilder) {
+    public XmlCommandBuilder<C> addElementCommandBuilder(String elementName, ElementCommandBuilder<C> elementCommandBuilder) {
         elementBuilders.put(elementName, elementCommandBuilder);
+        return this;
+    }
+
+    /**
+     * Clears all bindings.
+     * <p>
+     * This method is mainly intended to be used when a custom XML binding is needed and the default bindings should not be used.
+     * @return this builder (for method chaining)
+     */
+    public XmlCommandBuilder<C> clearBindings() {
+        elementBuilders.clear();
         return this;
     }
 }

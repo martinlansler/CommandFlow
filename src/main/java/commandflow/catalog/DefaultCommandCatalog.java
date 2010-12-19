@@ -126,7 +126,7 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
     private Command<C> getExistingCommand(String name) {
         Command<C> command = getCommand(name);
         if (command == null) {
-            throw new CatalogException(String.format("Required command '%s' does not exist", name));
+            throw new CatalogException("Required command '%s' does not exist", name);
         }
         return command;
     }

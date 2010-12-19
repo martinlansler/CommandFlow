@@ -25,19 +25,16 @@ public class CatalogException extends RuntimeException {
     /** Serial id */
     private static final long serialVersionUID = -6632328115517415046L;
 
-    public CatalogException() {
-        super();
+    public CatalogException(Throwable cause, String message, Object... formattingArgs) {
+        super(String.format(message, formattingArgs), cause);
     }
 
-    public CatalogException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public CatalogException(String message) {
-        super(message);
+    public CatalogException(String message, Object... formattingArgs) {
+        super(String.format(message, formattingArgs));
     }
 
     public CatalogException(Throwable cause) {
         super(cause);
     }
+
 }

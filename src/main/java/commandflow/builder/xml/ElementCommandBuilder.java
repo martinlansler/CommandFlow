@@ -18,18 +18,20 @@ package commandflow.builder.xml;
 import java.util.Map;
 
 import commandflow.Command;
+import commandflow.builder.BuilderException;
 
 /**
  * Interface for a builder that can create a command instance from an XML element with associated attributes.
  * @author elansma
  * @param <C> the context class of the commands
  */
-public interface XmlElementCommandBuilder<C> {
+public interface ElementCommandBuilder<C> {
     /**
-     * Called to create a new command instance
+     * Called to create a new command instance.
      * @param elementName the name of the XML element
      * @param attributes the map of attributes (maps from attribute name to value)
      * @return a new command instance
+     * @throws BuilderException if the command could not be built
      */
     Command<C> build(String elementName, Map<String, String> attributes);
 }

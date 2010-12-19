@@ -77,14 +77,14 @@ public class CommandReference<C> implements Command<C> {
     @Override
     public boolean execute(C context) {
         if (!isDynamic) {
-            throw new CatalogException(String.format("Cannot execute static command reference '%s'", referenceName));
+            throw new CatalogException("Cannot execute static command reference '%s'", referenceName);
         }
         if (catalog == null) {
-            throw new CatalogException(String.format("No command catalog is set for dynamic command reference '%s'", referenceName));
+            throw new CatalogException("No command catalog is set for dynamic command reference '%s'", referenceName);
         }
         Command<C> command = catalog.getCommand(referenceName);
         if (command == null) {
-            throw new CatalogException(String.format("Cannot resolve dynamic command reference '%s'"));
+            throw new CatalogException("Cannot resolve dynamic command reference '%s'", referenceName);
         }
         return command.execute(context);
     }

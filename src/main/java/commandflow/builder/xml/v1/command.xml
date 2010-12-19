@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<commands xmlns="http://commandflow/command" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://commandflow/command command.xsd ">
+<commands xmlns="http://commandflow/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://commandflow/1 command.xsd ">
 
   <!-- Import a command XML file as a classpath resource (prefix 'file and http' can also be used). -->
   <!-- Named commands in this file will override any of the imported commands with the same name. -->

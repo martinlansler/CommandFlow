@@ -19,16 +19,16 @@ package commandflow.builder;
  * Base exception for all builder level exception.
  * @author elansma
  */
-public class BuilderException extends Exception {
+public class BuilderException extends RuntimeException {
     /** Serial id */
     private static final long serialVersionUID = 743597909102060267L;
 
-    public BuilderException(String message, Throwable cause) {
-        super(message, cause);
+    public BuilderException(Throwable cause, String message, Object... formattingArgs) {
+        super(String.format(message, formattingArgs), cause);
     }
 
-    public BuilderException(String message) {
-        super(message);
+    public BuilderException(String message, Object... formattingArgs) {
+        super(String.format(message, formattingArgs));
     }
 
     public BuilderException(Throwable cause) {
@@ -44,8 +44,7 @@ public class BuilderException extends Exception {
      * @throws BuilderException an new builder command exception
      */
     public static void raiseWrongNumberContainedCommands(String commandName, int minNumber, int maxNumber, int actualNumber) throws BuilderException {
-        throw new BuilderException(String.format("Command %s expects between %s to %s contained commands, is %s", commandName, minNumber, maxNumber,
-                actualNumber));
+        throw new BuilderException("Command %s expects between %s to %s contained commands, is %s", commandName, minNumber, maxNumber, actualNumber);
     }
 
 }

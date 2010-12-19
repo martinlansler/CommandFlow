@@ -15,20 +15,36 @@
  */
 package tests;
 
+import javax.script.Bindings;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.SimpleBindings;
 
 public class EvalScript {
     public static void main(String[] args) throws Exception {
+        String script = "name.length > 2 || name.length < 10";
+        //
         // create a script engine manager
         ScriptEngineManager factory = new ScriptEngineManager();
         // create a JavaScript engine
         ScriptEngine engine = factory.getEngineByName("JavaScript");
-        String name = "Martin";
-        engine.put("name", name);
+        CompiledScript compiledScript = null;
+        if (engine instanceof Compilable) {
+            System.out.println("Using compiled script...");
+            Compilable compilable = (Compilable) engine;
+            compiledScript = compilable.compile(script);
+        }
+        System.out.println(engine.getBindings(ScriptContext.GLOBAL_SCOPE).keySet());
+        System.out.println(engine.getBindings(ScriptContext.ENGINE_SCOPE).keySet());
+
+        System.out.println(engine.getFactory().getParameter("THREADING"));
+        Bindings bindings = new SimpleBindings();
+        bindings.put("name", "Martin");
         // evaluate JavaScript code from String
-        // System.out.println(engine.eval("name.length > 2 || name.length < 10"));
-        System.out.println(engine.eval("var i = 0; "));
-        // Date d = new Date().
+        Object result = compiledScript != null ? compiledScript.eval(bindings) : engine.eval(script, bindings);
+        System.out.println(result);
     }
 }

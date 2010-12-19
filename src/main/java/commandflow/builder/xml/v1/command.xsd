@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://commandflow/command" xmlns:tns="http://commandflow/command"
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://commandflow/1" xmlns:tns="http://commandflow/1"
   elementFormDefault="qualified">
 
   <complexType name="commandsType">
