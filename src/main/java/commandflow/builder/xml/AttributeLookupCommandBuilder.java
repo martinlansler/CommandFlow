@@ -25,18 +25,18 @@ import commandflow.catalog.CommandReference;
 import commandflow.command.ScriptCommand;
 
 /**
- * A builder that can create commands from an XML element.
+ * A builder that can create a command from an XML element by looking at the attributes.
  * <p>
  * The command can create the command in three different ways (in the given priority order):
  * <ul>
- * <li>Via a class name of the command to instantiate, can either be preset or looked up via an attribute.</li>
- * <li>Via named reference to another command, can either be preset or looked up via an attribute.</li>
- * <li>Via a script, can either be preset or looked up via an attribute.</li>
+ * <li>Via an attribute containing the class name of the command to instantiate</li>
+ * <li>Via an attribute containing a named reference to another command</li>
+ * <li>Via an attribute containing a script</li>
  * </ul>
  * Hence either a {@link Command}, {@link CommandReference} or {@link ScriptCommand} instance is created.
  * @author elansma
  */
-public class SimpleCommandBuilder<C> implements ElementCommandBuilder<C> {
+public class AttributeLookupCommandBuilder<C> implements ElementCommandBuilder<C> {
     /** The name of the class attribute, may be <code>null</code> */
     private String classAttribute;
     /** The name of the reference attribute, may be <code>null</code> */
@@ -45,21 +45,13 @@ public class SimpleCommandBuilder<C> implements ElementCommandBuilder<C> {
     private String dynamicRefAttribut;
     /** The name of the script attribute, may be <code>null</code> */
     private String scriptAttribute;
-    /** A preset class, if set no attribute lookup will be performed */
-    private String clazz;
-    /** A preset reference, if set no attribute lookup will be performed */
-    private String reference;
-    /** A preset dynamic reference, only applicable if {@link #reference} is set */
-    private Boolean dynamicReference;
-    /** A preset script, if set no attribute lookup will be performed */
-    private String script;
 
     /**
      * Creates a new simple command builder.
      * <p>
      * The strategy to build the command should be set via the <code>setXAttribute</code> and/or <code>setPresetX</code> methods.
      */
-    public SimpleCommandBuilder() {
+    public AttributeLookupCommandBuilder() {
         ; // no more...
     }
 
@@ -69,7 +61,7 @@ public class SimpleCommandBuilder<C> implements ElementCommandBuilder<C> {
      * @param refAttribute the name of the attribute holding the command reference, ignored if <code>null</code>
      * @param scriptAttribute the name of the attribute holding the command script, ignored if <code>null</code>
      */
-    public SimpleCommandBuilder(String classAttribute, String refAttribute, String scriptAttribute) {
+    public AttributeLookupCommandBuilder(String classAttribute, String refAttribute, String scriptAttribute) {
         this.classAttribute = classAttribute;
         this.refAttribute = refAttribute;
         this.scriptAttribute = scriptAttribute;
@@ -80,41 +72,18 @@ public class SimpleCommandBuilder<C> implements ElementCommandBuilder<C> {
     public Command<C> build(String elementName, Map<String, String> attributes) {
         Command<C> command;
 
-        if (getPresetClass() != null || hasAttribute(getClassAttribute(), attributes)) {
-            command = newInstance(firstNotNull(getPresetClass(), attributes.get(getClassAttribute())));
-        } else if (getPresetReference() != null || hasAttribute(getRefAttribute(), attributes)) {
-            String ref;
-            boolean isDynamic;
-            if (getPresetReference() != null) {
-                ref = getPresetReference();
-                isDynamic = getPresetDynamicReference() != null ? getPresetDynamicReference() : false;
-            } else {
-                ref = attributes.get(getRefAttribute());
-                isDynamic = hasAttribute(getDynamicRefAttribut(), attributes) ? parseBoolean(attributes.get(getDynamicRefAttribut())) : false;
-            }
+        if (hasAttribute(getClassAttribute(), attributes)) {
+            command = newInstance(attributes.get(getClassAttribute()));
+        } else if (hasAttribute(getRefAttribute(), attributes)) {
+            String ref = attributes.get(getRefAttribute());
+            boolean isDynamic = hasAttribute(getDynamicRefAttribut(), attributes) ? parseBoolean(attributes.get(getDynamicRefAttribut())) : false;
             command = new CommandReference<C>(ref, isDynamic);
-        } else if (getPresetScript() != null || hasAttribute(getScriptAttribute(), attributes)) {
-            command = new ScriptCommand<C>(firstNotNull(getPresetScript(), attributes.get(getScriptAttribute())));
+        } else if (hasAttribute(getScriptAttribute(), attributes)) {
+            command = new ScriptCommand<C>(attributes.get(getScriptAttribute()));
         } else {
             throw new BuilderException("Cannot build command with element name '%s' and attributes '%s'", elementName, attributes);
         }
         return command;
-    }
-
-    /**
-     * Returns the first not <code>null</code> value from the sequence of values.
-     * <p>
-     * If all values are <code>null</code> an {@link BuilderException} is raised.
-     * @param values the sequence of values
-     * @return the first not <code>null</code> value
-     */
-    private <T> T firstNotNull(T... values) {
-        for (T t : values) {
-            if (t != null) {
-                return t;
-            }
-        }
-        throw new BuilderException("Expected at least one not-null value is arguments %", values);
     }
 
     /**
@@ -153,7 +122,7 @@ public class SimpleCommandBuilder<C> implements ElementCommandBuilder<C> {
      * @param classAttribute the name of the class attribute
      * @return this builder (for method chaining)
      */
-    public SimpleCommandBuilder<C> setClassAttribute(String classAttribute) {
+    public AttributeLookupCommandBuilder<C> setClassAttribute(String classAttribute) {
         this.classAttribute = classAttribute;
         return this;
     }
@@ -170,7 +139,7 @@ public class SimpleCommandBuilder<C> implements ElementCommandBuilder<C> {
      * @param refAttribute the name of the reference attribute
      * @return this builder (for method chaining)
      */
-    public SimpleCommandBuilder<C> setRefAttribute(String refAttribute) {
+    public AttributeLookupCommandBuilder<C> setRefAttribute(String refAttribute) {
         this.refAttribute = refAttribute;
         return this;
     }
@@ -202,78 +171,9 @@ public class SimpleCommandBuilder<C> implements ElementCommandBuilder<C> {
      * @param scriptAttribute the name of the script attribute
      * @return this builder (for method chaining)
      */
-    public SimpleCommandBuilder<C> setScriptAttribute(String scriptAttribute) {
+    public AttributeLookupCommandBuilder<C> setScriptAttribute(String scriptAttribute) {
         this.scriptAttribute = scriptAttribute;
         return this;
     }
 
-    /**
-     * @return the preset class name, <code>null</code> if none is set
-     */
-    public String getPresetClass() {
-        return clazz;
-    }
-
-    /**
-     * Sets a preset class name, if set no attribute lookup will be performed.
-     * @param clazz the preset class name
-     * @return this builder (for method chaining)
-     */
-    public SimpleCommandBuilder<C> setPresetClass(String clazz) {
-        this.clazz = clazz;
-        return this;
-    }
-
-    /**
-     * @return the preset command reference, <code>null</code> if none is set
-     */
-    public String getPresetReference() {
-        return reference;
-    }
-
-    /**
-     * Sets a preset command reference, if set no attribute lookup will be performed.
-     * @param reference the preset command reference
-     * @return this builder (for method chaining)
-     */
-    public SimpleCommandBuilder<C> setPresetReference(String reference) {
-        this.reference = reference;
-        return this;
-    }
-
-    /**
-     * @return the preset command script, <code>null</code> if none is set
-     */
-    public String getPresetScript() {
-        return script;
-    }
-
-    /**
-     * Sets a preset command script, if set no attribute lookup will be performed.
-     * @param script the preset command script
-     * @return this builder (for method chaining)
-     */
-    public SimpleCommandBuilder<C> setPresetScript(String script) {
-        this.script = script;
-        return this;
-    }
-
-    /**
-     * @return <code>true</code> if {@link #getPresetReference()} is a dynamic reference, may be <code>null</code>
-     */
-    public Boolean getPresetDynamicReference() {
-        return dynamicReference;
-    }
-
-    /**
-     * Sets a preset value for whether {@link #getPresetReference()} is a dynamic reference, may be <code>null</code>.
-     * <p>
-     * This value is only applicable if {@link #getPresetReference()} is set.
-     * @param dynamicReference <code>true</code> if {@link #getPresetReference()} is a dynamic reference, may be <code>null</code>
-     * @return this builder (for method chaining)
-     */
-    public SimpleCommandBuilder<C> setPresetDynamicReference(Boolean dynamicReference) {
-        this.dynamicReference = dynamicReference;
-        return this;
-    }
 }

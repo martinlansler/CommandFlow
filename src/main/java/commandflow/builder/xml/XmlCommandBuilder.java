@@ -27,7 +27,6 @@ import javax.xml.validation.Schema;
 
 import commandflow.Command;
 import commandflow.builder.CommandBuilder;
-import commandflow.builder.xml.v1.DefaultBuilderSettings;
 import commandflow.catalog.CommandCatalog;
 
 /**
@@ -50,10 +49,10 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     private Map<String, ElementCommandBuilder<C>> elementBuilders;
 
     /**
-     * Creates a new XML command builder with the default settings.
+     * Creates a new XML command builder
      */
-    public XmlCommandBuilder() {
-        DefaultBuilderSettings.configure(this);
+    XmlCommandBuilder() {
+        ; // no more
     }
 
     /** {@inheritDoc} */

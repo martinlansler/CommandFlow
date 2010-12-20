@@ -24,17 +24,21 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
-import commandflow.builder.xml.ElementCommandBuilder;
-import commandflow.builder.xml.SimpleCommandBuilder;
+import commandflow.builder.xml.AttributeLookupCommandBuilder;
 import commandflow.builder.xml.XmlCommandBuilder;
+import commandflow.builder.xml.XmlCommandBuilderConfigurer;
+import commandflow.builder.xml.XmlCommandBuilderFactory;
 
 /**
- * Represents the default XML builder settings.
+ * The {@link XmlCommandBuilderConfigurer} for this XML namespace.
  * <p>
  * This class also defines constants for the default element and attributes names from the command schema.
  * @author elansma
  */
-public class DefaultBuilderSettings {
+public class Configurer implements XmlCommandBuilderConfigurer {
+    /** The namespace of this cmmand XML */
+    public static final String NAMESPACE = "http://commandflow/1";
+
     /** Element {@value} */
     public static final String COMMAND_ELEMENT = "command";
 
@@ -43,14 +47,26 @@ public class DefaultBuilderSettings {
     /** The {@value} attribute in {@link #COMMAND_ELEMENT} */
     public static final String VALUE_ATTRIBUTE = "value";
     /** The {@value} attribute in {@link #COMMAND_ELEMENT} */
-    public static final String REF = "ref";
+    public static final String REF_ATTRIBUTE = "ref";
     /** The {@value} attribute in {@link #COMMAND_ELEMENT} */
-    public static final String DYNAMIC_REF = "dynamicRef";
+    public static final String DYNAMIC_REF_ATTRIBUTE = "dynamicRef";
+
+    /** The singleton instance */
+    public static final Configurer INSTANCE = new Configurer();
+
+    static {
+        // register this namespace...
+        XmlCommandBuilderFactory.addNamespace(NAMESPACE, INSTANCE);
+    }
+
+    private Configurer() {
+
+    }
 
     /** The default XML command schema */
     public static final Schema COMMAND_SCHEMA;
     static {
-        InputStream is = XmlCommandBuilder.class.getClassLoader().getResourceAsStream("commandflow/builder/xml/command.xsd");
+        InputStream is = XmlCommandBuilder.class.getClassLoader().getResourceAsStream("commandflow/builder/xml/v1/command.xsd");
         try {
             COMMAND_SCHEMA = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(new StreamSource(is));
         } catch (SAXException e) {
@@ -58,17 +74,11 @@ public class DefaultBuilderSettings {
         }
     }
 
-    /**
-     * Called to configure a XML builder with the deafult settings.
-     * <p>
-     * This method enables schema vaidation and sets the schema to {@link #COMMAND_SCHEMA}.
-     * <p>
-     * All the needed {@link ElementCommandBuilder} are configured for the XML elements in the schema.
-     * @param builder the XML builder to configure
-     */
-    public static <C> void configure(XmlCommandBuilder<C> builder) {
+    /** {@inheritDoc} */
+    @Override
+    public <C> void configure(XmlCommandBuilder<C> builder) {
         builder.setCommandSchema(COMMAND_SCHEMA);
         //
-        builder.addElementCommandBuilder(COMMAND_ELEMENT, new SimpleCommandBuilder<C>());
+        builder.addElementCommandBuilder(COMMAND_ELEMENT, new AttributeLookupCommandBuilder<C>(CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
     }
 }
