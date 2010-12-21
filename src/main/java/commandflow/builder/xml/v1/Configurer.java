@@ -24,10 +24,19 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
-import commandflow.builder.xml.AttributeLookupCommandBuilder;
+import commandflow.builder.xml.CommandElementBuilder;
+import commandflow.builder.xml.ConditionalCommandElementBuilder;
+import commandflow.builder.xml.FixedClassElementBuilder;
 import commandflow.builder.xml.XmlCommandBuilder;
 import commandflow.builder.xml.XmlCommandBuilderConfigurer;
 import commandflow.builder.xml.XmlCommandBuilderFactory;
+import commandflow.command.AndCommand;
+import commandflow.command.DoWhileCommand;
+import commandflow.command.IfCommand;
+import commandflow.command.NotCommand;
+import commandflow.command.OrCommand;
+import commandflow.command.SequenceCommand;
+import commandflow.command.WhileCommand;
 
 /**
  * The {@link XmlCommandBuilderConfigurer} for this XML namespace.
@@ -36,11 +45,26 @@ import commandflow.builder.xml.XmlCommandBuilderFactory;
  * @author elansma
  */
 public class Configurer implements XmlCommandBuilderConfigurer {
-    /** The namespace of this cmmand XML */
+
+    /** The namespace of this command XML */
     public static final String NAMESPACE = "http://commandflow/1";
 
     /** Element {@value} */
     public static final String COMMAND_ELEMENT = "command";
+    /** Element {@value} */
+    private static final String SEQUENCE_ELEMENT = "sequence";
+    /** Element {@value} */
+    public static final String NOT_ELEMENT = "not";
+    /** Element {@value} */
+    public static final String OR_ELEMENT = "or";
+    /** Element {@value} */
+    public static final String AND_ELEMENT = "and";
+    /** Element {@value} */
+    private static final String IF_ELEMENT = "if";
+    /** Element {@value} */
+    private static final String WHILE_ELEMENT = "while";
+    /** Element {@value} */
+    private static final String DO_WHILE_ELEMENT = "doWhile";
 
     /** The {@value} attribute in {@link #COMMAND_ELEMENT} */
     public static final String CLASS_ATTRIBUTE = "class";
@@ -65,6 +89,7 @@ public class Configurer implements XmlCommandBuilderConfigurer {
 
     /** The default XML command schema */
     public static final Schema COMMAND_SCHEMA;
+
     static {
         InputStream is = XmlCommandBuilder.class.getClassLoader().getResourceAsStream("commandflow/builder/xml/v1/command.xsd");
         try {
@@ -79,6 +104,18 @@ public class Configurer implements XmlCommandBuilderConfigurer {
     public <C> void configure(XmlCommandBuilder<C> builder) {
         builder.setCommandSchema(COMMAND_SCHEMA);
         //
-        builder.addElementCommandBuilder(COMMAND_ELEMENT, new AttributeLookupCommandBuilder<C>(CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
+        builder.addElementBuilder(COMMAND_ELEMENT, new CommandElementBuilder<C>(CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
+        //
+        builder.addElementBuilder(IF_ELEMENT, new ConditionalCommandElementBuilder<C>(IfCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
+        builder.addElementBuilder(WHILE_ELEMENT, new ConditionalCommandElementBuilder<C>(WhileCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
+        builder.addElementBuilder(DO_WHILE_ELEMENT, new ConditionalCommandElementBuilder<C>(DoWhileCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
+        //
+        builder.addElementBuilder(SEQUENCE_ELEMENT, new FixedClassElementBuilder<C>(SequenceCommand.class));
+        builder.addElementBuilder(NOT_ELEMENT, new FixedClassElementBuilder<C>(NotCommand.class));
+        builder.addElementBuilder(OR_ELEMENT, new FixedClassElementBuilder<C>(OrCommand.class));
+        builder.addElementBuilder(AND_ELEMENT, new FixedClassElementBuilder<C>(AndCommand.class));
+        // TODO: parallel
+        // TODO: parallelOr
+        // TODO: parallelAnd
     }
 }

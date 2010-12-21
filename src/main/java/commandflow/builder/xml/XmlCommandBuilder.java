@@ -46,7 +46,7 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     private Schema schema;
 
     /** The bound XML element builders */
-    private Map<String, ElementCommandBuilder<C>> elementBuilders;
+    private Map<String, ElementBuilder<C>> elementBuilders;
 
     /**
      * Creates a new XML command builder
@@ -97,7 +97,7 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     /**
      * Sets the schema to use for command validation.
      * <p>
-     * If custom bindings are added via the {@link #addElementCommandBuilder(String, ElementCommandBuilder)} method there are two approaches:
+     * If custom bindings are added via the {@link #addElementBuilder(String, ElementBuilder)} method there are two approaches:
      * <ul>
      * <li>Disable the schema validation by setting the schema to <code>null</code></li>
      * <li>Provide an updated schema with rules for the custom XML element bindings</li>
@@ -116,7 +116,7 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
      * @param elementCommandBuilder the command element builder
      * @return this builder (for method chaining)
      */
-    public XmlCommandBuilder<C> addElementCommandBuilder(String elementName, ElementCommandBuilder<C> elementCommandBuilder) {
+    public XmlCommandBuilder<C> addElementBuilder(String elementName, ElementBuilder<C> elementCommandBuilder) {
         elementBuilders.put(elementName, elementCommandBuilder);
         return this;
     }

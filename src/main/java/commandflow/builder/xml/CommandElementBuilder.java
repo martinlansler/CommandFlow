@@ -15,6 +15,7 @@
  */
 package commandflow.builder.xml;
 
+import static commandflow.builder.xml.XmlBuilderUtil.newInstance;
 import static javax.xml.bind.DatatypeConverter.parseBoolean;
 
 import java.util.Map;
@@ -25,7 +26,7 @@ import commandflow.catalog.CommandReference;
 import commandflow.command.ScriptCommand;
 
 /**
- * A builder that can create a command from an XML element by looking at the attributes.
+ * A builder that can create a command (simple or composite) from an XML element.
  * <p>
  * The command can create the command in three different ways (in the given priority order):
  * <ul>
@@ -36,7 +37,7 @@ import commandflow.command.ScriptCommand;
  * Hence either a {@link Command}, {@link CommandReference} or {@link ScriptCommand} instance is created.
  * @author elansma
  */
-public class AttributeLookupCommandBuilder<C> implements ElementCommandBuilder<C> {
+public class CommandElementBuilder<C> implements ElementBuilder<C> {
     /** The name of the class attribute, may be <code>null</code> */
     private String classAttribute;
     /** The name of the reference attribute, may be <code>null</code> */
@@ -47,21 +48,12 @@ public class AttributeLookupCommandBuilder<C> implements ElementCommandBuilder<C
     private String scriptAttribute;
 
     /**
-     * Creates a new simple command builder.
-     * <p>
-     * The strategy to build the command should be set via the <code>setXAttribute</code> and/or <code>setPresetX</code> methods.
-     */
-    public AttributeLookupCommandBuilder() {
-        ; // no more...
-    }
-
-    /**
      * Creates a new simple command builder using attribute lookup.
      * @param classAttribute the name of the attribute holding the command class, ignored if <code>null</code>
      * @param refAttribute the name of the attribute holding the command reference, ignored if <code>null</code>
      * @param scriptAttribute the name of the attribute holding the command script, ignored if <code>null</code>
      */
-    public AttributeLookupCommandBuilder(String classAttribute, String refAttribute, String scriptAttribute) {
+    public CommandElementBuilder(String classAttribute, String refAttribute, String scriptAttribute) {
         this.classAttribute = classAttribute;
         this.refAttribute = refAttribute;
         this.scriptAttribute = scriptAttribute;
@@ -97,20 +89,6 @@ public class AttributeLookupCommandBuilder<C> implements ElementCommandBuilder<C
     }
 
     /**
-     * Instantiates a new command class
-     * @param clazz the command class name
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    private Command<C> newInstance(String clazz) {
-        try {
-            return (Command<C>) Class.forName(clazz).newInstance();
-        } catch (Exception e) {
-            throw new BuilderException(e, "Cannot create command class %s", clazz);
-        }
-    }
-
-    /**
      * @return the name of the class attribute, may be <code>null</code>
      */
     public String getClassAttribute() {
@@ -122,7 +100,7 @@ public class AttributeLookupCommandBuilder<C> implements ElementCommandBuilder<C
      * @param classAttribute the name of the class attribute
      * @return this builder (for method chaining)
      */
-    public AttributeLookupCommandBuilder<C> setClassAttribute(String classAttribute) {
+    public CommandElementBuilder<C> setClassAttribute(String classAttribute) {
         this.classAttribute = classAttribute;
         return this;
     }
@@ -139,7 +117,7 @@ public class AttributeLookupCommandBuilder<C> implements ElementCommandBuilder<C
      * @param refAttribute the name of the reference attribute
      * @return this builder (for method chaining)
      */
-    public AttributeLookupCommandBuilder<C> setRefAttribute(String refAttribute) {
+    public CommandElementBuilder<C> setRefAttribute(String refAttribute) {
         this.refAttribute = refAttribute;
         return this;
     }
@@ -171,7 +149,7 @@ public class AttributeLookupCommandBuilder<C> implements ElementCommandBuilder<C
      * @param scriptAttribute the name of the script attribute
      * @return this builder (for method chaining)
      */
-    public AttributeLookupCommandBuilder<C> setScriptAttribute(String scriptAttribute) {
+    public CommandElementBuilder<C> setScriptAttribute(String scriptAttribute) {
         this.scriptAttribute = scriptAttribute;
         return this;
     }

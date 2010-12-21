@@ -21,30 +21,17 @@ import commandflow.Command;
 import commandflow.builder.BuilderException;
 
 /**
- * A command builder that always creates a fixed command class.
+ * Interface for a builder that can create a command instance from an XML element with associated attributes.
  * @author elansma
+ * @param <C> the context class of the commands
  */
-public class FixedClassCommandBuilder<C> implements ElementCommandBuilder<C> {
-    /** The command class to create */
-    private String clazz;
-
+public interface ElementBuilder<C> {
     /**
-     * Creates a new fixed command builder
-     * @param clazz the command class
+     * Called to create a new command instance.
+     * @param elementName the name of the XML element
+     * @param attributes the map of attributes (maps from attribute name to value)
+     * @return a new command instance
+     * @throws BuilderException if the command could not be built
      */
-    public FixedClassCommandBuilder(String clazz) {
-        this.clazz = clazz;
-    }
-
-    /** {@inheritDoc} */
-    @SuppressWarnings("unchecked")
-    @Override
-    public Command<C> build(String elementName, Map<String, String> attributes) {
-        try {
-            return (Command<C>) Class.forName(clazz).newInstance();
-        } catch (Exception e) {
-            throw new BuilderException(e, "Cannot create command class %s", clazz);
-        }
-    }
-
+    Command<C> build(String elementName, Map<String, String> attributes);
 }
