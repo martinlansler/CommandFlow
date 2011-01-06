@@ -21,17 +21,21 @@ import commandflow.Command;
 import commandflow.builder.BuilderException;
 
 /**
- * Interface for a builder that can create a command instance from an XML element with associated attributes.
+ * Interface for a builder that can create a command instance or otherwise process an XML element with associated attributes.
+ * <p>
+ * Normally the {@link #build(XmlCommandBuilder, String, Map)} creates a new command instance, however it is also possible to do other types of processing such as handling import clauses, defining
+ * settings etc. In the latter case since no command is created <code>null</code> is returned.
  * @author elansma
  * @param <C> the context class of the commands
  */
 public interface ElementBuilder<C> {
     /**
-     * Called to create a new command instance.
+     * Called to create a new command instance or otherwise process the given XML element.
+     * @param xmlCommandBuilder the XML command builder
      * @param elementName the name of the XML element
      * @param attributes the map of attributes (maps from attribute name to value)
-     * @return a new command instance
-     * @throws BuilderException if the command could not be built
+     * @return a new command instance or <code>null</code> if no command was created
+     * @throws BuilderException if the command could not be built or some other error occurred
      */
-    Command<C> build(String elementName, Map<String, String> attributes);
+    Command<C> build(XmlCommandBuilder<C> xmlCommandBuilder, String elementName, Map<String, String> attributes);
 }

@@ -26,8 +26,8 @@ import commandflow.builder.CompositeCommand;
 /**
  * A builder that can create a conditional command (must implement {@link CompositeCommand}) from an XML element.
  * <p>
- * The condition command is created in one of the ways specified in {@link CommandElementBuilder}. Once the condition is created is pushed as the
- * first command via the {@link CompositeCommand#add(commandflow.Command)} method.
+ * The condition command is created in one of the ways specified in {@link CommandElementBuilder}. Once the condition is created is pushed as the first command via the
+ * {@link CompositeCommand#add(commandflow.Command)} method.
  * @author elansma
  */
 public class ConditionalCommandElementBuilder<C> extends CommandElementBuilder<C> {
@@ -41,16 +41,15 @@ public class ConditionalCommandElementBuilder<C> extends CommandElementBuilder<C
      * @param scriptAttribute the name of the attribute holding the command script, ignored if <code>null</code>
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public ConditionalCommandElementBuilder(Class<? extends Command> conditionalCommandClass, String classAttribute, String refAttribute,
-            String scriptAttribute) {
+    public ConditionalCommandElementBuilder(Class<? extends Command> conditionalCommandClass, String classAttribute, String refAttribute, String scriptAttribute) {
         super(classAttribute, refAttribute, scriptAttribute);
         this.conditionalCommandClass = (Class<? extends Command<C>>) conditionalCommandClass;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Command<C> build(String elementName, Map<String, String> attributes) {
-        Command<C> condition = super.build(elementName, attributes);
+    public Command<C> build(XmlCommandBuilder<C> xmlCommandBuilder, String elementName, Map<String, String> attributes) {
+        Command<C> condition = super.build(xmlCommandBuilder, elementName, attributes);
         Command<C> conditionalCommand = newInstance(conditionalCommandClass);
         asComposite(conditionalCommand).add(condition);
         return conditionalCommand;

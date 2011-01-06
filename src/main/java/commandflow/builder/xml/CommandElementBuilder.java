@@ -61,7 +61,7 @@ public class CommandElementBuilder<C> implements ElementBuilder<C> {
 
     /** {@inheritDoc} */
     @Override
-    public Command<C> build(String elementName, Map<String, String> attributes) {
+    public Command<C> build(XmlCommandBuilder<C> xmlCommandBuilder, String elementName, Map<String, String> attributes) {
         Command<C> command;
 
         if (hasAttribute(getClassAttribute(), attributes)) {

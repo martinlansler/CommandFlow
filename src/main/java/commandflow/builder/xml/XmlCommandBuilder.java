@@ -96,12 +96,6 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
 
     /**
      * Sets the schema to use for command validation.
-     * <p>
-     * If custom bindings are added via the {@link #addElementBuilder(String, ElementBuilder)} method there are two approaches:
-     * <ul>
-     * <li>Disable the schema validation by setting the schema to <code>null</code></li>
-     * <li>Provide an updated schema with rules for the custom XML element bindings</li>
-     * </ul>
      * @param schema the schema, if <code>null</code> schema validation will be disabled
      * @return this builder (for method chaining)
      */
@@ -130,5 +124,12 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     public XmlCommandBuilder<C> clearBindings() {
         elementBuilders.clear();
         return this;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public XmlCommandBuilder<C> clone() {
+        // TODO
+        return (XmlCommandBuilder<C>) null;
     }
 }

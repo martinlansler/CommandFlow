@@ -15,33 +15,23 @@
  */
 package commandflow.builder.xml;
 
-import static commandflow.builder.xml.XmlBuilderUtil.newInstance;
-
 import java.util.Map;
 
 import commandflow.Command;
 
 /**
- * A command builder that always creates a fixed command class.
+ * An element builder hat can build an import element containing an reference to another command XML.
  * @author elansma
  */
-public class FixedClassElementBuilder<C> implements ElementBuilder<C> {
-    /** The command class to create */
-    private Class<? extends Command<C>> clazz;
-
-    /**
-     * Creates a new fixed command builder
-     * @param clazz the command class
-     */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public FixedClassElementBuilder(Class<? extends Command> clazz) {
-        this.clazz = (Class<? extends Command<C>>) clazz;
-    }
+public class ImportElementBuilder<C> implements ElementBuilder<C> {
 
     /** {@inheritDoc} */
     @Override
     public Command<C> build(XmlCommandBuilder<C> xmlCommandBuilder, String elementName, Map<String, String> attributes) {
-        return newInstance(clazz);
+        XmlCommandBuilder<C> clone = xmlCommandBuilder.clone();
+
+        // TODO
+        return null;
     }
 
 }
