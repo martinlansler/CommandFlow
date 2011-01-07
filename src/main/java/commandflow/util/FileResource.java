@@ -41,7 +41,7 @@ public class FileResource extends AbstractResource {
     /**
      * Creates a new file backed resource
      * @param uri the file descriptor
-     * @throws IllegalArgumentException if the uri is not a valid file descriptor
+     * @throws IllegalArgumentException if the URI is not a valid file descriptor
      */
     public FileResource(URI uri) {
         super(uri);
@@ -54,11 +54,20 @@ public class FileResource extends AbstractResource {
         return new FileInputStream(file);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public Resource resolveRelative(URI uri) {
+        return new FileResource(new File(file, uri.getSchemeSpecificPart()));
+    }
+
     /**
      * A file resource resolver
      * @author elansma
      */
-    public class FileResourceResolver implements ResourceResolver {
+    public static class FileResourceResolver implements ResourceResolver {
+        /** The schema used for file resources */
+        public static final String SCHEMA = "file";
+
         /** {@inheritDoc} */
         @Override
         public Resource resolve(URI uri) {

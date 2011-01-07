@@ -45,4 +45,11 @@ public interface Resource {
      * @return the resource identifier
      */
     URI getURI();
+
+    /**
+     * Resolves a relative resource to this resource, i.e. a resource with a relative identifier without a schema specifier
+     * @param uri the relative resource identifier
+     * @return the resolved resource, <code>null</code> if the resource cannot be resolved
+     */
+    Resource resolveRelative(URI uri);
 }
