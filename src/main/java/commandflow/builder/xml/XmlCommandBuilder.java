@@ -16,18 +16,24 @@
 package commandflow.builder.xml;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.validation.Schema;
 
 import commandflow.Command;
+import commandflow.builder.BuilderException;
 import commandflow.builder.CommandBuilder;
 import commandflow.catalog.CommandCatalog;
+import commandflow.io.ClassPathResource;
+import commandflow.io.FileResource;
+import commandflow.io.Resource;
+import commandflow.io.URLResource;
 
 /**
  * A builder that creates commands from one or more XML files.
@@ -37,7 +43,7 @@ import commandflow.catalog.CommandCatalog;
  */
 public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     /** The command XML resources */
-    private List<URL> commandXmlResources;
+    private List<Resource> commandXmlResources;
 
     /** Holds the stack of created commands */
     private Deque<Command<C>> commandStack = new ArrayDeque<Command<C>>();
@@ -47,6 +53,9 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
 
     /** The bound XML element builders */
     private Map<String, ElementBuilder<C>> elementBuilders;
+
+    /** Holds the resources already processed, used to detect circular dependencies between resources */
+    private Set<Resource> processedResources = new HashSet<Resource>();
 
     /**
      * Creates a new XML command builder
@@ -58,6 +67,22 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     /** {@inheritDoc} */
     @Override
     public void build(CommandCatalog<C> catalog) {
+        for (Resource commandResource : commandXmlResources) {
+            build(commandResource, catalog);
+        }
+    }
+
+    /**
+     * Builds the given command resource
+     * @param commandResource
+     * @param catalog
+     */
+    private void build(Resource commandResource, CommandCatalog<C> catalog) {
+        if (processedResources.contains(commandResource)) {
+            throw new BuilderException("Circular dependecy detected to resource %s", commandResource);
+        }
+        processedResources.add(commandResource);
+        // TODO
     }
 
     /**
@@ -66,11 +91,7 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
      * @return this builder (for method chaining)
      */
     public XmlCommandBuilder<C> addCommandXml(File commandXmlFile) {
-        try {
-            commandXmlResources.add(commandXmlFile.toURI().toURL());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+        commandXmlResources.add(new FileResource(commandXmlFile));
         return this;
     }
 
@@ -80,7 +101,7 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
      * @return this builder (for method chaining)
      */
     public XmlCommandBuilder<C> addCommandXml(URL commandResource) {
-        commandXmlResources.add(commandResource);
+        commandXmlResources.add(new URLResource(commandResource));
         return this;
     }
 
@@ -90,7 +111,17 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
      * @return this builder (for method chaining)
      */
     public XmlCommandBuilder<C> addCommandXml(String name) {
-        commandXmlResources.add(getClass().getClassLoader().getResource(name));
+        commandXmlResources.add(new ClassPathResource(name));
+        return this;
+    }
+
+    /**
+     * Adds a XML command resource to this builder
+     * @param resource the XML command resource
+     * @return this builder (for method chaining)
+     */
+    public XmlCommandBuilder<C> addCommandXml(Resource resource) {
+        commandXmlResources.add(resource);
         return this;
     }
 

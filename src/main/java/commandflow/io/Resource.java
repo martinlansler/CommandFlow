@@ -29,6 +29,14 @@ import java.net.URI;
  */
 public interface Resource {
     /**
+     * Checks if this resource exists.
+     * <p>
+     * This method provides a guarantee that the resource pointed to by this resource actually exists.
+     * @return <code>true</code> if this resource exists
+     */
+    boolean exist();
+
+    /**
      * Opens a new input stream to read the resource.
      * <p>
      * Note: Each invocation of this method <em>must</em> return a new stream. It is also expected that the latest version of the resource is returned if this is applicable, for instance a file on

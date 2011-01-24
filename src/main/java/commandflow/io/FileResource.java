@@ -50,6 +50,21 @@ public class FileResource extends AbstractResource {
 
     /** {@inheritDoc} */
     @Override
+    public boolean exist() {
+        return FileResource.exist(file);
+    }
+
+    /**
+     * Static form of {@link #exist()}
+     * @param file the file to check
+     * @return <code>true</code> if the file exists
+     */
+    protected static boolean exist(File file) {
+        return file.isFile() && file.canRead();
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public InputStream getInputStream() throws IOException {
         return new FileInputStream(file);
     }
@@ -71,7 +86,8 @@ public class FileResource extends AbstractResource {
         /** {@inheritDoc} */
         @Override
         public Resource resolve(URI uri) {
-            return new FileResource(uri);
+            File file = new File(uri);
+            return FileResource.exist(file) ? new FileResource(file) : null;
         }
     }
 }

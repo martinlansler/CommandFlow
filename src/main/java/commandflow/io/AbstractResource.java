@@ -33,10 +33,45 @@ public abstract class AbstractResource implements Resource {
         this.uri = uri;
     }
 
+    /**
+     * Creates an empty resource, use {@link #setUri(URI)} to set the URI.
+     */
+    protected AbstractResource() {
+    }
+
     /** {@inheritDoc} */
     @Override
     public URI getURI() {
         return uri;
+    }
+
+    /**
+     * @param uri the uri to set
+     */
+    protected void setUri(URI uri) {
+        this.uri = uri;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Resource)) {
+            return false;
+        }
+        Resource resource = (Resource) obj;
+        return uri.equals(resource.getURI());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        return uri.hashCode();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return String.format("Resource - uri: %s", uri);
     }
 
 }

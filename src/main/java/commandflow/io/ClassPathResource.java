@@ -18,6 +18,7 @@ package commandflow.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * A classpath resource.
@@ -32,11 +33,44 @@ import java.net.URI;
 public class ClassPathResource extends AbstractResource {
 
     /**
-     * Creates a new classpath resource using the current threads context class loader, see {@link Thread#getContextClassLoader()}.
+     * Creates a new classpath resource.
      * @param uri classpath resource identifier
      */
     public ClassPathResource(URI uri) {
         super(uri);
+    }
+
+    /**
+     * Creates a new classpath resource.
+     * @param resource classpath resource, same syntax as {@link Class#getResourceAsStream(String)}.
+     */
+    public ClassPathResource(String resource) {
+        try {
+            setUri(new URI(resource));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean exist() {
+        return ClassPathResource.exist(getURI());
+    }
+
+    /**
+     * Static form of {@link #exist()}.
+     * @param resource the resource to check for existence
+     * @return true if the resource exists
+     */
+    protected static boolean exist(URI uri) {
+        String resource = uri.getSchemeSpecificPart();
+        ClassLoader cl = ClassPathResource.class.getClassLoader();
+        if (cl.getResource(resource) != null) {
+            return true;
+        }
+        return Thread.currentThread().getContextClassLoader().getResource(resource) != null;
+
     }
 
     /** {@inheritDoc} */
@@ -48,18 +82,18 @@ public class ClassPathResource extends AbstractResource {
     /** {@inheritDoc} */
     @Override
     public InputStream getInputStream() throws IOException {
-        String clazz = getURI().getSchemeSpecificPart();
+        String resource = getURI().getSchemeSpecificPart();
         ClassLoader cl = getClass().getClassLoader();
-        InputStream is = cl.getResourceAsStream(clazz);
+        InputStream is = cl.getResourceAsStream(resource);
         if (is != null) {
             return is;
         }
         cl = Thread.currentThread().getContextClassLoader();
-        is = cl.getResourceAsStream(clazz);
+        is = cl.getResourceAsStream(resource);
         if (is != null) {
             return is;
         }
-        throw new IOException(String.format("Could not find classpath resource '%s'", clazz));
+        throw new IOException(String.format("Could not find classpath resource '%s'", resource));
     }
 
     /**
@@ -73,7 +107,7 @@ public class ClassPathResource extends AbstractResource {
         /** {@inheritDoc} */
         @Override
         public Resource resolve(URI uri) {
-            return new ClassPathResource(uri);
+            return ClassPathResource.exist(uri) ? new ClassPathResource(uri) : null;
         }
     }
 }
