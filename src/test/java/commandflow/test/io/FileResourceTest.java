@@ -28,8 +28,10 @@ import commandflow.io.Resource;
  */
 public class FileResourceTest extends AbstractResourceTest {
     public static final String EXISTING_RESOURCE;
+    public static final String NON_EXISTING_RESOURCE;
     static {
         EXISTING_RESOURCE = "src/test/java/" + FileResourceTest.class.getPackage().getName().replace('.', '/') + "/test.txt";
+        NON_EXISTING_RESOURCE = "src/test/java/" + FileResourceTest.class.getPackage().getName().replace('.', '/') + "/nonexisting";
     }
 
     /** {@inheritDoc} */
@@ -41,8 +43,7 @@ public class FileResourceTest extends AbstractResourceTest {
     /** {@inheritDoc} */
     @Override
     protected Resource createNonExistingResource() {
-        // TODO
-        return null;
+        return new FileResource(new File(NON_EXISTING_RESOURCE));
     }
 
 }

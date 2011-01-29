@@ -34,7 +34,7 @@ public class FileResource extends AbstractResource {
      * @param file to underlying file
      */
     public FileResource(File file) {
-        super(file.toURI());
+        super(file.getAbsoluteFile().toURI());
         this.file = file;
     }
 
@@ -45,7 +45,7 @@ public class FileResource extends AbstractResource {
      */
     public FileResource(URI uri) {
         super(uri);
-        this.file = new File(uri);
+        this.file = new File(uri).getAbsoluteFile();
     }
 
     /** {@inheritDoc} */
@@ -72,7 +72,7 @@ public class FileResource extends AbstractResource {
     /** {@inheritDoc} */
     @Override
     public Resource resolveRelative(URI uri) {
-        return new FileResource(new File(file, uri.getSchemeSpecificPart()));
+        return new FileResource(getURI().resolve(uri));
     }
 
     /**

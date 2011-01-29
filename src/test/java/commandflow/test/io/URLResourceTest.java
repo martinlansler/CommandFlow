@@ -15,6 +15,7 @@
  */
 package commandflow.test.io;
 
+import java.io.File;
 import java.net.URL;
 
 import commandflow.io.ClassPathResource;
@@ -28,8 +29,11 @@ import commandflow.io.URLResource;
  */
 public class URLResourceTest extends AbstractResourceTest {
     public static final String EXISTING_RESOURCE;
+    public static final String NON_EXISTING_RESOURCE;
     static {
-        EXISTING_RESOURCE = "file:src/test/java/" + URLResourceTest.class.getPackage().getName().replace('.', '/') + "/test.txt";
+        File f = new File("src/test/java/" + URLResourceTest.class.getPackage().getName().replace('.', '/') + "/test.txt");
+        EXISTING_RESOURCE = "file:" + f.getAbsolutePath();
+        NON_EXISTING_RESOURCE = "file:src/test/java/" + URLResourceTest.class.getPackage().getName().replace('.', '/') + "/nonexisting";
     }
 
     /**
@@ -42,9 +46,7 @@ public class URLResourceTest extends AbstractResourceTest {
 
     /** {@inheritDoc} */
     @Override
-    protected Resource createNonExistingResource() {
-        // TODO
-        return null;
+    protected Resource createNonExistingResource() throws Exception {
+        return new URLResource(new URL(NON_EXISTING_RESOURCE));
     }
-
 }

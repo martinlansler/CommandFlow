@@ -15,8 +15,13 @@
  */
 package commandflow.test.io;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URI;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import commandflow.io.Resource;
@@ -34,6 +39,39 @@ public abstract class AbstractResourceTest {
     public void testExists() throws Exception {
         Resource resource = createExistingResource();
         assertTrue(resource.exist());
+        //
+        resource = createNonExistingResource();
+        assertFalse(resource.exist());
+    }
+
+    @Test
+    public void testGetStream() throws Exception {
+        Resource resource = createExistingResource();
+        assertNotNull(resource.getInputStream());
+        //
+        resource = createNonExistingResource();
+        try {
+            resource.getInputStream();
+            Assert.fail();
+        } catch (Exception e) {
+            // OK
+        }
+    }
+
+    @Test
+    public void testGetUri() throws Exception {
+        Resource resource = createExistingResource();
+        assertNotNull(resource.getURI());
+        //
+        resource = createNonExistingResource();
+        assertNotNull(resource.getURI());
+    }
+
+    @Test
+    public void testResolveRelative() throws Exception {
+        Resource resource = createExistingResource();
+        Resource test2 = resource.resolveRelative(new URI("test2.txt"));
+        assertTrue(test2.exist());
     }
 
 }
