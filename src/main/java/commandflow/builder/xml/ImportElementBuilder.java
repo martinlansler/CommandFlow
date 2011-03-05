@@ -20,7 +20,7 @@ import java.util.Map;
 import commandflow.Command;
 
 /**
- * An element builder hat can build an import element containing an reference to another command XML.
+ * An element builder that can build an import element containing an reference to another command XML.
  * @author elansma
  */
 public class ImportElementBuilder<C> implements ElementBuilder<C> {

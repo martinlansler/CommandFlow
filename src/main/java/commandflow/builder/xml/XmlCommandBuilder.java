@@ -15,20 +15,30 @@
  */
 package commandflow.builder.xml;
 
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stax.StAXSource;
 import javax.xml.validation.Schema;
 
 import commandflow.Command;
 import commandflow.builder.BuilderException;
 import commandflow.builder.CommandBuilder;
+import commandflow.builder.CompositeCommand;
 import commandflow.catalog.CommandCatalog;
 import commandflow.io.ClassPathResource;
 import commandflow.io.FileResource;
@@ -46,7 +56,7 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     private List<Resource> commandXmlResources;
 
     /** Holds the stack of created commands */
-    private Deque<Command<C>> commandStack = new ArrayDeque<Command<C>>();
+    private Deque<Command<C>> commandStack;
 
     /** The schema used to validate the command XML, not used if <code>null</code> */
     private Schema schema;
@@ -55,34 +65,180 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     private Map<String, ElementBuilder<C>> elementBuilders;
 
     /** Holds the resources already processed, used to detect circular dependencies between resources */
-    private Set<Resource> processedResources = new HashSet<Resource>();
+    private Set<Resource> processedResources;
 
-    /**
-     * Creates a new XML command builder
-     */
-    XmlCommandBuilder() {
-        ; // no more
+    /** The command catalog */
+    private CommandCatalog<C> catalog;
+
+    /** StAX factory */
+    private static final XMLInputFactory xmlInputFactory;
+    static {
+        xmlInputFactory = XMLInputFactory.newInstance();
     }
 
     /** {@inheritDoc} */
     @Override
     public void build(CommandCatalog<C> catalog) {
+        init(catalog);
         for (Resource commandResource : commandXmlResources) {
-            build(commandResource, catalog);
+            build(commandResource);
         }
     }
 
     /**
-     * Builds the given command resource
-     * @param commandResource
-     * @param catalog
+     * Initializes
+     * @param catalog the catalog to initialize the builder for
      */
-    private void build(Resource commandResource, CommandCatalog<C> catalog) {
+    private void init(CommandCatalog<C> catalog) {
+        this.catalog = catalog;
+        commandStack = new ArrayDeque<Command<C>>();
+        elementBuilders = new HashMap<String, ElementBuilder<C>>();
+        processedResources = new HashSet<Resource>();
+    }
+
+    /**
+     * Builds the given command resource
+     * @param commandResource the resource to build
+     */
+    private void build(Resource commandResource) {
         if (processedResources.contains(commandResource)) {
             throw new BuilderException("Circular dependecy detected to resource %s", commandResource);
         }
         processedResources.add(commandResource);
-        // TODO
+        validate(commandResource);
+        parseCommandXML(commandResource);
+    }
+
+    /**
+     * Parses the given command XML and builds the contained commands
+     * @param commandResource the command XML
+     */
+    private void parseCommandXML(Resource commandResource) {
+        try {
+            XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(commandResource.getInputStream());
+            while (reader.hasNext()) {
+                parseCommandElement(reader);
+            }
+        } catch (Exception e) {
+            throw new BuilderException(e);
+        }
+    }
+
+    /**
+     * Parses a given command element, either a start element or end element tag
+     * @param reader the stream reader
+     * @throws XMLStreamException
+     */
+    private void parseCommandElement(XMLStreamReader reader) throws XMLStreamException {
+        switch (reader.nextTag()) {
+        case START_ELEMENT:
+            String elementName = reader.getName().getLocalPart();
+            Map<String, String> attributes = getAttributes(reader);
+            Command<C> command = buildCommand(elementName, attributes);
+            wireCommandAndPushToStack(getCommandName(attributes), command);
+            break;
+        case END_ELEMENT:
+            popCommandFromStack();
+            break;
+        default:
+            throw new BuilderException("Unexpected tag type %s", reader.getEventType());
+        }
+    }
+
+    /**
+     * Pops the top command from the stack
+     */
+    private void popCommandFromStack() {
+        commandStack.pop();
+    }
+
+    /**
+     * Gets the name of a command from its element attributes
+     * @return the name of the command, <code>null</code> if no name is found
+     */
+    private String getCommandName(Map<String, String> attributes) {
+        return attributes.get(attributes.get("name")); // TODO: make lookup interface
+    }
+
+    /**
+     * Wires the command by adding it to its parent (if any) and pushes it onto the command stack
+     * @param elementName the command name
+     * @param command
+     */
+    private void wireCommandAndPushToStack(String elementName, Command<C> command) {
+        if (commandStack.isEmpty()) {
+            catalog.addCommand(elementName, command);
+        } else {
+            addToCompositeParent(command);
+        }
+        commandStack.push(command);
+    }
+
+    /**
+     * Builds the specified command
+     * @param elementName name of the command element
+     * @param attributes the command attributes
+     * @return
+     */
+    private Command<C> buildCommand(String elementName, Map<String, String> attributes) {
+        ElementBuilder<C> builder = getCommandBuilder(elementName);
+        return builder.build(this, elementName, attributes);
+    }
+
+    /**
+     * @return the command builder for the given element name
+     */
+    private ElementBuilder<C> getCommandBuilder(String elementName) {
+        ElementBuilder<C> builder = elementBuilders.get(elementName);
+        if (builder == null) {
+            throw new BuilderException("Cannot find builder for element %s", elementName);
+        }
+        return builder;
+    }
+
+    /**
+     * Gets the attribute map of the current reader element
+     * @param reader the reader
+     * @return the attribute map
+     */
+    private Map<String, String> getAttributes(XMLStreamReader reader) {
+        Map<String, String> attributes = new HashMap<String, String>();
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            attributes.put(reader.getAttributeLocalName(i), reader.getAttributeValue(i));
+        }
+        return attributes;
+    }
+
+    /**
+     * Pushes a command to the top composite command, if the top command is not composite a runtime error is raised.
+     * @param command the command to push
+     */
+    private void addToCompositeParent(Command<C> command) {
+        if (!(commandStack.peek() instanceof CompositeCommand)) {
+            throw new BuilderException("Cannot add command %s to non-composite command %s", command, commandStack.peek());
+        }
+        @SuppressWarnings("unchecked")
+        CompositeCommand<C> parentCommand = (CompositeCommand<C>) commandStack.peek();
+        parentCommand.add(command);
+    }
+
+    /**
+     * Validates the given command XML according to the set schema
+     * @param commandResource the command XML
+     * 
+     */
+    private void validate(Resource commandResource) {
+        if (schema == null) {
+            return;
+        }
+        InputStream is;
+        try {
+            is = commandResource.getInputStream();
+            StAXSource commandXml = new StAXSource(xmlInputFactory.createXMLStreamReader(is));
+            schema.newValidator().validate(commandXml);
+        } catch (Exception e) {
+            throw new BuilderException(e, "Failed to validate resource: %s according to schema: %s", commandResource.getURI(), schema);
+        }
     }
 
     /**
