@@ -9,6 +9,10 @@ jar {
     }
 }
 
+sourceSets {
+    examples
+}
+
 repositories {
     mavenCentral()
 }
