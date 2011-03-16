@@ -17,21 +17,27 @@ package commandflow.builder.xml;
 
 import java.util.Map;
 
-import commandflow.Command;
+import javax.xml.namespace.QName;
 
 /**
- * An element builder that can build an import element containing an reference to another command XML.
+ * An element processor for an import element containing an reference to another command XML.
+ * <p>
+ * The current {@link XmlCommandBuilder} is cloned and invoked to build the import command XML.
  * @author elansma
  */
-public class ImportElementBuilder<C> implements ElementBuilder<C> {
+public class ImportElementProcessor<C> implements XmlElementProcessor<C> {
 
     /** {@inheritDoc} */
     @Override
-    public Command<C> build(XmlCommandBuilder<C> xmlCommandBuilder, String elementName, Map<String, String> attributes) {
-        XmlCommandBuilder<C> clone = xmlCommandBuilder.clone();
-
+    public void startElement(XmlCommandBuilder<C> xmlCommandBuilder, QName elementName, Map<String, String> attributes) {
         // TODO
-        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void endElement(XmlCommandBuilder<C> xmlCommandBuilder, QName elementName) {
+        // TODO
+
     }
 
 }

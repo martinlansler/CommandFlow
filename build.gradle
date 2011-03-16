@@ -10,7 +10,7 @@ jar {
 }
 
 sourceSets {
-    examples
+    example
 }
 
 repositories {

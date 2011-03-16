@@ -15,17 +15,21 @@
  */
 package commandflow.builder.xml;
 
-import static commandflow.builder.xml.XmlBuilderUtil.newInstance;
+import static commandflow.command.CommandUtil.newInstance;
 
 import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import commandflow.Command;
 
 /**
- * A command builder that always creates a fixed command class.
+ * A command processor that always creates a fixed command class.
+ * <p>
+ * This processor is usually used when the element name determines the command implementation class.
  * @author elansma
  */
-public class FixedClassElementBuilder<C> implements ElementBuilder<C> {
+public class FixedCommandProcessor<C> extends AbstractCommandProcessor<C> {
     /** The command class to create */
     private Class<? extends Command<C>> clazz;
 
@@ -34,14 +38,13 @@ public class FixedClassElementBuilder<C> implements ElementBuilder<C> {
      * @param clazz the command class
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public FixedClassElementBuilder(Class<? extends Command> clazz) {
+    public FixedCommandProcessor(Class<? extends Command> clazz) {
         this.clazz = (Class<? extends Command<C>>) clazz;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Command<C> build(XmlCommandBuilder<C> xmlCommandBuilder, String elementName, Map<String, String> attributes) {
+    protected Command<C> createCommand(QName elementName, Map<String, String> attributes) {
         return newInstance(clazz);
     }
-
 }

@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.builder.xml;
+package commandflow.command;
 
 import commandflow.Command;
 import commandflow.builder.BuilderException;
 import commandflow.builder.CompositeCommand;
 
 /**
- * Various shared util methods
+ * Various shared util methods for commands.
  * @author elansma
  */
-final class XmlBuilderUtil {
+public final class CommandUtil {
     /** Util class */
-    private XmlBuilderUtil() {
+    private CommandUtil() {
     }
 
     /**
@@ -34,7 +34,7 @@ final class XmlBuilderUtil {
      * @return the command class
      */
     @SuppressWarnings("unchecked")
-    static <C> Command<C> newInstance(String clazz) {
+    public static <C> Command<C> newInstance(String clazz) {
         try {
             return (Command<C>) Class.forName(clazz).newInstance();
         } catch (Exception e) {
@@ -47,7 +47,7 @@ final class XmlBuilderUtil {
      * @param clazz the command class
      * @return the command class
      */
-    static <C> Command<C> newInstance(Class<? extends Command<C>> clazz) {
+    public static <C> Command<C> newInstance(Class<? extends Command<C>> clazz) {
         try {
             return clazz.newInstance();
         } catch (Exception e) {
@@ -61,7 +61,7 @@ final class XmlBuilderUtil {
      * @return the composite command
      */
     @SuppressWarnings("unchecked")
-    static <C> CompositeCommand<C> asComposite(Command<C> command) {
+    public static <C> CompositeCommand<C> asComposite(Command<C> command) {
         if (!(command instanceof CompositeCommand)) {
             throw new BuilderException("Command %s is not a composite command", command);
         }

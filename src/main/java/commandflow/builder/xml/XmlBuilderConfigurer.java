@@ -18,11 +18,11 @@ package commandflow.builder.xml;
 /**
  * Interface for configuring a {@link XmlCommandBuilder}.
  * <p>
- * This callback interface is used by {@link XmlCommandBuilderFactory} when creating and configuring a {@link XmlCommandBuilder} for a given XML
+ * This callback interface is used by {@link XmlBuilderFactory} when creating and configuring a {@link XmlCommandBuilder} for a given XML
  * namespace.
  * @author elansma
  */
-public interface XmlCommandBuilderConfigurer {
+public interface XmlBuilderConfigurer {
     /**
      * Called to configure a new {@link XmlCommandBuilder} instance
      * @param builder the builder to configure

@@ -19,7 +19,6 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -29,12 +28,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stax.StAXSource;
 import javax.xml.validation.Schema;
 
+import com.sun.org.apache.xml.internal.resolver.Catalog;
 import commandflow.Command;
 import commandflow.builder.BuilderException;
 import commandflow.builder.CommandBuilder;
@@ -61,8 +62,8 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     /** The schema used to validate the command XML, not used if <code>null</code> */
     private Schema schema;
 
-    /** The bound XML element builders */
-    private Map<String, ElementBuilder<C>> elementBuilders;
+    /** The bound XML element processors */
+    private Map<QName, XmlElementProcessor<C>> xmlElementProcessors;
 
     /** Holds the resources already processed, used to detect circular dependencies between resources */
     private Set<Resource> processedResources;
@@ -92,7 +93,7 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     private void init(CommandCatalog<C> catalog) {
         this.catalog = catalog;
         commandStack = new ArrayDeque<Command<C>>();
-        elementBuilders = new HashMap<String, ElementBuilder<C>>();
+        xmlElementProcessors = new HashMap<QName, XmlElementProcessor<C>>();
         processedResources = new HashSet<Resource>();
     }
 
@@ -106,18 +107,18 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
         }
         processedResources.add(commandResource);
         validate(commandResource);
-        parseCommandXML(commandResource);
+        processCommandXML(commandResource);
     }
 
     /**
-     * Parses the given command XML and builds the contained commands
+     * Processes the given command XML and builds the contained commands
      * @param commandResource the command XML
      */
-    private void parseCommandXML(Resource commandResource) {
+    private void processCommandXML(Resource commandResource) {
         try {
             XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(commandResource.getInputStream());
             while (reader.hasNext()) {
-                parseCommandElement(reader);
+                processCommandElement(reader);
             }
         } catch (Exception e) {
             throw new BuilderException(e);
@@ -125,20 +126,18 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     }
 
     /**
-     * Parses a given command element, either a start element or end element tag
+     * Processes the given command element, either a start element or end element tag
      * @param reader the stream reader
      * @throws XMLStreamException
      */
-    private void parseCommandElement(XMLStreamReader reader) throws XMLStreamException {
+    private void processCommandElement(XMLStreamReader reader) throws XMLStreamException {
         switch (reader.nextTag()) {
         case START_ELEMENT:
-            String elementName = reader.getName().getLocalPart();
             Map<String, String> attributes = getAttributes(reader);
-            Command<C> command = buildCommand(elementName, attributes);
-            wireCommandAndPushToStack(getCommandName(attributes), command);
+            processStartElement(reader.getName(), attributes);
             break;
         case END_ELEMENT:
-            popCommandFromStack();
+            processEndElement(reader.getName());
             break;
         default:
             throw new BuilderException("Unexpected tag type %s", reader.getEventType());
@@ -146,28 +145,34 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     }
 
     /**
+     * Processes the end of an element via the associated {@link XmlElementProcessor}
+     * @param name name of the command element
+     */
+    private void processEndElement(QName name) {
+        XmlElementProcessor<C> processor = getCommandProcessor(name);
+        processor.endElement(this, name);
+    }
+
+    /**
      * Pops the top command from the stack
      */
-    private void popCommandFromStack() {
+    public void popCommand() {
         commandStack.pop();
     }
 
     /**
-     * Gets the name of a command from its element attributes
-     * @return the name of the command, <code>null</code> if no name is found
+     * Pushes a command to the top of the stack.
+     * <p>
+     * If the command is a top level command it will be added to the associated {@link Catalog} otherwise it will be wired to the surrounding composite command found on top of the stack.
+     * @param command the command to push
+     * @param name optional command name, must be specified if the current stack is empty as this is then a top level command that will be bound in the catalog
      */
-    private String getCommandName(Map<String, String> attributes) {
-        return attributes.get(attributes.get("name")); // TODO: make lookup interface
-    }
-
-    /**
-     * Wires the command by adding it to its parent (if any) and pushes it onto the command stack
-     * @param elementName the command name
-     * @param command
-     */
-    private void wireCommandAndPushToStack(String elementName, Command<C> command) {
+    public void pushCommand(Command<C> command, String name) {
         if (commandStack.isEmpty()) {
-            catalog.addCommand(elementName, command);
+            if (name == null) {
+                throw new BuilderException("Command name must be specified for top level command %s", command);
+            }
+            catalog.addCommand(name, command);
         } else {
             addToCompositeParent(command);
         }
@@ -175,25 +180,24 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     }
 
     /**
-     * Builds the specified command
-     * @param elementName name of the command element
+     * Processes the start of element via the associated {@link XmlElementProcessor}
+     * @param name name of the command element
      * @param attributes the command attributes
-     * @return
      */
-    private Command<C> buildCommand(String elementName, Map<String, String> attributes) {
-        ElementBuilder<C> builder = getCommandBuilder(elementName);
-        return builder.build(this, elementName, attributes);
+    private void processStartElement(QName name, Map<String, String> attributes) {
+        XmlElementProcessor<C> processor = getCommandProcessor(name);
+        processor.startElement(this, name, attributes);
     }
 
     /**
-     * @return the command builder for the given element name
+     * @return the command processor for the given element name
      */
-    private ElementBuilder<C> getCommandBuilder(String elementName) {
-        ElementBuilder<C> builder = elementBuilders.get(elementName);
-        if (builder == null) {
-            throw new BuilderException("Cannot find builder for element %s", elementName);
+    private XmlElementProcessor<C> getCommandProcessor(QName name) {
+        XmlElementProcessor<C> processor = xmlElementProcessors.get(name);
+        if (processor == null) {
+            throw new BuilderException("Cannot find processor for element %s", name);
         }
-        return builder;
+        return processor;
     }
 
     /**
@@ -231,10 +235,8 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
         if (schema == null) {
             return;
         }
-        InputStream is;
         try {
-            is = commandResource.getInputStream();
-            StAXSource commandXml = new StAXSource(xmlInputFactory.createXMLStreamReader(is));
+            StAXSource commandXml = new StAXSource(xmlInputFactory.createXMLStreamReader(commandResource.getInputStream()));
             schema.newValidator().validate(commandXml);
         } catch (Exception e) {
             throw new BuilderException(e, "Failed to validate resource: %s according to schema: %s", commandResource.getURI(), schema);
@@ -292,13 +294,13 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     }
 
     /**
-     * Adds a command element builder
+     * Adds a command element processor
      * @param elementName the element name this builder binds to, if the element name already has a binding it will be replaced by this binding
      * @param elementCommandBuilder the command element builder
      * @return this builder (for method chaining)
      */
-    public XmlCommandBuilder<C> addElementBuilder(String elementName, ElementBuilder<C> elementCommandBuilder) {
-        elementBuilders.put(elementName, elementCommandBuilder);
+    public XmlCommandBuilder<C> addElementProcessor(QName elementName, XmlElementProcessor<C> elementCommandBuilder) {
+        xmlElementProcessors.put(elementName, elementCommandBuilder);
         return this;
     }
 
@@ -309,7 +311,7 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
      * @return this builder (for method chaining)
      */
     public XmlCommandBuilder<C> clearBindings() {
-        elementBuilders.clear();
+        xmlElementProcessors.clear();
         return this;
     }
 

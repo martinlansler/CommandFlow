@@ -15,10 +15,12 @@
  */
 package commandflow.builder.xml;
 
-import static commandflow.builder.xml.XmlBuilderUtil.asComposite;
-import static commandflow.builder.xml.XmlBuilderUtil.newInstance;
+import static commandflow.command.CommandUtil.asComposite;
+import static commandflow.command.CommandUtil.newInstance;
 
 import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import commandflow.Command;
 import commandflow.builder.CompositeCommand;
@@ -26,11 +28,11 @@ import commandflow.builder.CompositeCommand;
 /**
  * A builder that can create a conditional command (must implement {@link CompositeCommand}) from an XML element.
  * <p>
- * The condition command is created in one of the ways specified in {@link CommandElementBuilder}. Once the condition is created is pushed as the first command via the
+ * The condition command is created in one of the ways specified in {@link AttributeDrivenCommandProcessor}. Once the condition is created is pushed as the first command via the
  * {@link CompositeCommand#add(commandflow.Command)} method.
  * @author elansma
  */
-public class ConditionalCommandElementBuilder<C> extends CommandElementBuilder<C> {
+public class ConditionalCommandElementProcessor<C> extends AttributeDrivenCommandProcessor<C> {
     /** The conditional command */
     private Class<? extends Command<C>> conditionalCommandClass;
 
@@ -41,15 +43,15 @@ public class ConditionalCommandElementBuilder<C> extends CommandElementBuilder<C
      * @param scriptAttribute the name of the attribute holding the command script, ignored if <code>null</code>
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public ConditionalCommandElementBuilder(Class<? extends Command> conditionalCommandClass, String classAttribute, String refAttribute, String scriptAttribute) {
+    public ConditionalCommandElementProcessor(Class<? extends Command> conditionalCommandClass, String classAttribute, String refAttribute, String scriptAttribute) {
         super(classAttribute, refAttribute, scriptAttribute);
         this.conditionalCommandClass = (Class<? extends Command<C>>) conditionalCommandClass;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Command<C> build(XmlCommandBuilder<C> xmlCommandBuilder, String elementName, Map<String, String> attributes) {
-        Command<C> condition = super.build(xmlCommandBuilder, elementName, attributes);
+    protected Command<C> createCommand(QName elementName, Map<String, String> attributes) {
+        Command<C> condition = super.createCommand(elementName, attributes);
         Command<C> conditionalCommand = newInstance(conditionalCommandClass);
         asComposite(conditionalCommand).add(condition);
         return conditionalCommand;

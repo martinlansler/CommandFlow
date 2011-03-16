@@ -15,10 +15,12 @@
  */
 package commandflow.builder.xml;
 
-import static commandflow.builder.xml.XmlBuilderUtil.newInstance;
+import static commandflow.command.CommandUtil.newInstance;
 import static javax.xml.bind.DatatypeConverter.parseBoolean;
 
 import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import commandflow.Command;
 import commandflow.builder.BuilderException;
@@ -26,7 +28,7 @@ import commandflow.catalog.CommandReference;
 import commandflow.command.ScriptCommand;
 
 /**
- * A builder that can create a command (simple or composite) from an XML element.
+ * A processor that can create a command (simple or composite) from an XML element by means of the set attributes.
  * <p>
  * The command can create the command in three different ways (in the given priority order):
  * <ul>
@@ -37,7 +39,7 @@ import commandflow.command.ScriptCommand;
  * Hence either a {@link Command}, {@link CommandReference} or {@link ScriptCommand} instance is created.
  * @author elansma
  */
-public class CommandElementBuilder<C> implements ElementBuilder<C> {
+public class AttributeDrivenCommandProcessor<C> extends AbstractCommandProcessor<C> {
     /** The name of the class attribute, may be <code>null</code> */
     private String classAttribute;
     /** The name of the reference attribute, may be <code>null</code> */
@@ -53,7 +55,7 @@ public class CommandElementBuilder<C> implements ElementBuilder<C> {
      * @param refAttribute the name of the attribute holding the command reference, ignored if <code>null</code>
      * @param scriptAttribute the name of the attribute holding the command script, ignored if <code>null</code>
      */
-    public CommandElementBuilder(String classAttribute, String refAttribute, String scriptAttribute) {
+    public AttributeDrivenCommandProcessor(String classAttribute, String refAttribute, String scriptAttribute) {
         this.classAttribute = classAttribute;
         this.refAttribute = refAttribute;
         this.scriptAttribute = scriptAttribute;
@@ -61,7 +63,7 @@ public class CommandElementBuilder<C> implements ElementBuilder<C> {
 
     /** {@inheritDoc} */
     @Override
-    public Command<C> build(XmlCommandBuilder<C> xmlCommandBuilder, String elementName, Map<String, String> attributes) {
+    protected Command<C> createCommand(QName elementName, Map<String, String> attributes) {
         Command<C> command;
 
         if (hasAttribute(getClassAttribute(), attributes)) {
@@ -100,7 +102,7 @@ public class CommandElementBuilder<C> implements ElementBuilder<C> {
      * @param classAttribute the name of the class attribute
      * @return this builder (for method chaining)
      */
-    public CommandElementBuilder<C> setClassAttribute(String classAttribute) {
+    public AttributeDrivenCommandProcessor<C> setClassAttribute(String classAttribute) {
         this.classAttribute = classAttribute;
         return this;
     }
@@ -117,7 +119,7 @@ public class CommandElementBuilder<C> implements ElementBuilder<C> {
      * @param refAttribute the name of the reference attribute
      * @return this builder (for method chaining)
      */
-    public CommandElementBuilder<C> setRefAttribute(String refAttribute) {
+    public AttributeDrivenCommandProcessor<C> setRefAttribute(String refAttribute) {
         this.refAttribute = refAttribute;
         return this;
     }
@@ -149,7 +151,7 @@ public class CommandElementBuilder<C> implements ElementBuilder<C> {
      * @param scriptAttribute the name of the script attribute
      * @return this builder (for method chaining)
      */
-    public CommandElementBuilder<C> setScriptAttribute(String scriptAttribute) {
+    public AttributeDrivenCommandProcessor<C> setScriptAttribute(String scriptAttribute) {
         this.scriptAttribute = scriptAttribute;
         return this;
     }

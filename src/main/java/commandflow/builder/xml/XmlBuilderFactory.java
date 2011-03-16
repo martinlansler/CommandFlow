@@ -28,14 +28,14 @@ import commandflow.builder.BuilderException;
  * This class is thread-safe.
  * @author elansma
  */
-public class XmlCommandBuilderFactory {
+public class XmlBuilderFactory {
     /** The registered namespaces */
-    private static Map<String, XmlCommandBuilderConfigurer> namespaces = new HashMap<String, XmlCommandBuilderConfigurer>();
+    private static Map<String, XmlBuilderConfigurer> namespaces = new HashMap<String, XmlBuilderConfigurer>();
 
     // preload the known namespaces...
     static {
         try {
-            Class.forName("commandflow.builder.xml.v1.Configurer").newInstance();
+            Class.forName(XmlBuilderFactory.class.getPackage().getName() + ".v1.Configurer").newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -46,12 +46,12 @@ public class XmlCommandBuilderFactory {
      * @param namespaceURI the namespace URI
      * @param configurer the configurer to configure the {@link XmlCommandBuilder}
      */
-    public synchronized static void addNamespace(String namespaceURI, XmlCommandBuilderConfigurer configurer) {
+    public synchronized static void addNamespace(String namespaceURI, XmlBuilderConfigurer configurer) {
         namespaces.put(namespaceURI, configurer);
     }
 
     public synchronized static <C> XmlCommandBuilder<C> createBuilder(String namespaceURI) {
-        XmlCommandBuilderConfigurer configurer = namespaces.get(namespaceURI);
+        XmlBuilderConfigurer configurer = namespaces.get(namespaceURI);
         if (configurer == null) {
             throw new BuilderException("Cannot create an %s for namespace %s", XmlCommandBuilder.class.getSimpleName(), namespaceURI);
         }
