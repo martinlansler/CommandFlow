@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import commandflow.builder.BuilderException;
+import commandflow.builder.xml.v1.XmlBuilderConfigurerV1;
 
 /**
  * Factory for creating {@link XmlCommandBuilder}.
@@ -32,14 +33,17 @@ public class XmlBuilderFactory {
     /** The registered namespaces */
     private static Map<String, XmlBuilderConfigurer> namespaces = new HashMap<String, XmlBuilderConfigurer>();
 
-    // preload the known namespaces...
+    // preload the known namespaces (via static initialization blocks in class)...
     static {
         try {
-            Class.forName(XmlBuilderFactory.class.getPackage().getName() + ".v1.Configurer").newInstance();
-        } catch (Exception e) {
+            Class.forName(XmlBuilderConfigurerV1.class.getName());
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
+
+    /** Namespace for commandflow {@value} */
+    public static final String NAMESPACE_COMMANDFLOW_V1 = XmlBuilderConfigurerV1.NAMESPACE;
 
     /**
      * Adds a new command name namespace to this factory

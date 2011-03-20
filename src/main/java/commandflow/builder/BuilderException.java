@@ -15,20 +15,21 @@
  */
 package commandflow.builder;
 
+import commandflow.core.UncheckedException;
+
 /**
  * Base exception for all builder level exception.
  * @author elansma
  */
-public class BuilderException extends RuntimeException {
-    /** Serial id */
+public class BuilderException extends UncheckedException {
     private static final long serialVersionUID = 743597909102060267L;
 
-    public BuilderException(Throwable cause, String message, Object... formattingArgs) {
-        super(String.format(message, formattingArgs), cause);
+    public BuilderException(String message, Object... formattingArgs) {
+        super(message, formattingArgs);
     }
 
-    public BuilderException(String message, Object... formattingArgs) {
-        super(String.format(message, formattingArgs));
+    public BuilderException(Throwable cause, String message, Object... formattingArgs) {
+        super(cause, message, formattingArgs);
     }
 
     public BuilderException(Throwable cause) {

@@ -15,6 +15,8 @@
  */
 package commandflow.builder.xml.v1;
 
+import static commandflow.util.ResourceLoaderUtil.getResourceAsStream;
+
 import java.io.InputStream;
 
 import javax.xml.XMLConstants;
@@ -92,7 +94,7 @@ public class XmlBuilderConfigurerV1 implements XmlBuilderConfigurer {
     public static final Schema COMMAND_SCHEMA;
 
     static {
-        InputStream is = XmlCommandBuilder.class.getClassLoader().getResourceAsStream("commandflow/builder/xml/v1/command.xsd");
+        InputStream is = getResourceAsStream(XmlBuilderConfigurerV1.class.getPackage(), "commandflow.xsd");
         try {
             COMMAND_SCHEMA = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(new StreamSource(is));
         } catch (SAXException e) {

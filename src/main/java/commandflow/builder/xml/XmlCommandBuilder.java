@@ -21,6 +21,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -77,6 +78,11 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
         xmlInputFactory = XMLInputFactory.newInstance();
     }
 
+    public XmlCommandBuilder() {
+        commandXmlResources = new ArrayList<Resource>();
+        xmlElementProcessors = new HashMap<QName, XmlElementProcessor<C>>();
+    }
+
     /** {@inheritDoc} */
     @Override
     public void build(CommandCatalog<C> catalog) {
@@ -93,7 +99,6 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     private void init(CommandCatalog<C> catalog) {
         this.catalog = catalog;
         commandStack = new ArrayDeque<Command<C>>();
-        xmlElementProcessors = new HashMap<QName, XmlElementProcessor<C>>();
         processedResources = new HashSet<Resource>();
     }
 

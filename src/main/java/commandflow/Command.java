@@ -18,13 +18,15 @@ package commandflow;
 /**
  * Main interface for a command.
  * <p>
- * A command may be created by either implementing this interface or using the {@link commandflow.annotation.Command} annotation.
+ * A command may be created by either implementing this interface or using the {@link commandflow.command.annotation.Command} annotation.
  * <p>
- * A command encapsulates a piece of processing logic that can be composed into greater flows by combining with other commands. By convention a
- * command should be state-less, i.e. no state should be kept in the command that is affected by the processing. This requirements allows the
- * processing flow to handle concurrency without any synchronization. All state is kept in the <em>context class</em>, the type of the context class is generic
- * since its implementation is domain specific. A command has a boolean return type, this is referred to as the <em>command status</em>. By convention <code>true</code> usually means that the processing
- * went well or that some desired condition was fulfilled. Commands that implement flow branching can use the return value to decide the processing flow.
+ * A command encapsulates a piece of processing logic that can be composed into greater flows by combining with other commands. By convention a command should be state-less, i.e. no state should be
+ * kept in the command that is affected by the processing. This requirements allows the processing flow to handle concurrency without any synchronization. All state is kept in the
+ * <em>context class</em>, the type of the context class is generic since its implementation is domain specific. A command has a boolean return type, this is referred to as the <em>command status</em>
+ * . By convention <code>true</code> usually means that the processing went well or that some desired condition was fulfilled. Commands that implement flow branching can use the return value to decide
+ * the processing flow.
+ * <p>
+ * Exception can raise unchecked exceptions to terminate the command execution, any unchecked exception may be used.
  * @param <C> the context class of the commands
  * @author elansma
  */

@@ -13,28 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.catalog;
+package commandflow.util;
 
 import commandflow.core.UncheckedException;
 
 /**
- * Unchecked exception for all exception raised by the catalog.
- * <p>
- * Note: This exception is only related to the catalog implementation itself and not to the runtime execution of commands handled by the catalog.
+ * Exception raised to indicate that an expected resource could not be loaded.
  * @author elansma
  */
-public class CatalogException extends UncheckedException {
-    private static final long serialVersionUID = -6632328115517415046L;
+public class ResourceNotFoundException extends UncheckedException {
+    private static final long serialVersionUID = 5261535826089209448L;
 
-    public CatalogException(String message, Object... formattingArgs) {
+    public ResourceNotFoundException(String message, Object... formattingArgs) {
         super(message, formattingArgs);
     }
 
-    public CatalogException(Throwable cause, String message, Object... formattingArgs) {
+    public ResourceNotFoundException(Throwable cause, String message, Object... formattingArgs) {
         super(cause, message, formattingArgs);
     }
 
-    public CatalogException(Throwable cause) {
+    public ResourceNotFoundException(Throwable cause) {
         super(cause);
     }
+
 }
