@@ -44,7 +44,8 @@ public interface Resource {
      * <p>
      * It's the callers responsibility to ensure the stream is properly closed.
      * @return a new stream to read the resource
-     * @throws IOException if the stream could not be opened
+     * @throws ResourceNotFoundException if the stream could not be found
+     * @throws IOException if an IO error occurs
      */
     InputStream getInputStream() throws IOException;
 

@@ -15,6 +15,8 @@
  */
 package commandflow.catalog;
 
+import java.util.Map;
+
 import commandflow.Command;
 import commandflow.builder.BuilderException;
 import commandflow.builder.CommandBuilder;
@@ -96,11 +98,10 @@ public interface CommandCatalog<C> {
     /**
      * Adds a named command.
      * <p>
-     * This method is typically invoked from the {@link CommandBuilder} but it can also be directly invoked to add a command programatically. If a
-     * previous command already exists with this name it will be replaced with the new command.
+     * This method is typically invoked from the {@link CommandBuilder} but it can also be directly invoked to add a command programatically. If a previous command already exists with this name it
+     * will be replaced with the new command.
      * <p>
-     * If a new command is added after {@link #link()} and {@link #init()} have been invoked these methods need to be reinvoked to ensure that the
-     * command is linked and initialized.
+     * If a new command is added after {@link #link()} and {@link #init()} have been invoked these methods need to be reinvoked to ensure that the command is linked and initialized.
      * @param name the command name
      * @param command the command
      * @return the command catalog (for method chaining)
@@ -113,4 +114,19 @@ public interface CommandCatalog<C> {
      * @return the command, <code>null</code> if not found
      */
     Command<C> getCommand(String name);
+
+    /**
+     * Removes a specified command from the catalog
+     * @param name the command to remove
+     * @return the removed command, <code>null</code> if the catalog id not contain the named command
+     */
+    Command<C> removeCommand(String name);
+
+    /**
+     * Gets a map with all commands, map key is the command name.
+     * <p>
+     * The returned map is safe to modify as this method will create a new map each time.
+     * @return a mapping of all held commands
+     */
+    Map<String, Command<C>> getCommands();
 }

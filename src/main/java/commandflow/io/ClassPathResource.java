@@ -15,7 +15,6 @@
  */
 package commandflow.io;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -52,6 +51,15 @@ public class ClassPathResource extends AbstractResource {
         }
     }
 
+    /**
+     * Creates a new classpath resource
+     * @param parentPackage the parent package
+     * @param name the resource name under the parent directory
+     */
+    public ClassPathResource(Package parentPackage, String name) {
+        this(String.format("%s/%s", parentPackage.getName().replace('.', '/'), name));
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean exist() {
@@ -81,7 +89,7 @@ public class ClassPathResource extends AbstractResource {
 
     /** {@inheritDoc} */
     @Override
-    public InputStream getInputStream() throws IOException {
+    public InputStream getInputStream() {
         String resource = getURI().getSchemeSpecificPart();
         ClassLoader cl = getClass().getClassLoader();
         InputStream is = cl.getResourceAsStream(resource);
@@ -93,7 +101,7 @@ public class ClassPathResource extends AbstractResource {
         if (is != null) {
             return is;
         }
-        throw new IOException(String.format("Could not find classpath resource '%s'", resource));
+        throw new ResourceNotFoundException("Could not find classpath resource '%s'", resource);
     }
 
     /**

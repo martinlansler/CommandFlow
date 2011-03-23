@@ -16,31 +16,39 @@
 package commandflow.test.builder.xml;
 
 import org.junit.Before;
-import org.junit.Test;
 
-import commandflow.builder.xml.XmlBuilderFactory;
 import commandflow.builder.xml.XmlCommandBuilder;
-import commandflow.builder.xml.v1.XmlBuilderConfigurerV1;
+import commandflow.builder.xml.XmlElementProcessor;
 import commandflow.catalog.DefaultCommandCatalog;
+import commandflow.io.ClassPathResource;
 
 /**
- * Tests {@link XmlCommandBuilder}.
- * <p>
- * Tests are done using schema of {@link XmlBuilderConfigurerV1} so as to avoid having to build a new schema just for testing.
+ * Base class for testing {@link XmlElementProcessor} implementations.
  * @author elansma
  */
-public class TestXmlCommandBuilder {
-    private XmlCommandBuilder<Object> xmlCommandBuilder;
+public abstract class AbstractXmlElementProcessorTest {
     private DefaultCommandCatalog<Object> commandCatalog;
+    private XmlCommandBuilder<Object> xmlCommandBuilder;
 
     @Before
     public void init() {
-        xmlCommandBuilder = XmlBuilderFactory.createBuilder(XmlBuilderFactory.NAMESPACE_COMMANDFLOW_V1);
         commandCatalog = new DefaultCommandCatalog<Object>();
+        xmlCommandBuilder = new XmlCommandBuilder<Object>();
+        commandCatalog.addCommandBuilder(xmlCommandBuilder);
+        testInit();
+        xmlCommandBuilder.addCommandXml(new ClassPathResource(getClass().getPackage(), getTestResourceName()));
+        commandCatalog.make();
     }
 
-    @Test
-    public void testBuild() {
-        xmlCommandBuilder.build(commandCatalog);
+    protected abstract String getTestResourceName();
+
+    protected abstract void testInit();
+
+    protected DefaultCommandCatalog<Object> getCommandCatalog() {
+        return commandCatalog;
+    }
+
+    protected XmlCommandBuilder<Object> getXmlCommandBuilder() {
+        return xmlCommandBuilder;
     }
 }

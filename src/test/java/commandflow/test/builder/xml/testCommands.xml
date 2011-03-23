@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<commands xmlns="http://commandflow/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://commandflow/1 ../../../../../../../main/java/commandflow/builder/xml/v1/commandflow.xsd">
-
-  <!-- Named command with class definition -->
-  <command name="trueCommand" class="commandflow.command.TrueCommand" />
-
-</commands>

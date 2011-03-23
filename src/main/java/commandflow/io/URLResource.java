@@ -82,8 +82,12 @@ public class URLResource extends AbstractResource {
 
     /** {@inheritDoc} */
     @Override
-    public InputStream getInputStream() throws IOException {
-        return url.openStream();
+    public InputStream getInputStream() {
+        try {
+            return url.openStream();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /** {@inheritDoc} */

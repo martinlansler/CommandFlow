@@ -17,7 +17,7 @@ package commandflow.io;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URI;
 
@@ -65,8 +65,12 @@ public class FileResource extends AbstractResource {
 
     /** {@inheritDoc} */
     @Override
-    public InputStream getInputStream() throws IOException {
-        return new FileInputStream(file);
+    public InputStream getInputStream() {
+        try {
+            return new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new ResourceNotFoundException(e, "Could not find file resource '%s'", file.getPath());
+        }
     }
 
     /** {@inheritDoc} */

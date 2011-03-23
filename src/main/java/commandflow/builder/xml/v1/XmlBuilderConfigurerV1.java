@@ -15,7 +15,7 @@
  */
 package commandflow.builder.xml.v1;
 
-import static commandflow.util.ResourceLoaderUtil.getResourceAsStream;
+import static commandflow.io.ResourceUtil.getResourceAsStream;
 
 import java.io.InputStream;
 
@@ -28,8 +28,9 @@ import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 
 import commandflow.builder.xml.AttributeDrivenCommandProcessor;
-import commandflow.builder.xml.ConditionalCommandElementProcessor;
+import commandflow.builder.xml.ConditionalCommandProcessor;
 import commandflow.builder.xml.FixedCommandProcessor;
+import commandflow.builder.xml.IgnoreElementProcessor;
 import commandflow.builder.xml.XmlBuilderConfigurer;
 import commandflow.builder.xml.XmlBuilderFactory;
 import commandflow.builder.xml.XmlCommandBuilder;
@@ -52,6 +53,8 @@ public class XmlBuilderConfigurerV1 implements XmlBuilderConfigurer {
     /** The namespace of this command XML */
     public static final String NAMESPACE = "http://commandflow/1";
 
+    /** Element {@value} */
+    public static final QName COMMANDS_ELEMENT = new QName(NAMESPACE, "commands");
     /** Element {@value} */
     public static final QName COMMAND_ELEMENT = new QName(NAMESPACE, "command");
     /** Element {@value} */
@@ -106,13 +109,15 @@ public class XmlBuilderConfigurerV1 implements XmlBuilderConfigurer {
     @Override
     public <C> void configure(XmlCommandBuilder<C> builder) {
         builder.setCommandSchema(COMMAND_SCHEMA);
-        //
+
+        builder.addElementProcessor(COMMANDS_ELEMENT, new IgnoreElementProcessor<C>());
+
         builder.addElementProcessor(COMMAND_ELEMENT, new AttributeDrivenCommandProcessor<C>(CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
-        //
-        builder.addElementProcessor(IF_ELEMENT, new ConditionalCommandElementProcessor<C>(IfCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
-        builder.addElementProcessor(WHILE_ELEMENT, new ConditionalCommandElementProcessor<C>(WhileCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
-        builder.addElementProcessor(DO_WHILE_ELEMENT, new ConditionalCommandElementProcessor<C>(DoWhileCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
-        //
+
+        builder.addElementProcessor(IF_ELEMENT, new ConditionalCommandProcessor<C>(IfCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
+        builder.addElementProcessor(WHILE_ELEMENT, new ConditionalCommandProcessor<C>(WhileCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
+        builder.addElementProcessor(DO_WHILE_ELEMENT, new ConditionalCommandProcessor<C>(DoWhileCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
+
         builder.addElementProcessor(SEQUENCE_ELEMENT, new FixedCommandProcessor<C>(SequenceCommand.class));
         builder.addElementProcessor(NOT_ELEMENT, new FixedCommandProcessor<C>(NotCommand.class));
         builder.addElementProcessor(OR_ELEMENT, new FixedCommandProcessor<C>(OrCommand.class));

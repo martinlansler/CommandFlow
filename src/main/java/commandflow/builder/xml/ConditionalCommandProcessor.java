@@ -32,7 +32,7 @@ import commandflow.builder.CompositeCommand;
  * {@link CompositeCommand#add(commandflow.Command)} method.
  * @author elansma
  */
-public class ConditionalCommandElementProcessor<C> extends AttributeDrivenCommandProcessor<C> {
+public class ConditionalCommandProcessor<C> extends AttributeDrivenCommandProcessor<C> {
     /** The conditional command */
     private Class<? extends Command<C>> conditionalCommandClass;
 
@@ -43,7 +43,7 @@ public class ConditionalCommandElementProcessor<C> extends AttributeDrivenComman
      * @param scriptAttribute the name of the attribute holding the command script, ignored if <code>null</code>
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public ConditionalCommandElementProcessor(Class<? extends Command> conditionalCommandClass, String classAttribute, String refAttribute, String scriptAttribute) {
+    public ConditionalCommandProcessor(Class<? extends Command> conditionalCommandClass, String classAttribute, String refAttribute, String scriptAttribute) {
         super(classAttribute, refAttribute, scriptAttribute);
         this.conditionalCommandClass = (Class<? extends Command<C>>) conditionalCommandClass;
     }

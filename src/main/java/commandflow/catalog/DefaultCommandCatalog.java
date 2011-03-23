@@ -196,4 +196,16 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
         return commands.get(name);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public synchronized Command<C> removeCommand(String name) {
+        return commands.remove(name);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public synchronized Map<String, Command<C>> getCommands() {
+        return new HashMap<String, Command<C>>(commands);
+    }
+
 }

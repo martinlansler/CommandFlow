@@ -136,7 +136,7 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
      * @throws XMLStreamException
      */
     private void processCommandElement(XMLStreamReader reader) throws XMLStreamException {
-        switch (reader.nextTag()) {
+        switch (reader.next()) {
         case START_ELEMENT:
             Map<String, String> attributes = getAttributes(reader);
             processStartElement(reader.getName(), attributes);
@@ -144,8 +144,6 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
         case END_ELEMENT:
             processEndElement(reader.getName());
             break;
-        default:
-            throw new BuilderException("Unexpected tag type %s", reader.getEventType());
         }
     }
 

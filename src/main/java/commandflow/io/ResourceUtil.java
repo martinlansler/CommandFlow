@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package commandflow.util;
+package commandflow.io;
 
 import java.io.InputStream;
 
@@ -21,9 +21,9 @@ import java.io.InputStream;
  * Util to load resources from the classpath
  * @author elansma
  */
-public final class ResourceLoaderUtil {
+public final class ResourceUtil {
 
-    private ResourceLoaderUtil() {
+    private ResourceUtil() {
     }
 
     /**
@@ -34,12 +34,8 @@ public final class ResourceLoaderUtil {
      * @throws ResourceNotFoundException if the resource was not found
      */
     public static InputStream getResourceAsStream(Package parentPackage, String name) {
-        String resourceName = String.format("%s/%s", parentPackage.getName().replace('.', '/'), name);
-        InputStream is = ClassLoader.getSystemResourceAsStream(resourceName);
-        if (is == null) {
-            throw new ResourceNotFoundException("Could not load resource '%s' in package '%s'", name, parentPackage.getName());
-        }
-        return is;
+        ClassPathResource resource = new ClassPathResource(parentPackage, name);
+        return resource.getInputStream();
     }
 
 }
