@@ -27,6 +27,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
+import commandflow.builder.xml.AttributeCommandNameLookup;
 import commandflow.builder.xml.AttributeDrivenCommandProcessor;
 import commandflow.builder.xml.ConditionalCommandProcessor;
 import commandflow.builder.xml.FixedCommandProcessor;
@@ -80,6 +81,8 @@ public class XmlBuilderConfigurerV1 implements XmlBuilderConfigurer {
     public static final String REF_ATTRIBUTE = "ref";
     /** The {@value} attribute in {@link #COMMAND_ELEMENT} */
     public static final String DYNAMIC_REF_ATTRIBUTE = "dynamicRef";
+    /** Name attribute */
+    public static final String NAME_ATTRIBUTE = "name";
 
     /** The singleton instance */
     public static final XmlBuilderConfigurerV1 INSTANCE = new XmlBuilderConfigurerV1();
@@ -109,6 +112,8 @@ public class XmlBuilderConfigurerV1 implements XmlBuilderConfigurer {
     @Override
     public <C> void configure(XmlCommandBuilder<C> builder) {
         builder.setCommandSchema(COMMAND_SCHEMA);
+
+        builder.setCommandNameLookup(new AttributeCommandNameLookup<C>(NAME_ATTRIBUTE));
 
         builder.addElementProcessor(COMMANDS_ELEMENT, new IgnoreElementProcessor<C>());
 

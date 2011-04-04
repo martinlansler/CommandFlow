@@ -17,6 +17,7 @@ package commandflow.test.builder.xml;
 
 import org.junit.Before;
 
+import commandflow.builder.xml.ElementCommandNameLookup;
 import commandflow.builder.xml.XmlCommandBuilder;
 import commandflow.builder.xml.XmlElementProcessor;
 import commandflow.catalog.DefaultCommandCatalog;
@@ -37,6 +38,7 @@ public abstract class AbstractXmlElementProcessorTest {
         commandCatalog.addCommandBuilder(xmlCommandBuilder);
         testInit();
         xmlCommandBuilder.addCommandXml(new ClassPathResource(getClass().getPackage(), getTestResourceName()));
+        xmlCommandBuilder.setCommandNameLookup(new ElementCommandNameLookup<Object>());
         commandCatalog.make();
     }
 

@@ -33,7 +33,7 @@ public abstract class AbstractCommandProcessor<C> implements XmlElementProcessor
     @Override
     public void startElement(XmlCommandBuilder<C> xmlCommandBuilder, QName elementName, Map<String, String> attributes) {
         Command<C> command = createCommand(elementName, attributes);
-        xmlCommandBuilder.pushCommand(command, null); // TODO name
+        xmlCommandBuilder.pushCommand(command, xmlCommandBuilder.getCommandName(command, elementName, attributes));
     }
 
     /**

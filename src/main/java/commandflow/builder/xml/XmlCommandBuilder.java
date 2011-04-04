@@ -72,6 +72,9 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     /** The command catalog */
     private CommandCatalog<C> catalog;
 
+    /** Command name lookup, mya be <code>null</code> */
+    private XmlCommandNameLookup<C> xmlCommandNameLookup;
+
     /** StAX factory */
     private static final XMLInputFactory xmlInputFactory;
     static {
@@ -121,29 +124,28 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
      */
     private void processCommandXML(Resource commandResource) {
         try {
-            XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(commandResource.getInputStream());
-            while (reader.hasNext()) {
-                processCommandElement(reader);
-            }
+            processCommandStream(xmlInputFactory.createXMLStreamReader(commandResource.getInputStream()));
         } catch (Exception e) {
             throw new BuilderException(e);
         }
     }
 
     /**
-     * Processes the given command element, either a start element or end element tag
+     * Processes the given command XML stream
      * @param reader the stream reader
      * @throws XMLStreamException
      */
-    private void processCommandElement(XMLStreamReader reader) throws XMLStreamException {
-        switch (reader.next()) {
-        case START_ELEMENT:
-            Map<String, String> attributes = getAttributes(reader);
-            processStartElement(reader.getName(), attributes);
-            break;
-        case END_ELEMENT:
-            processEndElement(reader.getName());
-            break;
+    private void processCommandStream(XMLStreamReader reader) throws XMLStreamException {
+        while (reader.hasNext()) {
+            switch (reader.next()) {
+            case START_ELEMENT:
+                Map<String, String> attributes = getAttributes(reader);
+                processStartElement(reader.getName(), attributes);
+                break;
+            case END_ELEMENT:
+                processEndElement(reader.getName());
+                break;
+            }
         }
     }
 
@@ -168,7 +170,7 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
      * <p>
      * If the command is a top level command it will be added to the associated {@link Catalog} otherwise it will be wired to the surrounding composite command found on top of the stack.
      * @param command the command to push
-     * @param name optional command name, must be specified if the current stack is empty as this is then a top level command that will be bound in the catalog
+     * @param name optional command name, must be specified if the current stack is empty as this is then a top level command that will be bound in the catalog, <code>null</code> if not specified
      */
     public void pushCommand(Command<C> command, String name) {
         if (commandStack.isEmpty()) {
@@ -299,12 +301,44 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     /**
      * Adds a command element processor
      * @param elementName the element name this builder binds to, if the element name already has a binding it will be replaced by this binding
-     * @param elementCommandBuilder the command element builder
+     * @param elementProcessor the command element builder
      * @return this builder (for method chaining)
      */
-    public XmlCommandBuilder<C> addElementProcessor(QName elementName, XmlElementProcessor<C> elementCommandBuilder) {
-        xmlElementProcessors.put(elementName, elementCommandBuilder);
+    public XmlCommandBuilder<C> addElementProcessor(QName elementName, XmlElementProcessor<C> elementProcessor) {
+        xmlElementProcessors.put(elementName, elementProcessor);
         return this;
+    }
+
+    /**
+     * Sets the command name lookup to use
+     * @param xmlCommandNameLookup the command name lookup, may be <code>null</code>
+     * @return this builder (for method chaining)
+     */
+    public XmlCommandBuilder<C> setCommandNameLookup(XmlCommandNameLookup<C> xmlCommandNameLookup) {
+        this.xmlCommandNameLookup = xmlCommandNameLookup;
+        return this;
+    }
+
+    /**
+     * @return the configured name lookup, <code>null</code> if none is set
+     */
+    public XmlCommandNameLookup<C> getCommandNameLookup() {
+        return xmlCommandNameLookup;
+    }
+
+    /**
+     * Shortcut method to lookup command name via set {@link XmlCommandNameLookup}
+     * @param command the command instance
+     * @param elementName the XML element the command was created from
+     * @param attributes the XMl attributes of the XML element
+     * @return the command name, <code>null</code> if a name could not be determined
+     */
+    public String getCommandName(Command<C> command, QName elementName, Map<String, String> attributes) {
+        String name = null;
+        if (xmlCommandNameLookup != null) {
+            name = xmlCommandNameLookup.getName(command, elementName, attributes);
+        }
+        return name;
     }
 
     /**
