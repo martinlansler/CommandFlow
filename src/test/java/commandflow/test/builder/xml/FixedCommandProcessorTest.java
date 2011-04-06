@@ -8,6 +8,7 @@ import javax.xml.namespace.QName;
 
 import org.junit.Test;
 
+import commandflow.builder.xml.ElementCommandNameLookup;
 import commandflow.builder.xml.FixedCommandProcessor;
 import commandflow.command.TrueCommand;
 
@@ -21,6 +22,7 @@ public class FixedCommandProcessorTest extends AbstractXmlElementProcessorTest {
     @Override
     protected void testInit() {
         getXmlCommandBuilder().addElementProcessor(new QName("true"), new FixedCommandProcessor<Object>(TrueCommand.class));
+        getXmlCommandBuilder().setCommandNameLookup(new ElementCommandNameLookup<Object>());
     }
 
     @Test

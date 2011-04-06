@@ -20,12 +20,10 @@ import commandflow.Command;
 /**
  * A reference to a named command.
  * <p>
- * The reference can either be static or dynamic. A static reference is always resolved before command execution, a dynamic at the moment of
- * execution. Using a static reference is better performance-wise, however a dynamic reference adds a level of indirection and hence a flexibility in
- * allowing reference target command to be changed during execution.
+ * The reference can either be static or dynamic. A static reference is always resolved before command execution, a dynamic at the moment of execution. Using a static reference is better
+ * performance-wise, however a dynamic reference adds a level of indirection and hence a flexibility in allowing reference target command to be changed during execution.
  * <p>
- * Before the command reference can be executed the associated {@link CommandCatalog} must be set. Note: A static reference can never be executed,
- * attempting this raises a runtime exception.
+ * Before the command reference can be executed the associated {@link CommandCatalog} must be set. Note: A static reference can never be executed, attempting this raises a runtime exception.
  * @author elansma
  */
 public class CommandReference<C> implements Command<C> {
@@ -82,11 +80,19 @@ public class CommandReference<C> implements Command<C> {
         if (catalog == null) {
             throw new CatalogException("No command catalog is set for dynamic command reference '%s'", referenceName);
         }
+        Command<C> command = getReferencedCommand();
+        return command.execute(context);
+    }
+
+    /**
+     * @return the references command
+     */
+    public Command<C> getReferencedCommand() {
         Command<C> command = catalog.getCommand(referenceName);
         if (command == null) {
             throw new CatalogException("Cannot resolve dynamic command reference '%s'", referenceName);
         }
-        return command.execute(context);
+        return command;
     }
 
     /**

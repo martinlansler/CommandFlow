@@ -28,7 +28,7 @@ import commandflow.catalog.CommandReference;
 import commandflow.command.ScriptCommand;
 
 /**
- * A processor that can create a command (simple or composite) from an XML element by means of the set attributes.
+ * The base processor for a command.
  * <p>
  * The command can create the command in three different ways (in the given priority order):
  * <ul>
@@ -37,9 +37,11 @@ import commandflow.command.ScriptCommand;
  * <li>Via an attribute containing a script</li>
  * </ul>
  * Hence either a {@link Command}, {@link CommandReference} or {@link ScriptCommand} instance is created.
+ * <p>
+ * If a script attribute is specified the script vaue must either be a #{expression} or a static boolean value (parseable by {@link Boolean#parseBoolean(String)}).
  * @author elansma
  */
-public class AttributeDrivenCommandProcessor<C> extends AbstractCommandProcessor<C> {
+public class BaseCommandProcessor<C> extends AbstractCommandProcessor<C> {
     /** The name of the class attribute, may be <code>null</code> */
     private String classAttribute;
     /** The name of the reference attribute, may be <code>null</code> */
@@ -50,14 +52,22 @@ public class AttributeDrivenCommandProcessor<C> extends AbstractCommandProcessor
     private String scriptAttribute;
 
     /**
-     * Creates a new simple command builder using attribute lookup.
+     * Creates a new command builder without any bound attributes
+     */
+    public BaseCommandProcessor() {
+    }
+
+    /**
+     * Creates a new command builder using attribute lookup.
      * @param classAttribute the name of the attribute holding the command class, ignored if <code>null</code>
      * @param refAttribute the name of the attribute holding the command reference, ignored if <code>null</code>
+     * @param dynamicRefAttribute the name of the attribute used to decide if the reference is dynamic, ignored if <code>null</code>
      * @param scriptAttribute the name of the attribute holding the command script, ignored if <code>null</code>
      */
-    public AttributeDrivenCommandProcessor(String classAttribute, String refAttribute, String scriptAttribute) {
+    public BaseCommandProcessor(String classAttribute, String refAttribute, String dynamicRefAttribute, String scriptAttribute) {
         this.classAttribute = classAttribute;
         this.refAttribute = refAttribute;
+        this.dynamicRefAttribut = dynamicRefAttribute;
         this.scriptAttribute = scriptAttribute;
     }
 
@@ -73,11 +83,23 @@ public class AttributeDrivenCommandProcessor<C> extends AbstractCommandProcessor
             boolean isDynamic = hasAttribute(getDynamicRefAttribut(), attributes) ? parseBoolean(attributes.get(getDynamicRefAttribut())) : false;
             command = new CommandReference<C>(ref, isDynamic);
         } else if (hasAttribute(getScriptAttribute(), attributes)) {
-            command = new ScriptCommand<C>(attributes.get(getScriptAttribute()));
+            command = new ScriptCommand<C>(extractScript(attributes.get(getScriptAttribute())));
         } else {
             throw new BuilderException("Cannot build command with element name '%s' and attributes '%s'", elementName, attributes);
         }
         return command;
+    }
+
+    /**
+     * Extract a script expression wrapped in a #{}
+     * @return the extracted script if wrapped, otherwise trimmed script string
+     */
+    private String extractScript(String script) {
+        script = script.trim();
+        if (script.startsWith("#{") && script.endsWith("}")) {
+            return script.substring(2, script.length() - 1);
+        }
+        return script;
     }
 
     /**
@@ -102,7 +124,7 @@ public class AttributeDrivenCommandProcessor<C> extends AbstractCommandProcessor
      * @param classAttribute the name of the class attribute
      * @return this builder (for method chaining)
      */
-    public AttributeDrivenCommandProcessor<C> setClassAttribute(String classAttribute) {
+    public BaseCommandProcessor<C> setClassAttribute(String classAttribute) {
         this.classAttribute = classAttribute;
         return this;
     }
@@ -119,7 +141,7 @@ public class AttributeDrivenCommandProcessor<C> extends AbstractCommandProcessor
      * @param refAttribute the name of the reference attribute
      * @return this builder (for method chaining)
      */
-    public AttributeDrivenCommandProcessor<C> setRefAttribute(String refAttribute) {
+    public BaseCommandProcessor<C> setRefAttribute(String refAttribute) {
         this.refAttribute = refAttribute;
         return this;
     }
@@ -151,7 +173,7 @@ public class AttributeDrivenCommandProcessor<C> extends AbstractCommandProcessor
      * @param scriptAttribute the name of the script attribute
      * @return this builder (for method chaining)
      */
-    public AttributeDrivenCommandProcessor<C> setScriptAttribute(String scriptAttribute) {
+    public BaseCommandProcessor<C> setScriptAttribute(String scriptAttribute) {
         this.scriptAttribute = scriptAttribute;
         return this;
     }

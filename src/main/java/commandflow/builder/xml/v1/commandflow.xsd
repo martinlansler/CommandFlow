@@ -164,7 +164,7 @@
       <annotation>
         <documentation>
           An inline EL expression which must evaluate to a boolean value. By default Javascript is used, it is however possible to use
-          other scripting languages. If an EL expression is used it must be contained in ${expression}. It possible to use the static values 'true' or
+          other scripting languages. The EL expression must be contained in a #{expression}. It possible to use the static values 'true' or
           'false' which will be parsed as a boolean.
           If the attribute is specified neither 'class' nor 'ref' may be used.</documentation>
       </annotation>

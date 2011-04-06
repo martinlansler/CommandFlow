@@ -28,11 +28,11 @@ import commandflow.builder.CompositeCommand;
 /**
  * A builder that can create a conditional command (must implement {@link CompositeCommand}) from an XML element.
  * <p>
- * The condition command is created in one of the ways specified in {@link AttributeDrivenCommandProcessor}. Once the condition is created is pushed as the first command via the
+ * The condition command is created in one of the ways specified in {@link BaseCommandProcessor}. Once the condition is created is pushed as the first command via the
  * {@link CompositeCommand#add(commandflow.Command)} method.
  * @author elansma
  */
-public class ConditionalCommandProcessor<C> extends AttributeDrivenCommandProcessor<C> {
+public class ConditionalCommandProcessor<C> extends BaseCommandProcessor<C> {
     /** The conditional command */
     private Class<? extends Command<C>> conditionalCommandClass;
 
@@ -44,7 +44,7 @@ public class ConditionalCommandProcessor<C> extends AttributeDrivenCommandProces
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public ConditionalCommandProcessor(Class<? extends Command> conditionalCommandClass, String classAttribute, String refAttribute, String scriptAttribute) {
-        super(classAttribute, refAttribute, scriptAttribute);
+        super(classAttribute, refAttribute, null, scriptAttribute);
         this.conditionalCommandClass = (Class<? extends Command<C>>) conditionalCommandClass;
     }
 

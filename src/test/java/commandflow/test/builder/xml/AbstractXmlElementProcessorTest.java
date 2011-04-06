@@ -15,9 +15,12 @@
  */
 package commandflow.test.builder.xml;
 
+import javax.xml.namespace.QName;
+
 import org.junit.Before;
 
-import commandflow.builder.xml.ElementCommandNameLookup;
+import commandflow.builder.xml.AttributeCommandNameLookup;
+import commandflow.builder.xml.IgnoreElementProcessor;
 import commandflow.builder.xml.XmlCommandBuilder;
 import commandflow.builder.xml.XmlElementProcessor;
 import commandflow.catalog.DefaultCommandCatalog;
@@ -36,9 +39,11 @@ public abstract class AbstractXmlElementProcessorTest {
         commandCatalog = new DefaultCommandCatalog<Object>();
         xmlCommandBuilder = new XmlCommandBuilder<Object>();
         commandCatalog.addCommandBuilder(xmlCommandBuilder);
-        testInit();
         xmlCommandBuilder.addCommandXml(new ClassPathResource(getClass().getPackage(), getTestResourceName()));
-        xmlCommandBuilder.setCommandNameLookup(new ElementCommandNameLookup<Object>());
+        // common test settings
+        xmlCommandBuilder.addElementProcessor(new QName("commands"), new IgnoreElementProcessor<Object>());
+        xmlCommandBuilder.setCommandNameLookup(new AttributeCommandNameLookup<Object>("name"));
+        testInit();
         commandCatalog.make();
     }
 

@@ -25,7 +25,12 @@ import javax.script.SimpleBindings;
 
 public class EvalScript {
     public static void main(String[] args) throws Exception {
-        String script = "name.length > 2 || name.length < 10";
+        String script;
+        if (args.length == 0) {
+            script = "name.length > 2 || name.length < 10";
+        } else {
+            script = args[0];
+        }
         //
         // create a script engine manager
         ScriptEngineManager factory = new ScriptEngineManager();

@@ -92,9 +92,13 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
      * @return the linked command or the unchanged command
      */
     private Command<C> link(Command<C> command) {
-        if (isStaticCommandRef(command)) {
+        if (isCommandRef(command)) {
             CommandReference<C> reference = (CommandReference<C>) command;
-            return getExistingCommand(reference.getReferenceName());
+            if (reference.isDynamic()) {
+                reference.setCommandCatalog(this);
+            } else {
+                return getExistingCommand(reference.getReferenceName());
+            }
         } else if (command instanceof CompositeCommand) {
             @SuppressWarnings("unchecked")
             CompositeCommand<C> compositeCommand = (CompositeCommand<C>) command;
@@ -132,16 +136,12 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
     }
 
     /**
-     * Checks if the given command is a static {@link CommandReference}
+     * Checks if the given command is a {@link CommandReference}
      * @param command the command to check
-     * @return <code>true</code> if the command is a static reference
+     * @return <code>true</code> if the command is a reference
      */
-    private boolean isStaticCommandRef(Command<C> command) {
-        if (command instanceof CommandReference<?>) {
-            CommandReference<C> ref = (CommandReference<C>) command;
-            return !ref.isDynamic();
-        }
-        return false;
+    private boolean isCommandRef(Command<C> command) {
+        return command instanceof CommandReference<?>;
     }
 
     /** {@inheritDoc} */

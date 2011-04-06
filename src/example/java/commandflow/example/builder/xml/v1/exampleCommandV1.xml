@@ -15,7 +15,7 @@
   <command ref="trueCommand" dynamicRef="true" />
 
   <!-- Named command with EL, context available as 'context' variable in EL -->
-  <command name="elCommand" value="${1 > 2}" />
+  <command name="elCommand" value="#{1 > 2}" />
 
   <!-- A sequential sequence of commands -->
   <!-- NOTE: The 'sequence' tag can usually be omitted as it is the default for contained commands, except if defined as a top-level command -->
@@ -31,17 +31,17 @@
 
   <!-- Short-circuit or command -->
   <or name="orCommand">
-    <command value="${false}" />
+    <command value="#{false}" />
     <not>
-      <command value="${false}" />
+      <command value="#{false}" />
     </not>
   </or>
 
   <!-- Short-circuit and command -->
   <and name="andCommand">
-    <command value="${true}" />
+    <command value="#{true}" />
     <not>
-      <command value="${false}" />
+      <command value="#{false}" />
     </not>
   </and>
 
@@ -56,7 +56,7 @@
   </if>
 
   <!-- Conditional command, condition defined by EL -->
-  <if name="ifCommand2" value="${new java.util.Date().getHours() > 18}">
+  <if name="ifCommand2" value="#{new java.util.Date().getHours() > 18}">
     <command ref="andCommand" />
   </if>
 
@@ -71,7 +71,7 @@
   </while>
 
   <!-- Conditional while loop execution, condition defined by EL -->
-  <while name="whileCommand" value="${!context.isInitailized}">
+  <while name="whileCommand" value="#{!context.isInitailized}">
     <or>
       <command ref="doInitialization" />
       <command ref="sleep" />
