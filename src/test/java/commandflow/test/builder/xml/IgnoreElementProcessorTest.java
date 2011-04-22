@@ -30,9 +30,9 @@ import commandflow.builder.xml.IgnoreElementProcessor;
 public class IgnoreElementProcessorTest extends AbstractXmlElementProcessorTest {
 
     @Override
-    public void testInit() {
-        getXmlCommandBuilder().addElementProcessor(new QName("ignoreMe"), new IgnoreElementProcessor<Object>());
-        getXmlCommandBuilder().addElementProcessor(new QName("andMe"), new IgnoreElementProcessor<Object>());
+    public void setupCommandBuilder() {
+        getXmlCommandBuilder().addElementProcessor(new QName("ignoreMe"), new IgnoreElementProcessor<TestContext>());
+        getXmlCommandBuilder().addElementProcessor(new QName("andMe"), new IgnoreElementProcessor<TestContext>());
     }
 
     @Override

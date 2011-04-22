@@ -1,5 +1,5 @@
 <commands>
-  <command name="commandViaClassAttribute" class="commandflow.test.builder.xml.BaseCommandProcessorTest$TestClassCommand" />
+  <command name="commandViaClassAttribute" class="commandflow.test.builder.xml.BasicCommandProcessorTest$TestClassCommand" />
 
   <command name="commandViaRef" ref="commandViaClassAttribute" />
 

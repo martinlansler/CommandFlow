@@ -28,11 +28,11 @@ import commandflow.builder.CompositeCommand;
 /**
  * A builder that can create a conditional command (must implement {@link CompositeCommand}) from an XML element.
  * <p>
- * The condition command is created in one of the ways specified in {@link BaseCommandProcessor}. Once the condition is created is pushed as the first command via the
+ * The condition command is created in one of the ways specified in {@link BasicCommandProcessor}. Once the condition is created is pushed as the first command via the
  * {@link CompositeCommand#add(commandflow.Command)} method.
  * @author elansma
  */
-public class ConditionalCommandProcessor<C> extends BaseCommandProcessor<C> {
+public class ConditionalCommandProcessor<C> extends BasicCommandProcessor<C> {
     /** The conditional command */
     private Class<? extends Command<C>> conditionalCommandClass;
 
@@ -40,11 +40,12 @@ public class ConditionalCommandProcessor<C> extends BaseCommandProcessor<C> {
      * @param conditionalCommandClass the conditional command class
      * @param classAttribute the name of the attribute holding the command class, ignored if <code>null</code>
      * @param refAttribute the name of the attribute holding the command reference, ignored if <code>null</code>
+     * @param dynamicRefAttribute the name of the attribute used to decide if the reference is dynamic, ignored if <code>null</code>
      * @param scriptAttribute the name of the attribute holding the command script, ignored if <code>null</code>
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public ConditionalCommandProcessor(Class<? extends Command> conditionalCommandClass, String classAttribute, String refAttribute, String scriptAttribute) {
-        super(classAttribute, refAttribute, null, scriptAttribute);
+    public ConditionalCommandProcessor(Class<? extends Command> conditionalCommandClass, String classAttribute, String refAttribute, String dynamicRefAttribute, String scriptAttribute) {
+        super(classAttribute, refAttribute, dynamicRefAttribute, scriptAttribute);
         this.conditionalCommandClass = (Class<? extends Command<C>>) conditionalCommandClass;
     }
 

@@ -16,14 +16,13 @@
 package commandflow.test.builder.xml;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import javax.xml.namespace.QName;
 
 import org.junit.Test;
 
-import commandflow.builder.xml.BaseCommandProcessor;
+import commandflow.builder.xml.BasicCommandProcessor;
 import commandflow.catalog.CommandReference;
 import commandflow.command.ScriptCommand;
 import commandflow.command.TrueCommand;
@@ -32,31 +31,26 @@ import commandflow.command.TrueCommand;
  * 
  * @author elansma
  */
-public class BaseCommandProcessorTest extends AbstractXmlElementProcessorTest {
+public class BasicCommandProcessorTest extends AbstractXmlElementProcessorTest {
 
-    public static class TestClassCommand extends TrueCommand<Object> {
+    public static class TestClassCommand extends TrueCommand<TestContext> {
     }
 
     /** {@inheritDoc} */
     @Override
     protected String getTestResourceName() {
-        return "baseCommandProcessorTest.xml";
+        return "basicCommandProcessorTest.xml";
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void testInit() {
-        getXmlCommandBuilder().addElementProcessor(new QName("command"), new BaseCommandProcessor<Object>("class", "ref", "dynamic", "value"));
+    protected void setupCommandBuilder() {
+        getXmlCommandBuilder().addElementProcessor(new QName("command"), new BasicCommandProcessor<TestContext>("class", "ref", "dynamic", "value"));
     }
 
     @Test
     public void testClassCommand() {
         hasCommand("commandViaClassAttribute", TestClassCommand.class);
-    }
-
-    private void hasCommand(String commandName, Class<?> expectedClass) {
-        assertThat(getCommandCatalog().getCommand(commandName), notNullValue());
-        assertThat(getCommandCatalog().getCommand(commandName), is(expectedClass));
     }
 
     @Test
@@ -68,7 +62,7 @@ public class BaseCommandProcessorTest extends AbstractXmlElementProcessorTest {
     public void testDynamicRefCommand() {
         final String commandName = "commandViaDynamicRef";
         hasCommand(commandName, CommandReference.class);
-        CommandReference<Object> commandRef = (CommandReference<Object>) getCommandCatalog().getCommand(commandName);
+        CommandReference<TestContext> commandRef = (CommandReference<TestContext>) getCommandCatalog().getCommand(commandName);
         assertThat(commandRef.getReferencedCommand(), is(TestClassCommand.class));
     }
 
@@ -79,8 +73,7 @@ public class BaseCommandProcessorTest extends AbstractXmlElementProcessorTest {
 
     public void testScript(String commandName, boolean expectedValue) {
         hasCommand(commandName, ScriptCommand.class);
-        ScriptCommand<Object> scriptCommand = (ScriptCommand<Object>) getCommandCatalog().getCommand(commandName);
-        assertThat(scriptCommand.execute(new Object()), is(expectedValue));
+        assertExecute(commandName, expectedValue);
     }
 
     @Test

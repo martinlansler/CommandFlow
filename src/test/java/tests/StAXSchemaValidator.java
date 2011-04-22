@@ -25,28 +25,21 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.junit.Test;
-
 /**
- * Tests to validate XML from a {@link StAXSource} via a schema
- * {@link Validator}
+ * Tests to validate XML from a {@link StAXSource} via a schema {@link Validator}
  * 
  * @author elansma
  */
 public class StAXSchemaValidator {
-	@Test
-	public void testValidation() throws Exception {
-		InputStream is = getResource("commandflow/builder/xml/v1/command.xml");
-		StAXSource commandXml = new StAXSource(XMLInputFactory.newInstance()
-				.createXMLStreamReader(is));
-		is = getResource("commandflow/builder/xml/v1/command.xsd");
-		Schema schema = SchemaFactory.newInstance(
-				XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(
-				new StreamSource(is));
-		schema.newValidator().validate(commandXml);
-	}
+    public void testValidation() throws Exception {
+        InputStream is = getResource("commandflow/builder/xml/v1/command.xml");
+        StAXSource commandXml = new StAXSource(XMLInputFactory.newInstance().createXMLStreamReader(is));
+        is = getResource("commandflow/builder/xml/v1/command.xsd");
+        Schema schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(new StreamSource(is));
+        schema.newValidator().validate(commandXml);
+    }
 
-	private InputStream getResource(String resource) {
-		return getClass().getClassLoader().getResourceAsStream(resource);
-	}
+    private InputStream getResource(String resource) {
+        return getClass().getClassLoader().getResourceAsStream(resource);
+    }
 }

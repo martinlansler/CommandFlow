@@ -20,9 +20,9 @@ public class FixedCommandProcessorTest extends AbstractXmlElementProcessorTest {
     }
 
     @Override
-    protected void testInit() {
-        getXmlCommandBuilder().addElementProcessor(new QName("true"), new FixedCommandProcessor<Object>(TrueCommand.class));
-        getXmlCommandBuilder().setCommandNameLookup(new ElementCommandNameLookup<Object>());
+    protected void setupCommandBuilder() {
+        getXmlCommandBuilder().addElementProcessor(new QName("true"), new FixedCommandProcessor<TestContext>(TrueCommand.class));
+        getXmlCommandBuilder().setCommandNameLookup(new ElementCommandNameLookup<TestContext>());
     }
 
     @Test

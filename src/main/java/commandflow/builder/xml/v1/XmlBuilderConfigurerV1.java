@@ -28,7 +28,7 @@ import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 
 import commandflow.builder.xml.AttributeCommandNameLookup;
-import commandflow.builder.xml.BaseCommandProcessor;
+import commandflow.builder.xml.BasicCommandProcessor;
 import commandflow.builder.xml.ConditionalCommandProcessor;
 import commandflow.builder.xml.FixedCommandProcessor;
 import commandflow.builder.xml.IgnoreElementProcessor;
@@ -117,11 +117,11 @@ public class XmlBuilderConfigurerV1 implements XmlBuilderConfigurer {
 
         builder.addElementProcessor(COMMANDS_ELEMENT, new IgnoreElementProcessor<C>());
 
-        builder.addElementProcessor(COMMAND_ELEMENT, new BaseCommandProcessor<C>(CLASS_ATTRIBUTE, REF_ATTRIBUTE, null, VALUE_ATTRIBUTE));
+        builder.addElementProcessor(COMMAND_ELEMENT, new BasicCommandProcessor<C>(CLASS_ATTRIBUTE, REF_ATTRIBUTE, DYNAMIC_REF_ATTRIBUTE, VALUE_ATTRIBUTE));
 
-        builder.addElementProcessor(IF_ELEMENT, new ConditionalCommandProcessor<C>(IfCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
-        builder.addElementProcessor(WHILE_ELEMENT, new ConditionalCommandProcessor<C>(WhileCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
-        builder.addElementProcessor(DO_WHILE_ELEMENT, new ConditionalCommandProcessor<C>(DoWhileCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, VALUE_ATTRIBUTE));
+        builder.addElementProcessor(IF_ELEMENT, new ConditionalCommandProcessor<C>(IfCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, DYNAMIC_REF_ATTRIBUTE, VALUE_ATTRIBUTE));
+        builder.addElementProcessor(WHILE_ELEMENT, new ConditionalCommandProcessor<C>(WhileCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, DYNAMIC_REF_ATTRIBUTE, VALUE_ATTRIBUTE));
+        builder.addElementProcessor(DO_WHILE_ELEMENT, new ConditionalCommandProcessor<C>(DoWhileCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, DYNAMIC_REF_ATTRIBUTE, VALUE_ATTRIBUTE));
 
         builder.addElementProcessor(SEQUENCE_ELEMENT, new FixedCommandProcessor<C>(SequenceCommand.class));
         builder.addElementProcessor(NOT_ELEMENT, new FixedCommandProcessor<C>(NotCommand.class));

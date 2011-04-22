@@ -41,7 +41,7 @@ import commandflow.command.ScriptCommand;
  * If a script attribute is specified the script vaue must either be a #{expression} or a static boolean value (parseable by {@link Boolean#parseBoolean(String)}).
  * @author elansma
  */
-public class BaseCommandProcessor<C> extends AbstractCommandProcessor<C> {
+public class BasicCommandProcessor<C> extends AbstractCommandProcessor<C> {
     /** The name of the class attribute, may be <code>null</code> */
     private String classAttribute;
     /** The name of the reference attribute, may be <code>null</code> */
@@ -54,7 +54,7 @@ public class BaseCommandProcessor<C> extends AbstractCommandProcessor<C> {
     /**
      * Creates a new command builder without any bound attributes
      */
-    public BaseCommandProcessor() {
+    public BasicCommandProcessor() {
     }
 
     /**
@@ -64,7 +64,7 @@ public class BaseCommandProcessor<C> extends AbstractCommandProcessor<C> {
      * @param dynamicRefAttribute the name of the attribute used to decide if the reference is dynamic, ignored if <code>null</code>
      * @param scriptAttribute the name of the attribute holding the command script, ignored if <code>null</code>
      */
-    public BaseCommandProcessor(String classAttribute, String refAttribute, String dynamicRefAttribute, String scriptAttribute) {
+    public BasicCommandProcessor(String classAttribute, String refAttribute, String dynamicRefAttribute, String scriptAttribute) {
         this.classAttribute = classAttribute;
         this.refAttribute = refAttribute;
         this.dynamicRefAttribut = dynamicRefAttribute;
@@ -124,7 +124,7 @@ public class BaseCommandProcessor<C> extends AbstractCommandProcessor<C> {
      * @param classAttribute the name of the class attribute
      * @return this builder (for method chaining)
      */
-    public BaseCommandProcessor<C> setClassAttribute(String classAttribute) {
+    public BasicCommandProcessor<C> setClassAttribute(String classAttribute) {
         this.classAttribute = classAttribute;
         return this;
     }
@@ -141,7 +141,7 @@ public class BaseCommandProcessor<C> extends AbstractCommandProcessor<C> {
      * @param refAttribute the name of the reference attribute
      * @return this builder (for method chaining)
      */
-    public BaseCommandProcessor<C> setRefAttribute(String refAttribute) {
+    public BasicCommandProcessor<C> setRefAttribute(String refAttribute) {
         this.refAttribute = refAttribute;
         return this;
     }
@@ -173,7 +173,7 @@ public class BaseCommandProcessor<C> extends AbstractCommandProcessor<C> {
      * @param scriptAttribute the name of the script attribute
      * @return this builder (for method chaining)
      */
-    public BaseCommandProcessor<C> setScriptAttribute(String scriptAttribute) {
+    public BasicCommandProcessor<C> setScriptAttribute(String scriptAttribute) {
         this.scriptAttribute = scriptAttribute;
         return this;
     }

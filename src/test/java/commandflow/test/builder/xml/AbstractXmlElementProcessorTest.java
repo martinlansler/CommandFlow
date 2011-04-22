@@ -15,10 +15,15 @@
  */
 package commandflow.test.builder.xml;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
 import javax.xml.namespace.QName;
 
 import org.junit.Before;
 
+import commandflow.Command;
 import commandflow.builder.xml.AttributeCommandNameLookup;
 import commandflow.builder.xml.IgnoreElementProcessor;
 import commandflow.builder.xml.XmlCommandBuilder;
@@ -31,31 +36,43 @@ import commandflow.io.ClassPathResource;
  * @author elansma
  */
 public abstract class AbstractXmlElementProcessorTest {
-    private DefaultCommandCatalog<Object> commandCatalog;
-    private XmlCommandBuilder<Object> xmlCommandBuilder;
+    private DefaultCommandCatalog<TestContext> commandCatalog;
+    private XmlCommandBuilder<TestContext> xmlCommandBuilder;
 
     @Before
     public void init() {
-        commandCatalog = new DefaultCommandCatalog<Object>();
-        xmlCommandBuilder = new XmlCommandBuilder<Object>();
+        commandCatalog = new DefaultCommandCatalog<TestContext>();
+        xmlCommandBuilder = new XmlCommandBuilder<TestContext>();
         commandCatalog.addCommandBuilder(xmlCommandBuilder);
         xmlCommandBuilder.addCommandXml(new ClassPathResource(getClass().getPackage(), getTestResourceName()));
         // common test settings
-        xmlCommandBuilder.addElementProcessor(new QName("commands"), new IgnoreElementProcessor<Object>());
-        xmlCommandBuilder.setCommandNameLookup(new AttributeCommandNameLookup<Object>("name"));
-        testInit();
+        xmlCommandBuilder.addElementProcessor(new QName("commands"), new IgnoreElementProcessor<TestContext>());
+        xmlCommandBuilder.setCommandNameLookup(new AttributeCommandNameLookup<TestContext>("name"));
+        setupCommandBuilder();
         commandCatalog.make();
     }
 
     protected abstract String getTestResourceName();
 
-    protected abstract void testInit();
+    protected abstract void setupCommandBuilder();
 
-    protected DefaultCommandCatalog<Object> getCommandCatalog() {
+    protected DefaultCommandCatalog<TestContext> getCommandCatalog() {
         return commandCatalog;
     }
 
-    protected XmlCommandBuilder<Object> getXmlCommandBuilder() {
+    protected XmlCommandBuilder<TestContext> getXmlCommandBuilder() {
         return xmlCommandBuilder;
+    }
+
+    protected void hasCommand(String commandName, Class<?> expectedClass) {
+        assertThat(getCommandCatalog().getCommand(commandName), notNullValue());
+        assertThat(getCommandCatalog().getCommand(commandName), is(expectedClass));
+    }
+
+    protected TestContext assertExecute(String commandName, boolean expectedResult) {
+        Command<TestContext> command = getCommandCatalog().getCommand(commandName);
+        TestContext context = new TestContext();
+        assertThat(command.execute(context), is(expectedResult));
+        return context;
     }
 }
