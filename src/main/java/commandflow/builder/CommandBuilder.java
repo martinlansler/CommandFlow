@@ -20,10 +20,12 @@ import commandflow.catalog.CommandCatalog;
 /**
  * Interface for a command builder.
  * <p>
- * The builder is responsible for creating instances of commands from some external representation and registering the commands with the supplied
- * {@link CommandCatalog}. The builder should generally not initialize or resolve command references, this is handled by the command catalog.
+ * The builder is responsible for creating instances of commands from some external representation and registering the commands with the supplied {@link CommandCatalog}. The builder should generally
+ * not initialize or resolve command references, this is handled by the command catalog.
  * <p>
  * A builder can/may be reused to rebuild commands, for instance from a command catalog that is reloadable.
+ * <p>
+ * Implementation of this interface are not thread-safe if not otherwise noted.
  * @author elansma
  */
 public interface CommandBuilder<C> {

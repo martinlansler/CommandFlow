@@ -15,9 +15,15 @@
  */
 package commandflow.builder.xml;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
+
+import commandflow.builder.BuilderException;
+import commandflow.io.DefaultResourceResolver;
+import commandflow.io.ResourceResolver;
 
 /**
  * An element processor for an import element containing an reference to another command XML.
@@ -26,18 +32,45 @@ import javax.xml.namespace.QName;
  * @author elansma
  */
 public class ImportElementProcessor<C> implements XmlElementProcessor<C> {
+    /** The name of the attribute naming the import resource */
+    private String resourceAttribute;
+
+    /** The resource resolver for absolute resources */
+    private ResourceResolver resourceResolver;
+
+    public ImportElementProcessor(String resourceAttribute) {
+        this.resourceAttribute = resourceAttribute;
+        this.resourceResolver = new DefaultResourceResolver();
+    }
 
     /** {@inheritDoc} */
     @Override
     public void startElement(XmlCommandBuilder<C> xmlCommandBuilder, QName elementName, Map<String, String> attributes) {
-        // TODO
+        XmlCommandBuilder<C> importCommandBuilder = xmlCommandBuilder.clone();
+        try {
+            URI resource = new URI(attributes.get(resourceAttribute));
+            if (resource.isAbsolute()) {
+                importCommandBuilder.addCommandXml(resourceResolver.resolve(resource));
+            } else {
+                importCommandBuilder.addCommandXml(xmlCommandBuilder.getCurrentCommandXml().resolveRelative(resource));
+            }
+            importCommandBuilder.build(xmlCommandBuilder.getCommandCatalog());
+        } catch (URISyntaxException e) {
+            throw new BuilderException(e);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void endElement(XmlCommandBuilder<C> xmlCommandBuilder, QName elementName) {
-        // TODO
+        // not used
+    }
 
+    /**
+     * @param resourceResolver the resource resolver to use for absolute resources
+     */
+    public void setResourceResolver(ResourceResolver resourceResolver) {
+        this.resourceResolver = resourceResolver;
     }
 
 }

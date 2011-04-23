@@ -57,6 +57,9 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     /** The command XML resources */
     private List<Resource> commandXmlResources;
 
+    /** The command XML currently being processed */
+    private Resource currentCommandXml;
+
     /** Holds the stack of created commands */
     private Deque<Command<C>> commandStack;
 
@@ -72,7 +75,7 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     /** The command catalog */
     private CommandCatalog<C> catalog;
 
-    /** Command name lookup, mya be <code>null</code> */
+    /** Command name lookup, may be <code>null</code> */
     private XmlCommandNameLookup<C> xmlCommandNameLookup;
 
     /** StAX factory */
@@ -124,9 +127,12 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
      */
     private void processCommandXML(Resource commandResource) {
         try {
+            currentCommandXml = commandResource;
             processCommandStream(xmlInputFactory.createXMLStreamReader(commandResource.getInputStream()));
         } catch (Exception e) {
             throw new BuilderException(e);
+        } finally {
+            currentCommandXml = null;
         }
     }
 
@@ -355,7 +361,25 @@ public class XmlCommandBuilder<C> implements CommandBuilder<C> {
     /** {@inheritDoc} */
     @Override
     public XmlCommandBuilder<C> clone() {
-        // TODO
-        return (XmlCommandBuilder<C>) null;
+        XmlCommandBuilder<C> clone = new XmlCommandBuilder<C>();
+        clone.processedResources = new HashSet<Resource>(processedResources);
+        clone.schema = this.schema;
+        clone.xmlCommandNameLookup = this.xmlCommandNameLookup;
+        clone.xmlElementProcessors = new HashMap<QName, XmlElementProcessor<C>>(this.xmlElementProcessors);
+        return (XmlCommandBuilder<C>) clone;
+    }
+
+    /**
+     * @return the current command XML
+     */
+    public Resource getCurrentCommandXml() {
+        return currentCommandXml;
+    }
+
+    /**
+     * @return the command catalog currently used for this builder
+     */
+    public CommandCatalog<C> getCommandCatalog() {
+        return catalog;
     }
 }

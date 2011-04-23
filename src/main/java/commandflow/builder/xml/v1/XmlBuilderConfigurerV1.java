@@ -32,6 +32,7 @@ import commandflow.builder.xml.BasicCommandProcessor;
 import commandflow.builder.xml.ConditionalCommandProcessor;
 import commandflow.builder.xml.FixedCommandProcessor;
 import commandflow.builder.xml.IgnoreElementProcessor;
+import commandflow.builder.xml.ImportElementProcessor;
 import commandflow.builder.xml.XmlBuilderConfigurer;
 import commandflow.builder.xml.XmlBuilderFactory;
 import commandflow.builder.xml.XmlCommandBuilder;
@@ -57,6 +58,8 @@ public class XmlBuilderConfigurerV1 implements XmlBuilderConfigurer {
     /** Element {@value} */
     public static final QName COMMANDS_ELEMENT = new QName(NAMESPACE, "commands");
     /** Element {@value} */
+    private static final QName IMPORT_ELEMENT = new QName(NAMESPACE, "import");
+    /** Element {@value} */
     public static final QName COMMAND_ELEMENT = new QName(NAMESPACE, "command");
     /** Element {@value} */
     private static final QName SEQUENCE_ELEMENT = new QName(NAMESPACE, "sequence");
@@ -73,6 +76,8 @@ public class XmlBuilderConfigurerV1 implements XmlBuilderConfigurer {
     /** Element {@value} */
     private static final QName DO_WHILE_ELEMENT = new QName(NAMESPACE, "doWhile");
 
+    /** The {@value} attribute in {@link #IMPORT_ELEMENT} */
+    private static final String RESOURCE_ATTRIBUTE = "resource";
     /** The {@value} attribute in {@link #COMMAND_ELEMENT} */
     public static final String CLASS_ATTRIBUTE = "class";
     /** The {@value} attribute in {@link #COMMAND_ELEMENT} */
@@ -114,6 +119,8 @@ public class XmlBuilderConfigurerV1 implements XmlBuilderConfigurer {
         builder.setCommandSchema(COMMAND_SCHEMA);
 
         builder.setCommandNameLookup(new AttributeCommandNameLookup<C>(NAME_ATTRIBUTE));
+
+        builder.addElementProcessor(IMPORT_ELEMENT, new ImportElementProcessor<C>(RESOURCE_ATTRIBUTE));
 
         builder.addElementProcessor(COMMANDS_ELEMENT, new IgnoreElementProcessor<C>());
 

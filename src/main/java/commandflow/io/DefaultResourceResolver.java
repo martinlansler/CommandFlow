@@ -22,8 +22,8 @@ import java.util.Map;
 /**
  * The default resource resolver.
  * <p>
- * The resolver works be delegating the actual resolving to concrete resource resolver bound in this resolver via the URI schema, i.e. hence all used resource URI must be absolute an specify a schema
- * (such as 'file:'). It is possible to set a default resolver without a schema, this will be used as a fallback for all relative resource URI without a schema.
+ * The resolver works be delegating the actual resolving to concrete resource resolvers bound in this resolver via the URI schema, i.e. hence all used resource URI must be absolute and thus specify a
+ * schema (such as 'file:'). If no resolver is found for the URI schema this resolver will fallback to resolving via {@link URLResource}.
  * <p>
  * Resolver can be bound on two levels - either as default resolver available for all created instances of this class, see static method {@link #addDefaultResolver(String, ResourceResolver)}, or
  * specifically bound to a specific instance of this resolver, see method {@link #addResolver(String, ResourceResolver)}.
@@ -80,8 +80,10 @@ public class DefaultResourceResolver implements ResourceResolver {
     /** {@inheritDoc} */
     @Override
     public Resource resolve(URI uri) {
+        if (!uri.isAbsolute()) {
+            throw new IllegalArgumentException(String.format("Resource uri %s must be absolute", uri.toString()));
+        }
         ResourceResolver resolver = resourceResolvers.get(uri.getScheme());
-        return resolver != null ? resolver.resolve(uri) : null;
+        return resolver != null ? resolver.resolve(uri) : new URLResource(uri);
     }
-
 }
