@@ -1,0 +1,9 @@
+<commands>
+  <command name="override" class="commandflow.test.builder.xml.ImportElementProcessorTest$CommandOverride" />
+
+  <import resource="importElementProcessorTest_relative.xml" />
+  <import resource="classpath:commandflow/test/builder/xml/importElementProcessorTest_absolute.xml" />
+
+  <command name="override2" class="commandflow.test.builder.xml.ImportElementProcessorTest$CommandOverride" />
+</commands>
+ 

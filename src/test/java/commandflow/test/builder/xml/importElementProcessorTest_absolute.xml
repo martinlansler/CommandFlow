@@ -1,0 +1,5 @@
+<commands>
+  <command name="absoluteUnique" class="commandflow.test.builder.xml.ImportElementProcessorTest$CommandAbsoluteUnique" />
+  <command name="override2" class="commandflow.test.builder.xml.ImportElementProcessorTest$CommandAbsoluteOverride" />
+</commands>
+ 

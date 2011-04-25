@@ -1,0 +1,5 @@
+<commands>
+  <command name="relativeUnique" class="commandflow.test.builder.xml.ImportElementProcessorTest$CommandRelativeUnique" />
+  <command name="override" class="commandflow.test.builder.xml.ImportElementProcessorTest$CommandRelativeOverride" />
+</commands>
+ 
