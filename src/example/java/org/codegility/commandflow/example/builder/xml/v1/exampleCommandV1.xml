@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commands xmlns="http://org.codegility.commandflow/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://org.codegility.commandflow/1 ../../../../../../../main/java/org.codegility.commandflow/builder/xml/v1/org.codegility.commandflow.xsd">
+
+  <!-- Import a command XML file as a classpath resource (prefix 'file and http' can also be used). -->
+  <!-- Named commands in this file will override any of the imported commands with the same name. -->
+  <import resource="classpath:com/example/command.xml" />
+
+  <!-- Named command with class definition -->
+  <command name="trueCommand" class="org.codegility.commandflow.command.TrueCommand" />
+
+  <!-- Unnamed static command reference to 'trueCommand' -->
+  <command ref="trueCommand" />
+
+  <!-- Unnamed dynamic command reference to 'trueCommand' -->
+  <command ref="trueCommand" dynamicRef="true" />
+
+  <!-- Named command with EL, context available as 'context' variable in EL -->
+  <command name="elCommand" value="#{1 > 2}" />
+
+  <!-- A sequential sequence of commands -->
+  <!-- NOTE: The 'sequence' tag can usually be omitted as it is the default for contained commands, except if defined as a top-level command -->
+  <sequence name="sequenceCommand">
+    <command ref="elCommand" />
+    <command ref="trueCmmand" />
+  </sequence>
+
+  <!-- Negation of 'trueCommand' -->
+  <not name="falseCommand">
+    <command ref="trueCommand" />
+  </not>
+
+  <!-- Short-circuit or command -->
+  <or name="orCommand">
+    <command value="#{false}" />
+    <not>
+      <command value="#{false}" />
+    </not>
+  </or>
+
+  <!-- Short-circuit and command -->
+  <and name="andCommand">
+    <command value="#{true}" />
+    <not>
+      <command value="#{false}" />
+    </not>
+  </and>
+
+  <!-- Conditional command, condition defined by command class -->
+  <if name="ifCommand" class="org.codegility.commandflow.command.TrueCommand">
+    <command ref="andCommand" />
+  </if>
+
+  <!-- Conditional command, condition defined by command reference -->
+  <if name="ifCommand2" ref="trueCommand">
+    <command ref="andCommand" />
+  </if>
+
+  <!-- Conditional command, condition defined by EL -->
+  <if name="ifCommand2" value="#{new java.util.Date().getHours() > 18}">
+    <command ref="andCommand" />
+  </if>
+
+  <!-- Conditional while loop execution, condition defined by command class -->
+  <while name="whileCommand" class="org.codegility.commandflow.command.TrueCommand">
+    <command name="andCommand" />
+  </while>
+
+  <!-- Conditional while loop execution, condition defined by command reference -->
+  <while name="whileCommand" ref="trueCommand">
+    <command name="andCommand" />
+  </while>
+
+  <!-- Conditional while loop execution, condition defined by EL -->
+  <while name="whileCommand" value="#{!context.isInitailized}">
+    <or>
+      <command ref="doInitialization" />
+      <command ref="sleep" />
+    </or>
+  </while>
+
+  <!-- Conditional do-while loop execution, condition defined by command reference -->
+  <doWhile name="whileCommand" ref="initializationDone">
+    <or>
+      <command ref="doInitialization" />
+      <command ref="sleep" />
+    </or>
+  </doWhile>
+
+  <!-- Parallel execution of a collection of commands (execution via an associated Executor service) -->
+  <parallel>
+    <command ref="emailConfimation" />
+    <command ref="sendOrder" />
+  </parallel>
+
+  <!-- Parallel or command (not short-circuited, first true ends execution) -->
+  <parallelOr name="parallelOrCommand">
+    <command ref="emailConfimation" />
+    <command ref="smsConfimation" />
+  </parallelOr>
+
+  <!-- Parallel and command (not short-circuited, first false ends execution) -->
+  <parallelAnd name="parallelAndCommand">
+    <command ref="emailConfimation" />
+    <command ref="sendOrder" />
+  </parallelAnd>
+
+</commands>

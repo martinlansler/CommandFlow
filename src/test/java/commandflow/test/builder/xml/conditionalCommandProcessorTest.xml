@@ -1,8 +1,0 @@
-<commands>
-  <command name="condition" class="commandflow.command.TrueCommand"/>
-
-  <if name="ifCommand" ref="condition">
-    <command class="commandflow.test.builder.xml.SetIsExecuted"/>
-  </if>
-</commands>
- 

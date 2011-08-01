@@ -32,9 +32,9 @@ import javax.xml.validation.Validator;
  */
 public class StAXSchemaValidator {
     public void testValidation() throws Exception {
-        InputStream is = getResource("commandflow/builder/xml/v1/command.xml");
+        InputStream is = getResource("org.codegility.commandflow/builder/xml/v1/command.xml");
         StAXSource commandXml = new StAXSource(XMLInputFactory.newInstance().createXMLStreamReader(is));
-        is = getResource("commandflow/builder/xml/v1/command.xsd");
+        is = getResource("org.codegility.commandflow/builder/xml/v1/command.xsd");
         Schema schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(new StreamSource(is));
         schema.newValidator().validate(commandXml);
     }
