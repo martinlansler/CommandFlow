@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import java.util.Map;
  * <p>
  * Resolver can be bound on two levels - either as default resolver available for all created instances of this class, see static method {@link #addDefaultResolver(String, ResourceResolver)}, or
  * specifically bound to a specific instance of this resolver, see method {@link #addResolver(String, ResourceResolver)}.
- * @author elansma
+ * @author Martin Lansler
  */
 public class DefaultResourceResolver implements ResourceResolver {
     /** Maps the bound URI schema to their respective resolvers */
@@ -77,7 +77,7 @@ public class DefaultResourceResolver implements ResourceResolver {
         }
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public Resource resolve(URI uri) {
         if (!uri.isAbsolute()) {

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@ package org.codegility.commandflow.command;
  * The command executes its wrapped command in a loop while command status of the condition command is <code>true</code>, the condition is checked
  * after each loop execution. The command status of this command is the last returned command status of the wrapped command.
  * @param <C> the context class of the command
- * @author elansma
+ * @author Martin Lansler
  */
 public class DoWhileCommand<C> extends AbstractConditionalCommand<C> {
-    /** {@inheritDoc} */
+    
     @Override
     public boolean execute(C context) {
         boolean status = false;

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,94 +18,29 @@ package org.codegility.commandflow.catalog;
 import java.util.Map;
 
 import org.codegility.commandflow.Command;
-import org.codegility.commandflow.builder.BuilderException;
-import org.codegility.commandflow.builder.CommandBuilder;
-import org.codegility.commandflow.builder.CommandInitialization;
-import org.codegility.commandflow.builder.xml.XmlCommandBuilder;
-
+import org.codegility.commandflow.bind.BindingHandler;
 
 /**
  * The command catalog interface.
  * <p>
- * The catalog is responsible for holding a named set of commands. The catalog works in distinct phases:
- * <ol>
- * <li>Building phase - using a builder such as {@link XmlCommandBuilder} commands are created and added to the catalog</li>
- * <li>Linking phase - all static {@link CommandReference} instances are resolved by the catalog, if any cannot be resolved an error is raised</li>
- * <li>Initialization phase - commands needing initialization (see {@link CommandInitialization}) are initialized</li>
- * <li>Execution phase - the catalog is used to fetch named commands for execution</li>
- * </ol>
+ * The catalog is responsible for holding a named set of commands.
  * <p>
- * Implementation of this interface are required to be thread-safe.
+ * Implementation of this interface <em>must be thread-safe</em>.
  * @param <C> the context class of the command
- * @author elansma
+ * @author Martin Lansler
  */
 public interface CommandCatalog<C> {
-    /**
-     * Adds a command builder.
-     * <p>
-     * If a new command builder is added after {@link #build()} method has been invoked the {@link #build()} method needs to be reinvoked.
-     * @param builder the command builder
-     * @return the command catalog (for method chaining)
-     */
-    CommandCatalog<C> addCommandBuilder(CommandBuilder<C> builder);
-
-    /**
-     * Builds all commands by invoking the added command builders.
-     * <p>
-     * If build was previously invoked all existing commands will first be removed by invoking {@link #clean()}.
-     * @return the command catalog (for method chaining)
-     * @throws BuilderException if a builder related error occurred
-     */
-    CommandCatalog<C> build() throws BuilderException;
-
-    /**
-     * Removes all existing commands held by this catalog.
-     * @return the command catalog (for method chaining)
-     */
-    CommandCatalog<C> clean();
-
-    /**
-     * Links all static command references, i.e. replaces all references to these with the actual command.
-     * <p>
-     * This method should be invoked after {@link #build()}, it can be invoked before or after {@link #init()} .
-     * @return the command catalog (for method chaining)
-     */
-    CommandCatalog<C> link();
-
-    /**
-     * Initializes all command that need initialization, command instances that are already initialized will not be re-initialized.
-     * <p>
-     * This method should be invoked after {@link #build()}, it can be invoked before or after {@link #init()} .
-     * @see CommandInitialization
-     * @return the command catalog (for method chaining)
-     * @throws BuilderException if an initialization related error occurred
-     */
-    CommandCatalog<C> init() throws BuilderException;
-
-    /**
-     * Convenience method that builds, links and initializes the catalog.
-     * <p>
-     * This method is equivalent to invoking (expect that the whole operation is synchronized):
-     * <ol>
-     * <li>{@link #build()}</li>
-     * <li>{@link #link()}</li>
-     * <li>{@link #init()}</li>
-     * </ol>
-     * @return the command catalog (for method chaining)
-     * @throws BuilderException if a builder or initialization related error occurred
-     */
-    CommandCatalog<C> make() throws BuilderException;
 
     /**
      * Adds a named command.
      * <p>
-     * This method is typically invoked from the {@link CommandBuilder} but it can also be directly invoked to add a command programatically. If a previous command already exists with this name it
-     * will be replaced with the new command.
+     * This method is typically invoked during from a {@link BindingHandler} implementation but it can also be directly invoked to add a command programatically. If a previous command already exists
+     * with this name it will be replaced with the new command.
      * <p>
      * If a new command is added after {@link #link()} and {@link #init()} have been invoked these methods need to be reinvoked to ensure that the command is linked and initialized.
      * @param name the command name
      * @param command the command
-     * @return the command catalog (for method chaining)
+     * @return this command catalog (for method chaining)
      */
     CommandCatalog<C> addCommand(String name, Command<C> command);
 
@@ -124,10 +59,25 @@ public interface CommandCatalog<C> {
     Command<C> removeCommand(String name);
 
     /**
+     * Clears all commands held by this catalog
+     * @return this command catalog (for method chaining)
+     */
+    CommandCatalog<C> clear();
+
+    /**
      * Gets a map with all commands, map key is the command name.
      * <p>
      * The returned map is safe to modify as this method will create a new map each time.
      * @return a mapping of all held commands
      */
     Map<String, Command<C>> getCommands();
+
+    /**
+     * Clears all current commands and set the specified commands as specified in the map, mapped via command names.
+     * <p>
+     * The passed in map is copied so it safe to modify it after this call.
+     * @param commands the new commands to set
+     * @return this command catalog (for method chaining)
+     */
+    CommandCatalog<C> setCommands(Map<String, Command<C>> commands);
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import java.net.URI;
 
 /**
  * Suitable base class for a {@link Resource} implementation.
- * @author elansma
+ * @author Martin Lansler
  */
 public abstract class AbstractResource implements Resource {
     /** The resource identifier */
@@ -39,7 +39,7 @@ public abstract class AbstractResource implements Resource {
     protected AbstractResource() {
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public URI getURI() {
         return uri;
@@ -52,7 +52,7 @@ public abstract class AbstractResource implements Resource {
         this.uri = uri;
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Resource)) {
@@ -62,13 +62,13 @@ public abstract class AbstractResource implements Resource {
         return uri.equals(resource.getURI());
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public int hashCode() {
         return uri.hashCode();
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public String toString() {
         return String.format("Resource - uri: %s", uri);

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ package org.codegility.commandflow;
  * <p>
  * Exception can raise unchecked exceptions to terminate the command execution, any unchecked exception may be used.
  * @param <C> the context class of the commands
- * @author elansma
+ * @author Martin Lansler
  */
 public interface Command<C> {
     /**

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ import org.codegility.commandflow.Command;
  * performance.
  * <p>
  * Runtime exceptions raised by the script in the form of {@link ScriptException} are wrapped in a {@link RuntimeException} and propagated.
- * @author elansma
+ * @author Martin Lansler
  */
 public class ScriptCommand<C> implements Command<C> {
     /** The default binding name {@value} used for the command context instance */
@@ -139,7 +139,7 @@ public class ScriptCommand<C> implements Command<C> {
         }
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public boolean execute(C context) {
         Bindings bindings = new SimpleBindings();

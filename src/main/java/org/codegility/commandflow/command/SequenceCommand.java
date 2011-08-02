@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,11 @@ import org.codegility.commandflow.Command;
  * <p>
  * The command status is the status of the last command in the sequence, the empty sequence of commands always return <code>false</code>.
  * @param <C> the context class of the command
- * @author elansma
+ * @author Martin Lansler
  */
 public class SequenceCommand<C> extends AbstractCompositeCommand<C> {
 
-    /** {@inheritDoc} */
+    
     @Override
     public boolean execute(C context) {
         boolean status = false;

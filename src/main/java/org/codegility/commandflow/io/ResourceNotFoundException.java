@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ import org.codegility.commandflow.core.UncheckedException;
 
 /**
  * Exception raised to indicate that an expected resource could not be loaded.
- * @author elansma
+ * @author Martin Lansler
  */
 public class ResourceNotFoundException extends UncheckedException {
-    private static final long serialVersionUID = 5261535826089209448L;
+    private static final long serialVersionUID = 1L;
 
     public ResourceNotFoundException(String message, Object... formattingArgs) {
         super(message, formattingArgs);

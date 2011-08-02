@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  * type. The return type of the method may be void or boolean, a void method is assumed to always have command status <code>true</code>. Optionally a
  * command name may be provided as an annotation argument.
  * 
- * @author elansma
+ * @author Martin Lansler
  */
 @Documented
 @Target(ElementType.METHOD)

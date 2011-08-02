@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ import org.codegility.commandflow.Command;
  * The command executes its contained commands until one command returns <code>false</code>. If all commands return <code>true</code> the command
  * status is also <code>true</code>. An empty and command always returns <code>false</code>.
  * @param <C> the context class of the command
- * @author elansma
+ * @author Martin Lansler
  */
 public class AndCommand<C> extends AbstractCompositeCommand<C> {
-    /** {@inheritDoc} */
+    
     @Override
     public boolean execute(C context) {
         for (Command<C> command : getCommands()) {

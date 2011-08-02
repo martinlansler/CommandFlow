@@ -1,0 +1,12 @@
+<commands>
+  <command name="commandViaClassAttribute" class="org.codegility.commandflow.test.bind.xml.BasicCommandProcessorTest$TestClassCommand" />
+
+  <command name="commandViaRef" ref="commandViaClassAttribute" />
+
+  <command name="commandViaDynamicRef" ref="commandViaClassAttribute" dynamic="true" />
+
+  <command name="commandViaScript" value="#{2 > 1}" />
+
+  <command name="commandViaValue" value="true" />
+</commands>
+ 

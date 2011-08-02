@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import org.junit.Test;
 /**
  * Tests of the basic commands.
  * 
- * @author elansma
+ * @author Martin Lansler
  */
 public class BasicCommandTests {
 	private boolean ex(Command<?> command) {

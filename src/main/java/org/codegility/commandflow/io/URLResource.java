@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import java.net.URL;
 
 /**
  * A {@link URL} backed resource.
- * @author elansma
+ * @author Martin Lansler
  */
 public class URLResource extends AbstractResource {
     /** The backed URL */
@@ -56,7 +56,7 @@ public class URLResource extends AbstractResource {
         }
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public boolean exist() {
         return URLResource.exists(getURI());
@@ -80,7 +80,7 @@ public class URLResource extends AbstractResource {
         }
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public InputStream getInputStream() {
         try {
@@ -90,7 +90,7 @@ public class URLResource extends AbstractResource {
         }
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public Resource resolveRelative(URI uri) {
         return new URLResource(getURI().resolve(uri));

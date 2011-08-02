@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@ import org.codegility.commandflow.core.UncheckedException;
  * Unchecked exception for all exception raised by the catalog.
  * <p>
  * Note: This exception is only related to the catalog implementation itself and not to the runtime execution of commands handled by the catalog.
- * @author elansma
+ * @author Martin Lansler
  */
 public class CatalogException extends UncheckedException {
-    private static final long serialVersionUID = -6632328115517415046L;
+    private static final long serialVersionUID = 1L;
 
     public CatalogException(String message, Object... formattingArgs) {
         super(message, formattingArgs);

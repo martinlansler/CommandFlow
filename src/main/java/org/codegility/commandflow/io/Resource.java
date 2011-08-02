@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.net.URI;
  * This class is heavily influenced by the Spring <code>org.springframework.core.io.Resource</code> interface however to avoid a runtime dependency to Spring this inspired interface is used for the
  * core parts of org.codegility.commandflow. The difference compared to the Spring resource is that each resource <em>must</em> have a resource identifier in the form of a {@link URI}, this identifier is used when
  * resolving a resource, see {@link ResourceResolver}.
- * @author elansma
+ * @author Martin Lansler
  */
 public interface Resource {
     /**

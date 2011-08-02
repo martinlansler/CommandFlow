@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Test command to count command invocation, thread-safe.
- * @author elansma
+ * @author Martin Lansler
  */
 public class CounterCommand<T> extends ConditionCommand<T> {
     private AtomicLong counter = new AtomicLong();

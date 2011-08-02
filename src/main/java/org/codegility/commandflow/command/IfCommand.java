@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@ package org.codegility.commandflow.command;
  * If the supplied condition command returns command status <code>true</code> the conditional command is executed. If the condition command returns
  * <code>true</code> the command status is also <code>true</code>, otherwise <code>false</code>.
  * @param <C> the context class of the command
- * @author elansma
+ * @author Martin Lansler
  */
 public class IfCommand<C> extends AbstractConditionalCommand<C> {
-    /** {@inheritDoc} */
+    
     @Override
     public boolean execute(C context) {
         if (executeCondition(context)) {

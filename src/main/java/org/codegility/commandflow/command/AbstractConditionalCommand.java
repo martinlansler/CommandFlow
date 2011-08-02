@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import org.codegility.commandflow.builder.CommandInitialization;
  * The implementation uses {@link CommandInitialization} to ensure that both a condition and action command have been set. If more than one action
  * commands are added they will be automatically coerced into a single {@link SequenceCommand}.
  * @param <C> the context class of the command
- * @author elansma
+ * @author Martin Lansler
  */
 public abstract class AbstractConditionalCommand<C> extends AbstractCompositeCommand<C> implements CommandInitialization {
 
@@ -43,7 +43,7 @@ public abstract class AbstractConditionalCommand<C> extends AbstractCompositeCom
     /** The action command */
     private Command<C> action;
 
-    /** {@inheritDoc} */
+    
     @Override
     public void init() throws BuilderException {
         if (getCommands().size() < 2) {

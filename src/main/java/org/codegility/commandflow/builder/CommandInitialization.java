@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ package org.codegility.commandflow.builder;
  * <p>
  * Commands that implement this interface are guaranteed to have the {@link #init()} method called after all dependencies have been set but before any
  * command execution. Commands created with dependency injection frameworks will typically have other mechanism to perform initialization.
- * @author elansma
+ * @author Martin Lansler
  */
 public interface CommandInitialization {
     /**

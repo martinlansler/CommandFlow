@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@ import org.codegility.commandflow.Command;
  * Base exception for all unchecked exceptions raised in org.codegility.commandflow.
  * <p>
  * Note: This exception is not mandated to have to be used by {@link Command} implementations.
- * @author elansma
+ * @author Martin Lansler
  */
 public class UncheckedException extends RuntimeException {
-    private static final long serialVersionUID = 3019374003362350935L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Creates a new exception

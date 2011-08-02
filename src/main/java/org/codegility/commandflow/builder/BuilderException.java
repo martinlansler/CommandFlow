@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ import org.codegility.commandflow.core.UncheckedException;
 
 /**
  * Base exception for all builder level exception.
- * @author elansma
+ * @author Martin Lansler
  */
 public class BuilderException extends UncheckedException {
-    private static final long serialVersionUID = 743597909102060267L;
+    private static final long serialVersionUID = 1L;
 
     public BuilderException(String message, Object... formattingArgs) {
         super(message, formattingArgs);

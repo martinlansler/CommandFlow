@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import org.codegility.commandflow.Command;
 /**
  * False command, i.e. always returns command status <code>false</code>.
  * @param <C> the context class of the command
- * @author elansma
+ * @author Martin Lansler
  */
 public class FalseCommand<C> implements Command<C> {
     /** A cached instance of the false command */

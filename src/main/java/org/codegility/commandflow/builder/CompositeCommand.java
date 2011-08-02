@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.codegility.commandflow.Command;
  * {@link Command} from an execution point-of-view (it's to emphasize this distinction that this interface does not inherit from {@link Command}).
  * Commands that need to validate the added command can implement the {@link CommandInitialization} interface.
  * @param <C> the context class of the command
- * @author elansma
+ * @author Martin Lansler
  */
 public interface CompositeCommand<C> {
     /**

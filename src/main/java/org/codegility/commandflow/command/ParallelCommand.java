@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.codegility.commandflow.command;
 
 /**
  * A command that executes a list of commands in parallel.
- * @author elansma
+ * @author Martin Lansler
  * @param <C> the context class of the command
  */
 public class ParallelCommand<C> extends AbstractCompositeCommand<C> {

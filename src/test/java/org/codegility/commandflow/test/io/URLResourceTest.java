@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.codegility.commandflow.io.URLResource;
 /**
  * Tests {@link ClassPathResource}
  * 
- * @author elansma
+ * @author Martin Lansler
  */
 public class URLResourceTest extends AbstractResourceTest {
     public static final String EXISTING_RESOURCE;

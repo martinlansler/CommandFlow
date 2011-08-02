@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import java.net.URISyntaxException;
  * <li>The classloader associated with this class, see {@link Class#getClassLoader()}</li>
  * <li>The classloader of the current thread, see {@link Thread#getContextClassLoader()}</li>
  * </ol>
- * @author elansma
+ * @author Martin Lansler
  */
 public class ClassPathResource extends AbstractResource {
 
@@ -60,7 +60,7 @@ public class ClassPathResource extends AbstractResource {
         this(String.format("%s/%s", parentPackage.getName().replace('.', '/'), name));
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public boolean exist() {
         return ClassPathResource.exist(getURI());
@@ -81,13 +81,13 @@ public class ClassPathResource extends AbstractResource {
 
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public Resource resolveRelative(URI uri) {
         return new ClassPathResource(getURI().resolve(uri));
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public InputStream getInputStream() {
         String resource = getURI().getSchemeSpecificPart();
@@ -106,13 +106,13 @@ public class ClassPathResource extends AbstractResource {
 
     /**
      * A classpath resource resolver
-     * @author elansma
+     * @author Martin Lansler
      */
     public static class ClassPathResourceResolver implements ResourceResolver {
         /** The schema used for classpath resources */
         public static final String SCHEMA = "classpath";
 
-        /** {@inheritDoc} */
+        
         @Override
         public Resource resolve(URI uri) {
             return ClassPathResource.exist(uri) ? new ClassPathResource(uri) : null;

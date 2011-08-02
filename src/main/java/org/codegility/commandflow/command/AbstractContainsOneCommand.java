@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,13 +28,13 @@ import org.codegility.commandflow.builder.CommandInitialization;
  * The implementation uses {@link CommandInitialization} to ensure only a single command is contained. If more than one commands are added they will
  * be automatically coerced into a single {@link SequenceCommand}.
  * @param <C> the context class of the command
- * @author elansma
+ * @author Martin Lansler
  */
 public abstract class AbstractContainsOneCommand<C> extends AbstractCompositeCommand<C> implements CommandInitialization {
     /** The wrapped command */
     private Command<C> command;
 
-    /** {@inheritDoc} */
+    
     @Override
     public void init() throws BuilderException {
         if (getCommands().size() == 0) {

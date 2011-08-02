@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import java.net.URI;
 
 /**
  * A {@link File} based resource.
- * @author elansma
+ * @author Martin Lansler
  */
 public class FileResource extends AbstractResource {
     /** The underlying file */
@@ -48,7 +48,7 @@ public class FileResource extends AbstractResource {
         this.file = new File(uri).getAbsoluteFile();
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public boolean exist() {
         return FileResource.exist(file);
@@ -63,7 +63,7 @@ public class FileResource extends AbstractResource {
         return file.isFile() && file.canRead();
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public InputStream getInputStream() {
         try {
@@ -73,7 +73,7 @@ public class FileResource extends AbstractResource {
         }
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public Resource resolveRelative(URI uri) {
         return new FileResource(getURI().resolve(uri));
@@ -81,13 +81,13 @@ public class FileResource extends AbstractResource {
 
     /**
      * A file resource resolver
-     * @author elansma
+     * @author Martin Lansler
      */
     public static class FileResourceResolver implements ResourceResolver {
         /** The schema used for file resources */
         public static final String SCHEMA = "file";
 
-        /** {@inheritDoc} */
+        
         @Override
         public Resource resolve(URI uri) {
             File file = new File(uri);

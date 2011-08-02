@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,93 @@
  */
 package org.codegility.commandflow.builder;
 
+import org.codegility.commandflow.bind.BindingHandler;
 import org.codegility.commandflow.catalog.CommandCatalog;
+import org.codegility.commandflow.catalog.CommandReference;
 
 /**
  * Interface for a command builder.
  * <p>
- * The builder is responsible for creating instances of commands from some external representation and registering the commands with the supplied {@link CommandCatalog}. The builder should generally
- * not initialize or resolve command references, this is handled by the command catalog.
+ * The builder is responsible for creating instances of commands via one or more supplied {@link BindingHandler} instances and registering the commands with the supplied {@link CommandCatalog}.
  * <p>
- * A builder can/may be reused to rebuild commands, for instance from a command catalog that is reloadable.
+ * The builder works in distinct phases:
+ * <ol>
+ * <li>Building phase - using a {@link BindingHandler} commands are created and added to the catalog</li>
+ * <li>Initialization phase - commands needing initialization (see {@link CommandInitialization}) are initialized</li>
+ * <li>Linking phase - all {@link CommandReference} instances are resolved by the builder, if any cannot be resolved an error is raised</li>
+ * </ol>
  * <p>
  * Implementation of this interface are not thread-safe if not otherwise noted.
- * @author elansma
+ * @author Martin Lansler
+ * @param <C> the context class of the command
  */
 public interface CommandBuilder<C> {
     /**
-     * Called to request the builder to build its commands.
+     * Adds a binding handler.
      * <p>
-     * This command may be called several times so the builder is expected to be able to clear internal state between invocations.
-     * @param catalog the command catalog that manages the created commands
+     * If a new binding handler is added after {@link #build()} method has been invoked the {@link #build()} method needs to be reinvoked.
+     * @param handler the binding builder
+     * @return this command builder (for method chaining)
+     */
+    CommandBuilder<C> addBindingHandler(BindingHandler<C> handler);
+
+    /**
+     * Sets the command catalog that this builder uses
+     * @param catalog the command catalog
+     * @return this command builder (for method chaining)
+     */
+    CommandBuilder<C> setCommandCatalog(CommandCatalog<C> catalog);
+
+    /**
+     * Sets the associated command catalog
+     * @return this associated command catalog
+     */
+    CommandCatalog<C> getCommandCatalog();
+
+    /**
+     * Builds all commands by invoking the added binding handlers.
+     * <p>
+     * If build was previously invoked all existing commands in the catalog will first be removed by invoking {@link #clean()}.
+     * @return this command builder (for method chaining)
      * @throws BuilderException if a builder related error occurred
      */
-    void build(CommandCatalog<C> catalog) throws BuilderException;
+    CommandBuilder<C> build() throws BuilderException;
+
+    /**
+     * Removes all existing commands held by the associated catalog.
+     * @return this command builder (for method chaining)
+     */
+    CommandBuilder<C> clean();
+
+    /**
+     * Links all static command references, i.e. replaces all references to these with the actual command.
+     * <p>
+     * This method should be invoked after {@link #build()}, it can be invoked before or after {@link #init()} .
+     * @return this command builder (for method chaining)
+     */
+    CommandBuilder<C> link();
+
+    /**
+     * Initializes all command that need initialization, command instances that are already initialized will not be re-initialized.
+     * <p>
+     * This method should be invoked after {@link #build()}, it can be invoked before or after {@link #init()} .
+     * @see CommandInitialization
+     * @return this command builder (for method chaining)
+     * @throws BuilderException if an initialization related error occurred
+     */
+    CommandBuilder<C> init() throws BuilderException;
+
+    /**
+     * Convenience method that builds, links and initializes the commands.
+     * <p>
+     * This method is equivalent to invoking (expect that the whole operation is synchronized):
+     * <ol>
+     * <li>{@link #build()}</li>
+     * <li>{@link #link()}</li>
+     * <li>{@link #init()}</li>
+     * </ol>
+     * @return this command builder (for method chaining)
+     * @throws BuilderException if a builder or initialization related error occurred
+     */
+    CommandBuilder<C> make() throws BuilderException;
 }

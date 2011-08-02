@@ -1,0 +1,5 @@
+<commands>
+  <command name="relativeUnique" class="org.codegility.commandflow.test.bind.xml.ImportElementProcessorTest$CommandRelativeUnique" />
+  <command name="override" class="org.codegility.commandflow.test.bind.xml.ImportElementProcessorTest$CommandRelativeOverride" />
+</commands>
+ 

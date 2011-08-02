@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Martin Lansler (elansma), Anders Jacobsson
+ * Copyright 2010/2011, Martin Lansler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.codegility.commandflow.Command;
  * performance-wise, however a dynamic reference adds a level of indirection and hence a flexibility in allowing reference target command to be changed during execution.
  * <p>
  * Before the command reference can be executed the associated {@link CommandCatalog} must be set. Note: A static reference can never be executed, attempting this raises a runtime exception.
- * @author elansma
+ * @author Martin Lansler
  */
 public class CommandReference<C> implements Command<C> {
     /** Name of command this reference refers to */
@@ -71,7 +71,7 @@ public class CommandReference<C> implements Command<C> {
         return isDynamic;
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public boolean execute(C context) {
         if (!isDynamic) {

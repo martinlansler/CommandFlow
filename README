@@ -5,3 +5,5 @@ Martin Lansler - (martin dot lansler at gmail dot com)
 
 What is this?
 CommandFlow is a general purpose command execution engine that can be used to build processing flows.
+
+For an examples see 'src/example/java'.
