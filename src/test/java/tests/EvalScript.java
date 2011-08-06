@@ -24,10 +24,18 @@ import javax.script.ScriptEngineManager;
 import javax.script.SimpleBindings;
 
 public class EvalScript {
+    static class Foo {
+        private String name = "Martin@gmail.com";
+
+        public String getName() {
+            return name;
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         String script;
         if (args.length == 0) {
-            script = "name.length > 2 || name.length < 10";
+            script = "foo.name.indexOf('@gmail.com') != -1";
         } else {
             script = args[0];
         }
@@ -47,7 +55,7 @@ public class EvalScript {
 
         System.out.println(engine.getFactory().getParameter("THREADING"));
         Bindings bindings = new SimpleBindings();
-        bindings.put("name", "Martin");
+        bindings.put("foo", new Foo());
         // evaluate JavaScript code from String
         Object result = compiledScript != null ? compiledScript.eval(bindings) : engine.eval(script, bindings);
         System.out.println(result);

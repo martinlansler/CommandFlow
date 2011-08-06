@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commands xmlns="http://org.codegility.commandflow/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://org.codegility.commandflow/1 ../../../../../../../main/java/org/codegility/commandflow/bind/xml/v1/commandflow.xsd">
+
+  <command name="gmailConfigurer" class="org.codegility.commandflow.example.email.MailConfigurerCommand" />
+  <command name="yahooConfigurer" class="org.codegility.commandflow.example.email.MailConfigurerCommand" />
+  <command name="hotmailConfigurer" class="org.codegility.commandflow.example.email.MailConfigurerCommand" />
+
+  <command name="HelloWorldMessage" class="org.codegility.commandflow.example.email.AddTextBodyCommand" />
+
+  <or name="configureMail">
+    <if value="#{c.to.indexOf('@gmail') != -1}">
+      <command ref="gmailConfigurer" />
+    </if>
+    <if value="#{c.to.indexOf('@yahoo') != -1')}">
+      <command ref="yahooConfigurer" />
+    </if>
+    <if value="#{c.to.indexOf('@hotmail') != -1')}">
+      <command ref="hotmailConfigurer" />
+    </if>
+  </or>
+
+  <sequence name="sendEmail">
+    <command class="org.codegility.commandflow.example.email.InputFromAddressCommand" />
+    <command class="org.codegility.commandflow.example.email.InputToAddressCommand" />
+    <command class="org.codegility.commandflow.example.email.InputSubjectCommand" />
+    <command ref="configureMail" />
+  </sequence>
+</commands>
