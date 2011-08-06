@@ -1,9 +1,44 @@
 CommandFlow
 
-Authors:
+Author
+------
 Martin Lansler - (martin dot lansler at gmail dot com)
 
 What is this?
-CommandFlow is a general purpose command execution engine that can be used to build processing flows.
+-------------
+CommandFlow is a general purpose command execution engine that can be used to build processing flows. It implements 
+the "Chain of Responsibility" pattern of the GoF. Command are chained together to produce a flow, a command is either
+a user define command or a composite command such as "sequence", "and", "or" etc.
+ 
+CommandFlow currently has an XML binding, a Spring binding is in the roadmap. CommandFlow is specially useful
+when there is a need to easily customize production execution flow without needing to recompile code. The flow
+is composed of state-less commands executing on a domain specific context class. The execution flow can easily be 
+rearranged to suit a specific environment by changing the binding file, adding, removing or reconfiguring commands.
 
-For an examples see 'src/example/java'.
+Background
+----------
+CommandFlow is inspired by a command execution engine deployed at Ericsson, which has successfully been deployed 
+to execute Ericsson's service delivery platform worldwide. Apart from this mental inspiration it has no connection whatsoever 
+to Ericsson who do not endorse this software in anyway.
+
+Examples
+--------
+For examples see 'src/example/java'.
+
+Here is the required "Hello World" executing a command directly without any binding.
+
+public class HelloWorld implements Command<Map<String, String>> {
+
+    @Override
+    public boolean execute(Map<String, String> context) {
+        System.out.println(context.get("message"));
+        return true;
+    }
+
+    public static void main(String[] args) {
+        Map<String, String> context = new HashMap<String, String>();
+        context.put("message", "Hello World!");
+        new HelloWorld().execute(context);
+    }
+
+}
