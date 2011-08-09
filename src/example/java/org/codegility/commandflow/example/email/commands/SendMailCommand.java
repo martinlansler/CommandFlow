@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codegility.commandflow.example.email;
+package org.codegility.commandflow.example.email.commands;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -27,6 +27,10 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import org.codegility.commandflow.Command;
+import org.codegility.commandflow.example.email.EmailContext;
+import org.codegility.commandflow.example.email.EmailException;
+import org.codegility.commandflow.example.email.util.IOUtils;
+import org.codegility.commandflow.example.email.util.Recipient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +47,9 @@ public class SendMailCommand implements Command<EmailContext> {
             sendEmail(context);
             return true;
         } catch (Exception e) {
-            logger.error(String.format("Failed to send email '%s', to '%s'", context.getSubject()), IOUtils.join(context.getRecipients(Message.RecipientType.TO), ","));
-            return false;
+            String errMesg = String.format("Failed to send email '%s', to '%s'", context.getSubject());
+            logger.error(errMesg, IOUtils.join(context.getRecipients(Message.RecipientType.TO), ","));
+            throw new EmailException(e, errMesg);
         }
     }
 
@@ -58,6 +63,11 @@ public class SendMailCommand implements Command<EmailContext> {
         }
 
         Multipart multipart = new MimeMultipart();
+        if (context.getText() != null) {
+            MimeBodyPart textPart = new MimeBodyPart();
+            textPart.setText(context.getText());
+            multipart.addBodyPart(textPart);
+        }
         for (MimeBodyPart mimeBodyPart : context.getBodyParts()) {
             multipart.addBodyPart(mimeBodyPart);
         }

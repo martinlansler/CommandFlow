@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codegility.commandflow.example.email;
+package org.codegility.commandflow.example.email.util;
 
 import javax.mail.Address;
 import javax.mail.Message;

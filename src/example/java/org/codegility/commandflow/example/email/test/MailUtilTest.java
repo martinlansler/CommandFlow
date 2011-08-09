@@ -20,7 +20,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import org.codegility.commandflow.example.email.MailUtil;
+import org.codegility.commandflow.example.email.util.MailUtil;
 import org.junit.Test;
 
 /**
@@ -40,11 +40,11 @@ public class MailUtilTest {
     }
 
     private void assertIsNotEmail(String email) {
-        assertFalse(email, MailUtil.EMAIL_ADDRESS_PATTERN.matcher(email).matches());
+        assertFalse(email, MailUtil.RFC822_ADDRESS_PATTERN.matcher(email).matches());
     }
 
     private void assertIsEmail(String email) {
-        assertTrue(email, MailUtil.EMAIL_ADDRESS_PATTERN.matcher(email).matches());
+        assertTrue(email, MailUtil.RFC822_ADDRESS_PATTERN.matcher(email).matches());
     }
 
     @Test

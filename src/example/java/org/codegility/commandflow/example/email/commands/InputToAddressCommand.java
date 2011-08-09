@@ -13,16 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codegility.commandflow.example.email;
+package org.codegility.commandflow.example.email.commands;
+
+import org.codegility.commandflow.example.email.EmailContext;
 
 /**
- * Sends "Hello world!" as an email, the needed SMTP configuration, to address etc is set during the command flow.
+ * Queries for to address on stdin if no recipients are specified in command context.
  * @author Martin Lansler
  */
-public class HelloWorld {
-    public static void main(String[] args) {
-        EmailContext context = new EmailContext();
-        context.setSubject("Hello from commandflow");
-        context.setText("Hello world!");
+public class InputToAddressCommand extends AbstractAddressInputCommand {
+    public InputToAddressCommand() {
+        setPrompt("To:");
+    }
+
+    @Override
+    public boolean execute(EmailContext context) {
+        if (context.getRecipients().size() == 0) {
+            context.setTo(getInput());
+        }
+        return true;
     }
 }

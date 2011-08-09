@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codegility.commandflow.example.email;
+package org.codegility.commandflow.example.email.commands;
 
 import java.util.regex.Pattern;
 
 import org.codegility.commandflow.Command;
+import org.codegility.commandflow.example.email.util.IOUtils;
 
 /**
  * Base command for querying user for input on stdin.

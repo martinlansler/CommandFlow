@@ -13,13 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codegility.commandflow.example.email;
+package org.codegility.commandflow.example.email.commands;
+
+import org.codegility.commandflow.example.email.EmailContext;
+import org.codegility.commandflow.example.email.util.MailUtil;
 
 /**
  * Queries for email subject on stdin if subject is not specified in command context.
  * @author Martin Lansler
  */
 public class InputSubjectCommand extends AbstractUserInputCommand<EmailContext> {
+    public InputSubjectCommand() {
+        setPrompt("Subject:");
+        setValidationPattern(MailUtil.EMAIL_SUBJECT_PATTERN);
+        setInputExample("Mail subject");
+    }
 
     @Override
     public boolean execute(EmailContext context) {

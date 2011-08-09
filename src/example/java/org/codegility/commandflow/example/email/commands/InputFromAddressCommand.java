@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codegility.commandflow.example.email;
+package org.codegility.commandflow.example.email.commands;
+
+import org.codegility.commandflow.example.email.EmailContext;
 
 /**
- * Queries for to address on stdin if no recipients are specified in command context.
+ * Queries for from address on stdin if no already specified in command context.
  * @author Martin Lansler
  */
-public class InputToAddressCommand extends AbstractUserInputCommand<EmailContext> {
+public class InputFromAddressCommand extends AbstractAddressInputCommand {
+
+    public InputFromAddressCommand() {
+        setPrompt("From:");
+    }
 
     @Override
     public boolean execute(EmailContext context) {
-        if (context.getRecipients().size() == 0) {
-            context.setTo(getInput());
+        if (context.getFrom() == null) {
+            context.setFrom(getInput());
         }
         return true;
     }

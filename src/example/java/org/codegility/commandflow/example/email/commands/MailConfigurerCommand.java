@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codegility.commandflow.example.email;
+package org.codegility.commandflow.example.email.commands;
 
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import org.codegility.commandflow.Command;
+import org.codegility.commandflow.example.email.EmailContext;
 
 /**
  * Command to configure needed java mail SMTP settings.
+ * <p>
+ * A regexp pattern is specified to match on "from" address, from this the email provider is determined (from example "google", "yahoo" etc).
  * @author Martin Lansler
  */
 public class MailConfigurerCommand implements Command<EmailContext> {
     private String accountType;
+
+    private Pattern fromAddressRegexp;
 
     private String host;
     private String user;
@@ -35,6 +41,17 @@ public class MailConfigurerCommand implements Command<EmailContext> {
 
     @Override
     public boolean execute(EmailContext context) {
+        if (fromAddressRegexp.matcher(context.getFrom()).matches()) {
+            configureMail(context);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param context
+     */
+    public void configureMail(EmailContext context) {
         Properties mailProperties = context.getMailProperties();
         putIfSet(mailProperties, "mail.smtp.host", host);
         putIfSet(mailProperties, "mail.smtp.user", user);
@@ -44,7 +61,6 @@ public class MailConfigurerCommand implements Command<EmailContext> {
         putIfSet(mailProperties, "mail.smtp.starttls.enable", doStartTTLS);
 
         context.setAccountType(accountType);
-        return true;
     }
 
     private void putIfSet(Properties properties, String key, Object value) {
@@ -80,6 +96,10 @@ public class MailConfigurerCommand implements Command<EmailContext> {
 
     public void setAccountType(String accountType) {
         this.accountType = accountType;
+    }
+
+    public void setFromAddressRegexp(Pattern fromAddressRegexp) {
+        this.fromAddressRegexp = fromAddressRegexp;
     }
 
 }

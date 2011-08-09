@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codegility.commandflow.example.email;
+package org.codegility.commandflow.example.email.commands;
 
-import static org.codegility.commandflow.example.email.IOUtils.readValidatedInput;
+import static org.codegility.commandflow.example.email.util.IOUtils.readValidatedInput;
 
 import org.codegility.commandflow.Command;
+import org.codegility.commandflow.example.email.EmailContext;
+import org.codegility.commandflow.example.email.util.MailUtil;
 
 /**
  * Gets the SMTP authentication settings by prompting on stdin.
@@ -29,11 +31,11 @@ public class UserInputGetSMTPAuthenticationCommand implements Command<EmailConte
     public boolean execute(EmailContext context) {
         if (!hasSetting(context, "mail.smtp.user")) {
             String defaultValue = context.getFrom() != null ? MailUtil.getAddress(context.getFrom()) : null;
-            String prompt = String.format("Enter username for %s account", context.getAccountType());
+            String prompt = String.format("Username for %s account:", context.getAccountType());
             addSetting(context, "mail.smtp.user", readValidatedInput(prompt, MailUtil.RFC5322_CHARS_PATTERN, "name@emailprovider.com", defaultValue));
         }
         if (!hasSetting(context, "mail.smtp.password")) {
-            String prompt = String.format("Enter password for %s account", context.getAccountType());
+            String prompt = String.format("Password for %s account", context.getAccountType());
             addSetting(context, "mail.smtp.user", readValidatedInput(prompt, MailUtil.RFC5322_CHARS_PATTERN, "name@emailprovider.com", null));
         }
         return true;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codegility.commandflow.example.email;
+package org.codegility.commandflow.example.email.util;
 
 import java.util.regex.Pattern;
 
@@ -41,9 +41,19 @@ public class MailUtil {
         RFC822_ADDRESS_REGEXP = String.format("((.*)\\s*<%s>)|%s", RAW_ADDRESS_REGEXP, RAW_ADDRESS_REGEXP);
     }
 
-    public final static Pattern EMAIL_ADDRESS_PATTERN;
+    public final static Pattern RFC822_ADDRESS_PATTERN;
     static {
-        EMAIL_ADDRESS_PATTERN = Pattern.compile(RFC822_ADDRESS_REGEXP);
+        RFC822_ADDRESS_PATTERN = Pattern.compile(RFC822_ADDRESS_REGEXP);
+    }
+
+    public final static String EMAIL_SUBJECT_REGEXP;
+    static {
+        EMAIL_SUBJECT_REGEXP = String.format("%s*", RFC5322_CHARS_REGEXP);
+    }
+
+    public final static Pattern EMAIL_SUBJECT_PATTERN;
+    static {
+        EMAIL_SUBJECT_PATTERN = Pattern.compile(EMAIL_SUBJECT_REGEXP);
     }
 
     public static String getAddress(String rfc822Address) {

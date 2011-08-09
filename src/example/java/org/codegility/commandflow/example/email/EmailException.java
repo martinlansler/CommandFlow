@@ -15,17 +15,24 @@
  */
 package org.codegility.commandflow.example.email;
 
+import javax.mail.MessagingException;
+
 /**
- * Queries for from address on stdin if no already specified in command context.
+ * Domain specific exception for email sending commands.
  * @author Martin Lansler
  */
-public class InputFromAddressCommand extends AbstractUserInputCommand<EmailContext> {
+public class EmailException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
-    @Override
-    public boolean execute(EmailContext context) {
-        if (context.getFrom() == null) {
-            context.setFrom(getInput());
-        }
-        return true;
+    public EmailException(String format, Object args) {
+        super(String.format(format, args));
+    }
+
+    public EmailException(Throwable e, String errMesg) {
+        super(errMesg, e);
+    }
+
+    public EmailException(MessagingException e) {
+        super(e);
     }
 }

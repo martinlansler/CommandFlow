@@ -28,6 +28,8 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 
+import org.codegility.commandflow.example.email.util.Recipient;
+
 /**
  * Context class to send an email
  * @author elansma

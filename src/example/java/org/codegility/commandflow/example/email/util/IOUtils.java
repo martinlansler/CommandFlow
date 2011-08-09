@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codegility.commandflow.example.email;
+package org.codegility.commandflow.example.email.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,6 +47,16 @@ public class IOUtils {
         }
     }
 
+    public static String readMultipleLineInput() {
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = readInput()) != null) {
+            sb.append(line);
+            sb.append("\r\n");
+        }
+        return sb.toString();
+    }
+
     public static String readValidatedInput(String prompt, Pattern validationPattern, String inputExample, String defaultValue) {
         String answer;
         showPrompt(prompt, defaultValue);
@@ -62,7 +72,7 @@ public class IOUtils {
     }
 
     private static void showPrompt(String prompt, String defaultValue) {
-        message("%s%s> ", prompt, defaultValue != null ? String.format(" [%s]", defaultValue) : "");
+        message("%s%s ", prompt, defaultValue != null ? String.format(" [%s]", defaultValue) : "");
     }
 
     public static String join(Object[] array, String glue) {

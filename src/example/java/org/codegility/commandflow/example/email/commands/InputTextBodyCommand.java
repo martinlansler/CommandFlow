@@ -13,37 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codegility.commandflow.example.email;
+package org.codegility.commandflow.example.email.commands;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 
 import org.codegility.commandflow.Command;
+import org.codegility.commandflow.example.email.EmailContext;
+import org.codegility.commandflow.example.email.EmailException;
+import org.codegility.commandflow.example.email.util.IOUtils;
 
 /**
- * Adds a plain text {@link MimeBodyPart}
- * @author Martin Lansler
+ * Adds a textual mail body.
+ * <p>
+ * This command adds a new {@link MimeBodyPart} rather than using the {@link EmailContext#setText(String)} method.
  */
-public class AddTextBodyCommand implements Command<EmailContext> {
-    private String text;
+public class InputTextBodyCommand implements Command<EmailContext> {
 
     @Override
     public boolean execute(EmailContext context) {
-        MimeBodyPart part = new MimeBodyPart();
+        MimeBodyPart textPart = new MimeBodyPart();
+        IOUtils.message("Message:\n");
         try {
-            part.setText(text);
+            textPart.setText(IOUtils.readMultipleLineInput());
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            throw new EmailException(e);
         }
-        context.addBodyParts(part);
+        context.addBodyParts(textPart);
         return true;
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
 }
