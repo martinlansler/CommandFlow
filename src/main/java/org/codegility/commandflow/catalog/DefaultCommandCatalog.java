@@ -17,6 +17,8 @@ package org.codegility.commandflow.catalog;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 import org.codegility.commandflow.Command;
 
@@ -29,39 +31,46 @@ import org.codegility.commandflow.Command;
  */
 public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
     /** The current set of named commands */
-    private Map<String, Command<C>> commands = new HashMap<String, Command<C>>();
+    private volatile Map<String, Command<C>> commands = new ConcurrentHashMap<String, Command<C>>();
+
+    @SuppressWarnings("rawtypes")
+    private static final AtomicReferenceFieldUpdater<DefaultCommandCatalog, Map> fieldUpdater;
+    static {
+        fieldUpdater = AtomicReferenceFieldUpdater.newUpdater(DefaultCommandCatalog.class, Map.class, "commands");
+    }
 
     @Override
-    public synchronized CommandCatalog<C> addCommand(String name, Command<C> command) {
+    public CommandCatalog<C> addCommand(String name, Command<C> command) {
         commands.put(name, command);
         return this;
     }
 
     @Override
-    public synchronized Command<C> getCommand(String name) {
+    public Command<C> getCommand(String name) {
         return commands.get(name);
     }
 
     @Override
-    public synchronized Command<C> removeCommand(String name) {
+    public Command<C> removeCommand(String name) {
         return commands.remove(name);
     }
 
     @Override
-    public synchronized Map<String, Command<C>> getCommands() {
+    public Map<String, Command<C>> getCommands() {
         return new HashMap<String, Command<C>>(commands);
     }
 
     @Override
-    public synchronized CommandCatalog<C> clear() {
+    public CommandCatalog<C> clear() {
         commands.clear();
         return this;
     }
 
     @Override
-    public synchronized CommandCatalog<C> setCommands(Map<String, Command<C>> commands) {
+    public CommandCatalog<C> setCommands(Map<String, Command<C>> commands) {
         clear();
-        this.commands = new HashMap<String, Command<C>>(commands);
+        Map<String, Command<C>> newCommands = new ConcurrentHashMap<String, Command<C>>(commands);
+        fieldUpdater.set(this, newCommands);
         return this;
     }
 
