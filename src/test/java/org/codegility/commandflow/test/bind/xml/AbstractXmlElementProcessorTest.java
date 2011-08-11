@@ -45,7 +45,7 @@ public abstract class AbstractXmlElementProcessorTest {
         commandCatalog = new DefaultCommandCatalog<TestContext>();
 
         xmlBindingHandler = new XmlBindingHandler<TestContext>();
-        xmlBindingHandler.addCommandXml(new ClassPathResource(getClass().getPackage(), getTestResourceName()));
+        xmlBindingHandler.addCommandResource(new ClassPathResource(getClass().getPackage(), getTestResourceName()));
         // common test settings
         xmlBindingHandler.addElementProcessor(new QName("commands"), new IgnoreElementProcessor<TestContext>());
         xmlBindingHandler.setCommandNameLookup(new AttributeCommandNameLookup<TestContext>("name"));

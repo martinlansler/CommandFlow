@@ -80,4 +80,13 @@ public interface CommandCatalog<C> {
      * @return this command catalog (for method chaining)
      */
     CommandCatalog<C> setCommands(Map<String, Command<C>> commands);
+
+    /**
+     * Convenience method to retrieve and execute the named command from this catalog
+     * @param name the name of the command to execute
+     * @param context the command context
+     * @return the boolean result of executing the command
+     * @throws CatalogException if the names command could not be found
+     */
+    boolean execute(String name, C context) throws CatalogException;
 }

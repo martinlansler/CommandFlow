@@ -59,7 +59,7 @@ public class ImportElementProcessor<C> implements XmlElementProcessor<C> {
             if (importResource == null) {
                 throw new BindingException("Could not find import resource %s", resource);
             }
-            importHandler.addCommandXml(importResource);
+            importHandler.addCommandResource(importResource);
             importHandler.build(handler.getCommandCatalog());
         } catch (URISyntaxException e) {
             throw new BindingException(e);

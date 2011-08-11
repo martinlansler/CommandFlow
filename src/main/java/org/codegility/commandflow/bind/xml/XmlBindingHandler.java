@@ -251,7 +251,7 @@ public class XmlBindingHandler<C> implements BindingHandler<C> {
     }
 
     @Override
-    public XmlBindingHandler<C> addCommandXml(Resource... resources) {
+    public XmlBindingHandler<C> addCommandResource(Resource... resources) {
         for (Resource resource : resources) {
             commandXmlResources.add(resource);
         }

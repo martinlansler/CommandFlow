@@ -74,4 +74,13 @@ public class DefaultCommandCatalog<C> implements CommandCatalog<C> {
         return this;
     }
 
+    @Override
+    public boolean execute(String name, C context) {
+        Command<C> command = getCommand(name);
+        if (command == null) {
+            throw new CatalogException("Could not find command %s", name);
+        }
+        return command.execute(context);
+    }
+
 }

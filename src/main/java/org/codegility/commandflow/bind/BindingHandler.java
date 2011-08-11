@@ -36,7 +36,7 @@ public interface BindingHandler<C> {
      * @param resource the command resource(s)
      * @return this handler (for method chaining)
      */
-    BindingHandler<C> addCommandXml(Resource... resources);
+    BindingHandler<C> addCommandResource(Resource... resources);
 
     /**
      * Called to request the handler to create the commands from the external binding format.

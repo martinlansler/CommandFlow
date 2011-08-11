@@ -15,14 +15,18 @@
  */
 package org.codegility.commandflow.example.email;
 
+import org.codegility.commandflow.CommandFlow;
+import org.codegility.commandflow.io.ClassPathResource;
+
 /**
- * Sends "Hello world!" as an email, the needed SMTP configuration, to address etc is set during the command flow.
+ * Sends an email.
+ * <p>
+ * The the needed SMTP configuration, from, subject, to etc is queried for on stdin during the command flow.
  * @author Martin Lansler
  */
-public class HelloWorld {
+public class SendEmailMain {
     public static void main(String[] args) {
-        EmailContext context = new EmailContext();
-        context.setSubject("Hello from commandflow");
-        context.setText("Hello world!");
+        ClassPathResource resource = new ClassPathResource(SendEmailMain.class.getPackage(), "emailCommand.xml");
+        CommandFlow.buildXmlCommandCatalog(resource).execute("sendEmail", new EmailContext());
     }
 }

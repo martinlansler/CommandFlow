@@ -47,6 +47,9 @@ public class XmlBindingFactory implements ConcreteBindingFactory {
     /** Namespace for command flow {@value} */
     public static final String NAMESPACE_COMMANDFLOW_V1 = XmlBindingConfigurerV1.NAMESPACE;
 
+    /** The default XML namespace if none is specified, currently {@value} */
+    public static final String DEFAULT_NAMESPACE = NAMESPACE_COMMANDFLOW_V1;
+
     /**
      * Adds a new command name namespace to this factory
      * @param namespaceURI the namespace URI
