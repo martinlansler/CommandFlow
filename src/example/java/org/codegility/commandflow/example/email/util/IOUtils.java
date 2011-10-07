@@ -65,7 +65,11 @@ public class IOUtils {
             if (validationPattern.matcher(answer).matches()) {
                 break;
             }
-            error("\nInvalid input, example input '%s'\n", inputExample);
+            if (inputExample != null) {
+                error("\nInvalid input, example input '%s'\n", inputExample);
+            } else {
+                error("\nInvalid input\n");
+            }
             showPrompt(prompt, defaultValue);
         }
         return answer;

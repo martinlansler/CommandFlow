@@ -35,7 +35,7 @@ import org.codegility.commandflow.example.email.util.Recipient;
  * @author elansma
  */
 public class EmailContext {
-    private Properties mailProperties;
+    private Properties mailProperties = new Properties();
 
     private String accountType;
 
@@ -50,6 +50,8 @@ public class EmailContext {
     private Map<Message.RecipientType, Set<Recipient>> type2Recipient = new HashMap<Message.RecipientType, Set<Recipient>>();
 
     private List<MimeBodyPart> bodyParts = new ArrayList<MimeBodyPart>();
+
+    private String password;
 
     public Properties getMailProperties() {
         return mailProperties;
@@ -123,5 +125,13 @@ public class EmailContext {
 
     public void setAccountType(String accountType) {
         this.accountType = accountType;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

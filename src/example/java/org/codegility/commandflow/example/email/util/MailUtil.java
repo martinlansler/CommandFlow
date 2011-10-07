@@ -56,6 +56,16 @@ public class MailUtil {
         EMAIL_SUBJECT_PATTERN = Pattern.compile(EMAIL_SUBJECT_REGEXP);
     }
 
+    public final static String ALLOW_ALL_REGEXP;
+    static {
+        ALLOW_ALL_REGEXP = ".*";
+    }
+
+    public final static Pattern ALLOW_ALL_PATTERN;
+    static {
+        ALLOW_ALL_PATTERN = Pattern.compile(ALLOW_ALL_REGEXP);
+    }
+
     public static String getAddress(String rfc822Address) {
         try {
             return new InternetAddress(rfc822Address).getAddress();

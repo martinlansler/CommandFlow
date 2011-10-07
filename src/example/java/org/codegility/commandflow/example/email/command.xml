@@ -20,6 +20,8 @@
   </or>
 
   <command name="inputFrom" class="org.codegility.commandflow.example.email.commands.InputFromAddressCommand" />
+  <command name="inputPassword" class="org.codegility.commandflow.example.email.commands.InputPasswordCommand" />
+  
   <command name="inputTo" class="org.codegility.commandflow.example.email.commands.InputToAddressCommand" />
   <command name="inputSubject" class="org.codegility.commandflow.example.email.commands.InputSubjectCommand" />
   <command name="inputMessage" class="org.codegility.commandflow.example.email.commands.InputTextBodyCommand" />
@@ -38,6 +40,7 @@
   <!-- Sends an email by interactively querying user on stdin for all needed configuration and input -->
   <sequence name="sendEmailViaInput">
     <command ref="inputFrom" />
+    <command ref="inputPassword" />
     <or>
       <if ref="configureMail">
         <command ref="inputEmailAndSend" />

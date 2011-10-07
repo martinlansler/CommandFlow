@@ -33,7 +33,7 @@ public class InputTextBodyCommand implements Command<EmailContext> {
     @Override
     public boolean execute(EmailContext context) {
         MimeBodyPart textPart = new MimeBodyPart();
-        IOUtils.message("Message:\n");
+        IOUtils.message("Message (ctrl+D to end message):\n");
         try {
             textPart.setText(IOUtils.readMultipleLineInput());
         } catch (MessagingException e) {

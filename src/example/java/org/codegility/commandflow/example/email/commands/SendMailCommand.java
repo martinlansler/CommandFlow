@@ -15,9 +15,11 @@
  */
 package org.codegility.commandflow.example.email.commands;
 
+import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
@@ -47,14 +49,28 @@ public class SendMailCommand implements Command<EmailContext> {
             sendEmail(context);
             return true;
         } catch (Exception e) {
-            String errMesg = String.format("Failed to send email '%s', to '%s'", context.getSubject());
+            String errMesg = String.format("Failed to send email '%s', to '%s'", context.getSubject(), context.getRecipients());
             logger.error(errMesg, IOUtils.join(context.getRecipients(Message.RecipientType.TO), ","));
             throw new EmailException(e, errMesg);
         }
     }
 
-    private void sendEmail(EmailContext context) throws MessagingException, AddressException {
-        Session session = Session.getDefaultInstance(context.getMailProperties());
+    private void sendEmail(final EmailContext context) throws MessagingException, AddressException {
+        Session session = Session.getInstance(context.getMailProperties(), new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                String password = context.getPassword();
+                if (password == null) {
+                    password = context.getMailProperties().getProperty("mail.smtp.password");
+                    if (password == null) {
+                        throw new IllegalArgumentException("Missing account password!");
+                    }
+                }
+                return new PasswordAuthentication(context.getFrom(), context.getPassword());
+            }
+
+        });
+
         MimeMessage msg = new MimeMessage(session);
         msg.setFrom(new InternetAddress(context.getFrom()));
         msg.setSubject(context.getSubject());

@@ -58,6 +58,6 @@ public abstract class AbstractUserInputCommand<C> implements Command<C> {
     }
 
     protected String getInput() {
-        return IOUtils.readValidatedInput(getInput(), getValidationPattern(), getInputExample(), getDefaultValue());
+        return IOUtils.readValidatedInput(getPrompt(), getValidationPattern(), getInputExample(), getDefaultValue());
     }
 }
