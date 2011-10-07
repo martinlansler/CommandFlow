@@ -24,11 +24,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 
 import org.codegility.commandflow.Command;
 import org.codegility.commandflow.binding.BindingException;
+import org.codegility.commandflow.util.ClassUtil;
 
 /**
  * Command processor that can be used to configure a created command.
@@ -78,7 +80,7 @@ public class CommandConfigurationProcessor<C> implements XmlElementProcessor<C> 
         if (types.length != 1) {
             throw new BindingException("Illegal setter %s in class %s, must have exatcly one parameter", method.getName(), method.getDeclaringClass().getName());
         }
-        return types[0];
+        return ClassUtil.boxPrimitiveType(types[0]);
     }
 
     /**
@@ -90,20 +92,47 @@ public class CommandConfigurationProcessor<C> implements XmlElementProcessor<C> 
      * <li>Types that have a public static method called valueOf which accepts a single argument of type String and whose return type is the same as the class on which the method is declared. The
      * java.lang primitive wrapper classes have such methods.</li>
      * <li>Types that have a public constructor which accepts a single argument of type String.</li>
+     * <li>Regexp in for of compiled {@link Pattern}</li>
+     * <li>Subclass extensions via {@link #coerceToTypeExtension(Class, String)}</li>
      * </ol>
      * Subclasses may override this method to provide other coercion mechanism.
      * 
-     * @param setter the setter to which the value must be coerced.
+     * @param clazz the type the value should be coerced to
      * @param value the textual value
-     * @return the coerced value, <code>null</code> if the value could not be coerced
+     * @return the coerced value
+     * @throws BindingException if the value could not be type coerced
      */
+    @SuppressWarnings("unchecked")
     protected <T> T coerceToType(Class<T> clazz, String value) {
         T t;
         t = coerceToTypeViaValueOf(clazz, value);
         if (t != null) {
             return t;
         }
-        return coerceToTypeViaConstructor(clazz, value);
+        t = coerceToTypeViaConstructor(clazz, value);
+        if (t != null) {
+            return t;
+        }
+        if (Pattern.class.equals(clazz)) {
+            return (T) Pattern.compile(value);
+        }
+        t = coerceToTypeExtension(clazz, value);
+        if (t != null) {
+            return t;
+        }
+        throw new BindingException("Could not coerce value %s to type %s", value, clazz);
+    }
+
+    /**
+     * Allows subclasses to add additional type coercions as specified in {@link #coerceToType(Class, String)}.
+     * <p>
+     * By default this method returns <code>null</code>.
+     * @param clazz the type the value should be coerced to
+     * @param value the textual value
+     * @return the coerced value, null if the value could not be coerced
+     */
+    protected <T> T coerceToTypeExtension(Class<T> clazz, String value) {
+        return null;
     }
 
     protected <T> T coerceToTypeViaConstructor(Class<T> clazz, String value) {

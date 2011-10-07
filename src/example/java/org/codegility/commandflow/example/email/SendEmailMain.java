@@ -26,7 +26,7 @@ import org.codegility.commandflow.io.ClassPathResource;
  */
 public class SendEmailMain {
     public static void main(String[] args) {
-        ClassPathResource resource = new ClassPathResource(SendEmailMain.class.getPackage(), "emailCommand.xml");
+        ClassPathResource resource = new ClassPathResource(SendEmailMain.class.getPackage(), "command.xml");
         CommandFlow.buildXmlCommandCatalog(resource).execute("sendEmail", new EmailContext());
     }
 }

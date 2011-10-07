@@ -55,7 +55,7 @@ public class BindingFactory {
     }
 
     /**
-     * Used by binding implementations to add a concerete binding factory for a given namespace.
+     * Used by binding implementations to add a concrete binding factory for a given namespace.
      * @param namespace the namespace URI
      * @param concreteBindingFactory the concrete binding factory
      */

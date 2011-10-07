@@ -53,7 +53,7 @@ import org.xml.sax.SAXException;
 public class XmlBindingConfigurerV1 implements XmlBindingConfigurer {
 
     /** The namespace of this command XML */
-    public static final String NAMESPACE = "http://org.codegility.commandflow/1";
+    public static final String NAMESPACE = "http://codegility.org/commandflow/1";
 
     /** Element {@value} */
     public static final QName COMMANDS_ELEMENT = new QName(NAMESPACE, "commands");
@@ -107,7 +107,7 @@ public class XmlBindingConfigurerV1 implements XmlBindingConfigurer {
     public static final Schema COMMAND_SCHEMA;
 
     static {
-        InputStream is = getResourceAsStream(XmlBindingConfigurerV1.class.getPackage(), "org.codegility.commandflow.xsd");
+        InputStream is = getResourceAsStream(XmlBindingConfigurerV1.class.getPackage(), "commandflow.xsd");
         try {
             COMMAND_SCHEMA = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(new StreamSource(is));
         } catch (SAXException e) {

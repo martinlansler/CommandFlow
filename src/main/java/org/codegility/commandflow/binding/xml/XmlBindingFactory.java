@@ -19,8 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.codegility.commandflow.binding.BindingException;
-import org.codegility.commandflow.binding.BindingHandler;
+import org.codegility.commandflow.binding.BindingFactory;
 import org.codegility.commandflow.binding.BindingFactory.ConcreteBindingFactory;
+import org.codegility.commandflow.binding.BindingHandler;
 import org.codegility.commandflow.binding.xml.v1.XmlBindingConfigurerV1;
 
 /**
@@ -34,6 +35,9 @@ import org.codegility.commandflow.binding.xml.v1.XmlBindingConfigurerV1;
 public class XmlBindingFactory implements ConcreteBindingFactory {
     /** The registered namespaces */
     private static Map<String, XmlBindingConfigurer> namespaces = new HashMap<String, XmlBindingConfigurer>();
+
+    /** The singleton instance */
+    public static final XmlBindingFactory INSTANCE = new XmlBindingFactory();
 
     // preload the known namespaces (via static initialization blocks in class)...
     static {
@@ -58,6 +62,7 @@ public class XmlBindingFactory implements ConcreteBindingFactory {
     public static void addNamespace(String namespaceURI, XmlBindingConfigurer configurer) {
         synchronized (namespaces) {
             namespaces.put(namespaceURI, configurer);
+            BindingFactory.addConcreteBindingFactory(namespaceURI, INSTANCE);
         }
     }
 
