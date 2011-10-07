@@ -1,0 +1,8 @@
+<commands>
+  <command name="condition" class="org.codegility.commandflow.command.TrueCommand"/>
+
+  <if name="ifCommand" ref="condition">
+    <command class="org.codegility.commandflow.test.binding.xml.SetIsExecuted"/>
+  </if>
+</commands>
+ 

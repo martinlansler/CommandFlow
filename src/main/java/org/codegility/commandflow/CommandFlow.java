@@ -15,9 +15,9 @@
  */
 package org.codegility.commandflow;
 
-import org.codegility.commandflow.bind.BindingFactory;
-import org.codegility.commandflow.bind.BindingHandler;
-import org.codegility.commandflow.bind.xml.XmlBindingFactory;
+import org.codegility.commandflow.binding.BindingFactory;
+import org.codegility.commandflow.binding.BindingHandler;
+import org.codegility.commandflow.binding.xml.XmlBindingFactory;
 import org.codegility.commandflow.builder.CommandBuilder;
 import org.codegility.commandflow.builder.DefaultCommandBuilder;
 import org.codegility.commandflow.catalog.CommandCatalog;

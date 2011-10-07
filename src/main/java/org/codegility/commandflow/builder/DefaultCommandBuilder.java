@@ -22,7 +22,7 @@ import java.util.RandomAccess;
 import java.util.Set;
 
 import org.codegility.commandflow.Command;
-import org.codegility.commandflow.bind.BindingHandler;
+import org.codegility.commandflow.binding.BindingHandler;
 import org.codegility.commandflow.catalog.CommandCatalog;
 import org.codegility.commandflow.catalog.CommandReference;
 

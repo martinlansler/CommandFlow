@@ -1,0 +1,9 @@
+<commands>
+  <command name="override" class="org.codegility.commandflow.test.binding.xml.ImportElementProcessorTest$CommandOverride" />
+
+  <import resource="importElementProcessorTest_relative.xml" />
+  <import resource="classpath:org/codegility/commandflow/test/binding/xml/importElementProcessorTest_absolute.xml" />
+
+  <command name="override2" class="org.codegility.commandflow.test.binding.xml.ImportElementProcessorTest$CommandOverride" />
+</commands>
+ 

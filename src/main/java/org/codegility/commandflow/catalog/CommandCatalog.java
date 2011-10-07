@@ -18,7 +18,7 @@ package org.codegility.commandflow.catalog;
 import java.util.Map;
 
 import org.codegility.commandflow.Command;
-import org.codegility.commandflow.bind.BindingHandler;
+import org.codegility.commandflow.binding.BindingHandler;
 
 /**
  * The command catalog interface.
