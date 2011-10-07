@@ -15,21 +15,24 @@
  */
 package org.codegility.commandflow.example.email.commands;
 
+import org.codegility.commandflow.Command;
 import org.codegility.commandflow.example.email.EmailContext;
 
 /**
- * Queries for from address on stdin if no already specified in command context.
+ * Shows a message on stdout
  * @author Martin Lansler
  */
-public class InputFromAddressCommand extends AbstractAddressInputCommand {
-
-    public InputFromAddressCommand() {
-        setPrompt("From:");
-    }
+public class OutputMessageCommand implements Command<EmailContext> {
+    private String message;
 
     @Override
     public boolean execute(EmailContext context) {
-        context.setFrom(getInput());
+        System.out.println(message);
         return true;
     }
+
+    protected void setMessage(String message) {
+        this.message = message;
+    }
+
 }

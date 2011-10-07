@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commands xmlns="http://codegility.org/commandflow/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://codegility.org/commandflow/1 ../../../../../../../main/java/org/codegility/commandflow/bind/xml/v1/commandflow.xsd">
+
+  <command name="gmailConfigurer" class="org.codegility.commandflow.example.email.commands.MailConfigurerCommand">
+    <property name="fromAddressRegexp" value=".*@gmail.com" />
+    <property name="host" value="smtp.gmail.com" />
+    <property name="port" value="465" />
+    <property name="doAuth" value="true" />
+    <property name="doStartTTLS" value="true" />
+  </command>
+  <command name="yahooConfigurer" class="org.codegility.commandflow.example.email.commands.MailConfigurerCommand" />
+  <command name="hotmailConfigurer" class="org.codegility.commandflow.example.email.commands.MailConfigurerCommand" />
+
+  <!-- Configure email provider based on provided 'from' address -->
+  <or name="configureMail">
+    <command ref="gmailConfigurer" />
+    <command ref="yahooConfigurer" />
+    <command ref="hotmailConfigurer" />
+  </or>
+
+  <command name="inputFrom" class="org.codegility.commandflow.example.email.commands.InputFromAddressCommand" />
+  <command name="inputTo" class="org.codegility.commandflow.example.email.commands.InputToAddressCommand" />
+  <command name="inputSubject" class="org.codegility.commandflow.example.email.commands.InputSubjectCommand" />
+  <command name="inputMessage" class="org.codegility.commandflow.example.email.commands.InputTextBodyCommand" />
+
+  <command name="showConfigurationErrorMessage" class="org.codegility.commandflow.example.email.commands.OutputMessageCommand" />
+
+  <command name="transportSendMail" class="org.codegility.commandflow.example.email.commands.SendMailCommand" />
+
+  <sequence name="inputEmailAndSend">
+    <command ref="inputTo" />
+    <command ref="inputSubject" />
+    <command ref="inputMessage" />
+    <command ref="transportSendMail" />
+  </sequence>
+
+  <!-- Sends an email by interactively querying user on stdin for all needed configuration and input -->
+  <sequence name="sendEmailViaInput">
+    <command ref="inputFrom" />
+    <or>
+      <if ref="configureMail">
+        <command ref="inputEmailAndSend" />
+      </if>
+      <command ref="showConfigurationErrorMessage" />
+    </or>
+  </sequence>
+
+  <!-- Non-interactive sending of a pre-configured email context -->
+  <sequence name="sendEmail">
+    <command ref="configureMail" />
+    <command ref="transportSendMail" />
+  </sequence>
+</commands>

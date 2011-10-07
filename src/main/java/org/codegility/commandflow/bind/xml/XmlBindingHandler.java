@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -85,12 +86,31 @@ public class XmlBindingHandler<C> implements BindingHandler<C> {
         xmlElementProcessors = new HashMap<QName, XmlElementProcessor<C>>();
     }
 
-    
     @Override
     public void build(CommandCatalog<C> catalog) {
         init(catalog);
+        notifyStartProcessing();
         for (Resource commandResource : commandXmlResources) {
             build(commandResource);
+        }
+        notifyEndProcessing();
+    }
+
+    /**
+     * Notifies that processing is ended
+     */
+    private void notifyEndProcessing() {
+        for (XmlElementProcessor<C> processor : xmlElementProcessors.values()) {
+            processor.endProcessing();
+        }
+    }
+
+    /**
+     * Notifies that processing is starting
+     */
+    private void notifyStartProcessing() {
+        for (XmlElementProcessor<C> processor : xmlElementProcessors.values()) {
+            processor.startProcessing();
         }
     }
 
@@ -165,6 +185,13 @@ public class XmlBindingHandler<C> implements BindingHandler<C> {
      */
     public void popCommand() {
         commandStack.pop();
+    }
+
+    /**
+     * Peeks the top command from the stack without removing it
+     */
+    public Command<C> peekCommand() {
+        return commandStack.peek();
     }
 
     /**
@@ -322,14 +349,16 @@ public class XmlBindingHandler<C> implements BindingHandler<C> {
         return this;
     }
 
-    
     @Override
     public XmlBindingHandler<C> clone() {
         XmlBindingHandler<C> clone = new XmlBindingHandler<C>();
         clone.processedResources = new HashSet<Resource>(processedResources);
         clone.schema = this.schema;
         clone.xmlCommandNameLookup = this.xmlCommandNameLookup;
-        clone.xmlElementProcessors = new HashMap<QName, XmlElementProcessor<C>>(this.xmlElementProcessors);
+        clone.xmlElementProcessors = new HashMap<QName, XmlElementProcessor<C>>();
+        for (Entry<QName, XmlElementProcessor<C>> entry : this.xmlElementProcessors.entrySet()) {
+            clone.xmlElementProcessors.put(entry.getKey(), entry.getValue().clone());
+        }
         return (XmlBindingHandler<C>) clone;
     }
 

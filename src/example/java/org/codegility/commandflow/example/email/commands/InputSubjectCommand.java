@@ -31,9 +31,7 @@ public class InputSubjectCommand extends AbstractUserInputCommand<EmailContext> 
 
     @Override
     public boolean execute(EmailContext context) {
-        if (context.getSubject() == null) {
-            context.setSubject(getInput());
-        }
+        context.setSubject(getInput());
         return true;
     }
 }

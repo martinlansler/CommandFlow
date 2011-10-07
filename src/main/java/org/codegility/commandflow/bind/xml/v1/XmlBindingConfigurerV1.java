@@ -27,6 +27,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.codegility.commandflow.bind.xml.AttributeCommandNameLookup;
 import org.codegility.commandflow.bind.xml.BasicCommandProcessor;
+import org.codegility.commandflow.bind.xml.CommandConfigurationProcessor;
 import org.codegility.commandflow.bind.xml.ConditionalCommandProcessor;
 import org.codegility.commandflow.bind.xml.FixedCommandProcessor;
 import org.codegility.commandflow.bind.xml.IgnoreElementProcessor;
@@ -42,7 +43,6 @@ import org.codegility.commandflow.command.OrCommand;
 import org.codegility.commandflow.command.SequenceCommand;
 import org.codegility.commandflow.command.WhileCommand;
 import org.xml.sax.SAXException;
-
 
 /**
  * The {@link XmlBindingConfigurer} for this XML namespace.
@@ -61,6 +61,8 @@ public class XmlBindingConfigurerV1 implements XmlBindingConfigurer {
     private static final QName IMPORT_ELEMENT = new QName(NAMESPACE, "import");
     /** Element {@value} */
     public static final QName COMMAND_ELEMENT = new QName(NAMESPACE, "command");
+    /** Element {@value} */
+    public static final QName PROPERTY_ELEMENT = new QName(NAMESPACE, "property");
     /** Element {@value} */
     private static final QName SEQUENCE_ELEMENT = new QName(NAMESPACE, "sequence");
     /** Element {@value} */
@@ -113,7 +115,6 @@ public class XmlBindingConfigurerV1 implements XmlBindingConfigurer {
         }
     }
 
-    
     @Override
     public <C> void configure(XmlBindingHandler<C> handler) {
         handler.setCommandSchema(COMMAND_SCHEMA);
@@ -125,6 +126,7 @@ public class XmlBindingConfigurerV1 implements XmlBindingConfigurer {
         handler.addElementProcessor(COMMANDS_ELEMENT, new IgnoreElementProcessor<C>());
 
         handler.addElementProcessor(COMMAND_ELEMENT, new BasicCommandProcessor<C>(CLASS_ATTRIBUTE, REF_ATTRIBUTE, DYNAMIC_REF_ATTRIBUTE, VALUE_ATTRIBUTE));
+        handler.addElementProcessor(PROPERTY_ELEMENT, new CommandConfigurationProcessor<C>(NAME_ATTRIBUTE, VALUE_ATTRIBUTE));
 
         handler.addElementProcessor(IF_ELEMENT, new ConditionalCommandProcessor<C>(IfCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, DYNAMIC_REF_ATTRIBUTE, VALUE_ATTRIBUTE));
         handler.addElementProcessor(WHILE_ELEMENT, new ConditionalCommandProcessor<C>(WhileCommand.class, CLASS_ATTRIBUTE, REF_ATTRIBUTE, DYNAMIC_REF_ATTRIBUTE, VALUE_ATTRIBUTE));

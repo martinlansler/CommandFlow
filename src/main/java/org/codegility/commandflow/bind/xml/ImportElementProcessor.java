@@ -44,7 +44,10 @@ public class ImportElementProcessor<C> implements XmlElementProcessor<C> {
         this.resourceResolver = new DefaultResourceResolver();
     }
 
-    
+    @Override
+    public void startProcessing() {
+    }
+
     @Override
     public void startElement(XmlBindingHandler<C> handler, QName elementName, Map<String, String> attributes) {
         XmlBindingHandler<C> importHandler = handler.clone();
@@ -66,7 +69,6 @@ public class ImportElementProcessor<C> implements XmlElementProcessor<C> {
         }
     }
 
-    
     @Override
     public void endElement(XmlBindingHandler<C> handler, QName elementName) {
         // not used
@@ -77,6 +79,15 @@ public class ImportElementProcessor<C> implements XmlElementProcessor<C> {
      */
     public void setResourceResolver(ResourceResolver resourceResolver) {
         this.resourceResolver = resourceResolver;
+    }
+
+    @Override
+    public void endProcessing() {
+    }
+
+    @Override
+    public ImportElementProcessor<C> clone() {
+        return new ImportElementProcessor<C>(resourceAttribute);
     }
 
 }

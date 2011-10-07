@@ -15,19 +15,30 @@
  */
 package org.codegility.commandflow.test.bind.xml;
 
+import org.codegility.commandflow.Command;
+
 /**
  * 
  * @author Martin Lansler
  */
 public class TestContext {
     private boolean isExecuted;
+    private Command<?> command;
 
-    protected boolean isExecuted() {
+    public boolean isExecuted() {
         return isExecuted;
     }
 
-    protected void setExecuted(boolean isExecuted) {
+    public void setExecuted(boolean isExecuted) {
         this.isExecuted = isExecuted;
+    }
+
+    public void setExecutedCommand(Command<?> command) {
+        this.command = command;
+    }
+
+    public Command<?> getExecutedCommand() {
+        return command;
     }
 
 }

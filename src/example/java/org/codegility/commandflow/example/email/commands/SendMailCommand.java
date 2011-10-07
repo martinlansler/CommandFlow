@@ -59,7 +59,7 @@ public class SendMailCommand implements Command<EmailContext> {
         msg.setFrom(new InternetAddress(context.getFrom()));
         msg.setSubject(context.getSubject());
         for (Recipient recipient : context.getRecipients()) {
-            msg.setRecipient(recipient.getType(), recipient.getAddress());
+            msg.addRecipient(recipient.getType(), recipient.getAddress());
         }
 
         Multipart multipart = new MimeMultipart();

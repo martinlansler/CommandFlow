@@ -28,9 +28,7 @@ public class InputToAddressCommand extends AbstractAddressInputCommand {
 
     @Override
     public boolean execute(EmailContext context) {
-        if (context.getRecipients().size() == 0) {
-            context.setTo(getInput());
-        }
+        context.setTo(getInput());
         return true;
     }
 }

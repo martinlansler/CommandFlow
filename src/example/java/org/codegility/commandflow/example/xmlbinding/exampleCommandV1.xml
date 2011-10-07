@@ -4,8 +4,8 @@
 This contains examples of all commands found in version 1 of the XML binding.
 Note: Currently this is not a working example.
  -->
-<commands xmlns="http://org.codegility.commandflow/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://org.codegility.commandflow/1 ../../../../../../../main/java/org/codegility/commandflow/bind/xml/v1/commandflow.xsd">
+<commands xmlns="http://codegility.org/commandflow/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://codegility.org/commandflow/1 ../../../../../../../main/java/org/codegility/commandflow/bind/xml/v1/commandflow.xsd">
 
   <!-- Import a command XML file as a classpath resource (prefix 'file and http' can also be used). -->
   <!-- Named commands in this file will override any of the imported commands with the same name. -->

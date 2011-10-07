@@ -24,17 +24,29 @@ import javax.xml.namespace.QName;
  * @author Martin Lansler
  */
 public class IgnoreElementProcessor<C> implements XmlElementProcessor<C> {
+    @Override
+    public void startProcessing() {
+        // no more
+    }
 
-    
     @Override
     public void startElement(XmlBindingHandler<C> handler, QName elementName, Map<String, String> attributes) {
         // no more
     }
 
-    
     @Override
     public void endElement(XmlBindingHandler<C> handler, QName elementName) {
         // no more
+    }
+
+    @Override
+    public void endProcessing() {
+        // no more
+    }
+
+    @Override
+    public IgnoreElementProcessor<C> clone() {
+        return this; // no held state, so this is fine...
     }
 
 }

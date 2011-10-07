@@ -21,12 +21,15 @@ import javax.xml.namespace.QName;
 
 import org.codegility.commandflow.Command;
 
-
 /**
  * Suitable base class for processors that create commands.
  * @author Martin Lansler
  */
-public abstract class AbstractCommandProcessor<C> implements XmlElementProcessor<C> {
+public abstract class AbstractCommandProcessor<C> implements XmlElementProcessor<C>, Cloneable {
+
+    @Override
+    public void startProcessing() {
+    }
 
     /**
      * Pushes the created command onto the command stack
@@ -49,6 +52,20 @@ public abstract class AbstractCommandProcessor<C> implements XmlElementProcessor
     @Override
     public void endElement(XmlBindingHandler<C> handler, QName elementName) {
         handler.popCommand();
+    }
+
+    @Override
+    public void endProcessing() {
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public XmlElementProcessor<C> clone() {
+        try {
+            return (XmlElementProcessor<C>) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

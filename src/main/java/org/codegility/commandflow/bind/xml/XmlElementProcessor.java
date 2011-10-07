@@ -26,11 +26,20 @@ import javax.xml.namespace.QName;
  * <p>
  * A command processor that creates a command pushes the command onto the handler stack using {@link XmlBindingHandler#pushCommand(org.codegility.commandflow.Command, String)} when processing the
  * start of the element. The created command must subsequently be popped using {@link XmlBindingHandler#popCommand()} when processing the end of the element.
+ * <p>
+ * A processor may be stateful internally, if needed it will be cloned.
  * 
  * @author Martin Lansler
  * @param <C> the context class of the commands
  */
 public interface XmlElementProcessor<C> {
+    /**
+     * Called to notify the processor that processing has commenced.
+     * <p>
+     * This is mainly intended to facilitate processor internal house-keeping tasks.
+     */
+    void startProcessing();
+
     /**
      * Called to process the start of the given XML element.
      * 
@@ -46,4 +55,17 @@ public interface XmlElementProcessor<C> {
      * @param elementName the qualified name of the XML element
      */
     void endElement(XmlBindingHandler<C> handler, QName elementName);
+
+    /**
+     * Called to notify the processor that processing has ended.
+     * <p>
+     * This is mainly intended to facilitate processor internal house-keeping tasks, like clearing held resources etc.
+     */
+    void endProcessing();
+
+    /**
+     * Clones this XML element processor.
+     * @return a deep copy of this XML element processor
+     */
+    XmlElementProcessor<C> clone();
 }
